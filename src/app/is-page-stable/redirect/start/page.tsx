@@ -24,7 +24,7 @@ export default function RedirectStartPage() {
           Start Redirection
         </button>
         <div className="mt-6 text-sm text-gray-500">
-          <p>This will test your NavTracker's ability to handle multiple HTTP 302 redirects.</p>
+          <p>This will test your NavTracker&apos;s ability to handle multiple HTTP 302 redirects.</p>
         </div>
       </div>
     </div>
