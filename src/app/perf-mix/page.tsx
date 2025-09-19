@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 export default function PerfMixPage() {
   const [prefetchLoaded, setPrefetchLoaded] = useState(false);
@@ -123,7 +124,7 @@ export default function PerfMixPage() {
                   });
                   const data = await response.json();
                   alert(`Cache test result: ${data.message}`);
-                } catch (error) {
+                } catch {
                   alert('Cache test failed');
                 }
               }}
@@ -137,9 +138,11 @@ export default function PerfMixPage() {
           <div className="mb-6">
             <h3 className="text-lg font-semibold mb-2">Large Image (5-6 MB):</h3>
             {largeImageLoaded ? (
-              <img 
+              <Image 
                 src="https://picsum.photos/1920/1080" 
                 alt="Large test image"
+                width={1920}
+                height={1080}
                 className="rounded-lg shadow-md max-w-full h-auto"
               />
             ) : (

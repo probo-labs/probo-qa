@@ -6,7 +6,7 @@ export default function FinalPage() {
           🎉 Redirect Chain Complete!
         </h1>
         <p className="text-lg text-green-700 mb-8">
-          You've successfully navigated through the redirect chain:
+          You&apos;ve successfully navigated through the redirect chain:
         </p>
         
         <div className="bg-white p-6 rounded-lg shadow-md mb-8">

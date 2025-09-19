@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 export default function CLSPage() {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -106,9 +107,11 @@ export default function CLSPage() {
           <div className="mb-6">
             <h3 className="text-lg font-semibold mb-2">Image without dimensions:</h3>
             {imageLoaded ? (
-              <img 
+              <Image 
                 src="https://picsum.photos/400/300" 
                 alt="Random image that causes layout shift"
+                width={400}
+                height={300}
                 className="rounded-lg shadow-md"
               />
             ) : (

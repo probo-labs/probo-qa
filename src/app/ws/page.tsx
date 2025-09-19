@@ -72,7 +72,7 @@ export default function WebSocketPage() {
           WebSocket Test
         </h1>
         <p className="text-lg text-teal-700 mb-8">
-          This page tests infinite WebSocket connections and ensures they don't block the waiter forever.
+          This page tests infinite WebSocket connections and ensures they don&apos;t block the waiter forever.
         </p>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

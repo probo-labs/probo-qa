@@ -116,7 +116,7 @@ export default function FailuresPage() {
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-2xl font-semibold mb-4">Test Results</h2>
           {results.length === 0 ? (
-            <p className="text-gray-500">Click "Run Failure Tests" to start testing.</p>
+            <p className="text-gray-500">Click &quot;Run Failure Tests&quot; to start testing.</p>
           ) : (
             <div className="space-y-4">
               {results.map((result, index) => (

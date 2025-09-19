@@ -73,7 +73,7 @@ export default function SSEPage() {
           Server-Sent Events Test
         </h1>
         <p className="text-lg text-indigo-700 mb-8">
-          This page tests infinite SSE connections and ensures they don't block the waiter forever.
+          This page tests infinite SSE connections and ensures they don&apos;t block the waiter forever.
         </p>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

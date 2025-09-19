@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 
 export default function Home() {
@@ -89,7 +88,7 @@ export default function Home() {
           </p>
           <div className="bg-white rounded-lg shadow-lg p-6 max-w-2xl mx-auto">
             <p className="text-gray-700">
-              Each test scenario is designed to challenge different aspects of your waiter's 
+              Each test scenario is designed to challenge different aspects of your waiter&apos;s 
               ability to detect when a page is truly stable and ready for interaction.
             </p>
           </div>

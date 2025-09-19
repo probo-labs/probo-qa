@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 interface User {
   id: number;
@@ -115,7 +115,7 @@ export default function SPAPage() {
           </h3>
           <p className="text-yellow-700">
             The waiter should detect the pushState navigation and wait for the delayed 
-            fetch('/api/users') request to complete before resolving.
+            fetch(&apos;/api/users&apos;) request to complete before resolving.
           </p>
         </div>
       </div>

@@ -1,6 +1,5 @@
-import { NextRequest } from 'next/server';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   // This is a placeholder for WebSocket upgrade
   // In a real implementation, you'd handle the WebSocket upgrade here
   // For now, we'll return a simple response indicating WebSocket support
