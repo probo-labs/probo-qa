@@ -9,7 +9,7 @@ export default function IsPageStablePage() {
       color: "bg-gray-100 hover:bg-gray-200"
     },
     {
-      path: "/is-page-stable/redirect3",
+      path: "/is-page-stable/redirect/start",
       title: "Redirect Chain",
       description: "Tests waiter across multiple document navigations",
       color: "bg-blue-100 hover:bg-blue-200"

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
+import BreadcrumbNav from "./components/BreadcrumbNav";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,13 +32,14 @@ export default function RootLayout({
         <header className="bg-white shadow-sm border-b border-gray-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
-              <div className="flex items-center">
+              <div className="flex items-center space-x-4">
                 <Link 
                   href="/" 
                   className="text-xl font-bold text-gray-900 hover:text-blue-600 transition-colors"
                 >
                   🧪 Probo QA
                 </Link>
+                <BreadcrumbNav />
               </div>
               <nav className="flex space-x-8">
                 <Link

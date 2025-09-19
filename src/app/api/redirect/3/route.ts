@@ -9,7 +9,7 @@ export async function GET(request: Request) {
   
   // Construct absolute URL for redirect
   const url = new URL(request.url);
-  const redirectUrl = new URL('/is-page-stable/final', url.origin);
+  const redirectUrl = new URL('/is-page-stable/redirect/final', url.origin);
   
   // Return a real HTTP 302 redirect
   return NextResponse.redirect(redirectUrl, 302);

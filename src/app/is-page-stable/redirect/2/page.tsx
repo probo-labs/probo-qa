@@ -2,10 +2,10 @@
 
 import { useEffect } from 'react';
 
-export default function Redirect3Page() {
+export default function Redirect2Page() {
   useEffect(() => {
     // Navigate to the API route which will return a real HTTP 302 redirect
-    window.location.href = '/api/redirect3';
+    window.location.href = '/api/redirect/3';
   }, []);
 
   return (
@@ -15,7 +15,7 @@ export default function Redirect3Page() {
           Redirecting...
         </h1>
         <p className="text-gray-600">
-          You should be redirected to the next step in the chain.
+          Step 2 of the redirect chain
         </p>
       </div>
     </div>
