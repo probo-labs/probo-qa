@@ -119,7 +119,7 @@ export default function IframesPage() {
             Expected Behavior
           </h3>
           <p className="text-yellow-700">
-            The waiter should detect the same-origin iframe's fetch request and wait for it to complete. 
+            The waiter should detect the same-origin iframe&apos;s fetch request and wait for it to complete. 
             Cross-origin iframe activity may not be detectable due to security restrictions.
           </p>
         </div>
