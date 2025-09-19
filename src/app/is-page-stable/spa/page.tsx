@@ -16,10 +16,10 @@ export default function SPAPage() {
 
   const handleNavigateToUsers = async () => {
     setLoading(true);
-    setStatus('Navigating to /spa/users...');
+    setStatus('Navigating to /is-page-stable/spa/users...');
     
     // Simulate SPA navigation with pushState
-    window.history.pushState({}, '', '/spa/users');
+    window.history.pushState({}, '', '/is-page-stable/spa/users');
     setCurrentView('users');
     
     try {
@@ -37,7 +37,7 @@ export default function SPAPage() {
   };
 
   const handleBackToHome = () => {
-    window.history.pushState({}, '', '/spa');
+    window.history.pushState({}, '', '/is-page-stable/spa');
     setCurrentView('home');
     setStatus('Back to home view');
   };

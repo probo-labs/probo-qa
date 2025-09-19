@@ -1,155 +1,130 @@
 import Link from "next/link";
 
 export default function Home() {
-  const testScenarios = [
+  const testCategories = [
     {
-      path: "/classic",
-      title: "Classic Load",
-      description: "Baseline test with static content, CSS, and images",
-      color: "bg-gray-100 hover:bg-gray-200"
-    },
-    {
-      path: "/redirect3",
-      title: "Redirect Chain",
-      description: "Tests waiter across multiple document navigations",
-      color: "bg-blue-100 hover:bg-blue-200"
-    },
-    {
-      path: "/hash",
-      title: "Hash-Only Navigation",
-      description: "Tests same-document navigation (SPA-style hash changes)",
-      color: "bg-purple-100 hover:bg-purple-200"
-    },
-    {
-      path: "/spa",
-      title: "SPA PushState",
-      description: "Tests SPA soft navigation with delayed XHR",
-      color: "bg-indigo-100 hover:bg-indigo-200"
-    },
-    {
-      path: "/xhr-bursts",
-      title: "XHR Bursts",
-      description: "Tests repeated inflight requests and DOM churn",
-      color: "bg-red-100 hover:bg-red-200"
-    },
-    {
-      path: "/failures",
-      title: "Failed Requests",
-      description: "Tests waiter behavior with various request failures",
-      color: "bg-orange-100 hover:bg-orange-200"
-    },
-    {
-      path: "/sse",
-      title: "Server-Sent Events",
-      description: "Tests infinite SSE connections",
-      color: "bg-teal-100 hover:bg-teal-200"
-    },
-    {
-      path: "/ws",
-      title: "WebSocket Noise",
-      description: "Tests infinite WebSocket connections",
-      color: "bg-cyan-100 hover:bg-cyan-200"
-    },
-    {
-      path: "/dom-churn",
-      title: "DOM Churn",
-      description: "Tests DOM stability without network requests",
-      color: "bg-pink-100 hover:bg-pink-200"
-    },
-    {
-      path: "/cls",
-      title: "Layout Shifts (CLS)",
-      description: "Tests layout shift detection",
-      color: "bg-yellow-100 hover:bg-yellow-200"
-    },
-    {
-      path: "/iframes",
-      title: "Iframes",
-      description: "Tests same-origin vs cross-origin iframe handling",
-      color: "bg-emerald-100 hover:bg-emerald-200"
-    },
-    {
-      path: "/perf-mix",
-      title: "Performance Mix",
-      description: "Tests prefetch, cache hits, and large assets",
-      color: "bg-green-100 hover:bg-green-200"
+      path: "/is-page-stable",
+      title: "Is Page Stable?",
+      description: "Test scenarios for page stability detection and waiter behavior",
+      icon: "🎯",
+      color: "bg-blue-100 hover:bg-blue-200",
+      tests: [
+        "Classic Load",
+        "Redirect Chain", 
+        "Hash Navigation",
+        "SPA PushState",
+        "XHR Bursts",
+        "Failed Requests",
+        "Server-Sent Events",
+        "WebSocket Connections",
+        "DOM Churn",
+        "Layout Shifts",
+        "Iframes",
+        "Performance Mix"
+      ]
     }
+    // Future categories can be added here:
+    // {
+    //   path: "/element-detection",
+    //   title: "Element Detection",
+    //   description: "Test scenarios for element detection and interaction",
+    //   icon: "🔍",
+    //   color: "bg-green-100 hover:bg-green-200"
+    // }
   ];
 
   return (
-    <div className="min-h-screen p-8 bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen p-8 bg-gradient-to-br from-slate-50 to-blue-50">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-gray-900 mb-4">
-            🚀 Probo QA Chaos Tests
+          <h1 className="text-6xl font-bold text-gray-900 mb-4">
+            🧪 Probo QA Kitchen Sink
           </h1>
           <p className="text-xl text-gray-600 mb-8">
-            Stress-test your waiter with different navigation, network, and UI behaviors
+            Comprehensive test scenarios for Probo automation testing
           </p>
-          <div className="bg-white rounded-lg shadow-lg p-6 max-w-2xl mx-auto">
+          <div className="bg-white rounded-lg shadow-lg p-6 max-w-3xl mx-auto">
             <p className="text-gray-700">
-              Each test scenario is designed to challenge different aspects of your waiter&apos;s 
-              ability to detect when a page is truly stable and ready for interaction.
+              This is a collection of test scenarios designed to validate different aspects 
+              of Probo&apos;s automation capabilities. Each category focuses on specific 
+              testing challenges and edge cases.
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {testScenarios.map((scenario, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {testCategories.map((category, index) => (
             <Link
-              key={scenario.path}
-              href={scenario.path}
-              className={`${scenario.color} rounded-lg p-6 transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg`}
+              key={category.path}
+              href={category.path}
+              className={`${category.color} rounded-xl p-8 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl`}
             >
-              <div className="flex items-start space-x-3">
-                <div className="bg-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold text-gray-600">
-                  {index + 1}
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    {scenario.title}
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    {scenario.description}
-                  </p>
-                </div>
+              <div className="text-center">
+                <div className="text-6xl mb-4">{category.icon}</div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-3">
+                  {category.title}
+                </h2>
+                <p className="text-gray-600 mb-6">
+                  {category.description}
+                </p>
+                
+                {category.tests && (
+                  <div className="text-left">
+                    <h3 className="text-sm font-semibold text-gray-700 mb-2">
+                      Test Scenarios:
+                    </h3>
+                    <ul className="text-xs text-gray-600 space-y-1">
+                      {category.tests.slice(0, 6).map((test, testIndex) => (
+                        <li key={testIndex} className="flex items-center">
+                          <span className="w-1 h-1 bg-gray-400 rounded-full mr-2"></span>
+                          {test}
+                        </li>
+                      ))}
+                      {category.tests.length > 6 && (
+                        <li className="text-gray-500 italic">
+                          +{category.tests.length - 6} more...
+                        </li>
+                      )}
+                    </ul>
+                  </div>
+                )}
               </div>
             </Link>
           ))}
         </div>
 
-        <div className="mt-12 bg-white rounded-lg shadow-lg p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            🎯 Test Categories
+        <div className="mt-16 bg-white rounded-xl shadow-lg p-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-6 text-center">
+            🎯 Test Categories Overview
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="text-center">
-              <div className="bg-blue-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
-                <span className="text-blue-600 font-bold">🌐</span>
+              <div className="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <span className="text-blue-600 text-2xl">🎯</span>
               </div>
-              <h3 className="font-semibold text-gray-900 mb-1">Navigation</h3>
-              <p className="text-sm text-gray-600">Redirects, hash changes, SPA routing</p>
+              <h3 className="font-semibold text-gray-900 mb-2">Page Stability</h3>
+              <p className="text-sm text-gray-600">Navigation, network, UI changes, performance</p>
             </div>
             <div className="text-center">
-              <div className="bg-red-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
-                <span className="text-red-600 font-bold">📡</span>
+              <div className="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <span className="text-gray-600 text-2xl">🔍</span>
               </div>
-              <h3 className="font-semibold text-gray-900 mb-1">Network</h3>
-              <p className="text-sm text-gray-600">XHR bursts, failures, SSE, WebSocket</p>
+              <h3 className="font-semibold text-gray-900 mb-2">Element Detection</h3>
+              <p className="text-sm text-gray-600">Coming soon - element finding and interaction</p>
             </div>
             <div className="text-center">
-              <div className="bg-green-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
-                <span className="text-green-600 font-bold">🎨</span>
+              <div className="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <span className="text-gray-600 text-2xl">🎨</span>
               </div>
-              <h3 className="font-semibold text-gray-900 mb-1">UI Changes</h3>
-              <p className="text-sm text-gray-600">DOM churn, layout shifts, animations</p>
+              <h3 className="font-semibold text-gray-900 mb-2">UI Testing</h3>
+              <p className="text-sm text-gray-600">Coming soon - visual and interaction testing</p>
             </div>
             <div className="text-center">
-              <div className="bg-purple-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">
-                <span className="text-purple-600 font-bold">⚡</span>
+              <div className="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <span className="text-gray-600 text-2xl">⚡</span>
               </div>
-              <h3 className="font-semibold text-gray-900 mb-1">Performance</h3>
-              <p className="text-sm text-gray-600">Prefetch, cache, large assets, iframes</p>
+              <h3 className="font-semibold text-gray-900 mb-2">Performance</h3>
+              <p className="text-sm text-gray-600">Coming soon - performance and load testing</p>
             </div>
           </div>
         </div>

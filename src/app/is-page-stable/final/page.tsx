@@ -14,22 +14,22 @@ export default function FinalPage() {
           <div className="space-y-2 text-lg">
             <div className="flex items-center space-x-2">
               <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">1</span>
-              <span>/redirect3</span>
+              <span>/is-page-stable/redirect3</span>
               <span className="text-gray-500">→</span>
             </div>
             <div className="flex items-center space-x-2">
               <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">2</span>
-              <span>/redirect2</span>
+              <span>/is-page-stable/redirect2</span>
               <span className="text-gray-500">→</span>
             </div>
             <div className="flex items-center space-x-2">
               <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">3</span>
-              <span>/redirect1</span>
+              <span>/is-page-stable/redirect1</span>
               <span className="text-gray-500">→</span>
             </div>
             <div className="flex items-center space-x-2">
               <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">✓</span>
-              <span className="font-semibold">/final</span>
+              <span className="font-semibold">/is-page-stable/final</span>
             </div>
           </div>
         </div>
