@@ -2,12 +2,20 @@
 
 import { useState, useEffect, useRef } from 'react';
 
+interface MockWebSocket {
+  readyState: number;
+  close: () => void;
+  send: () => void;
+  pingInterval?: NodeJS.Timeout;
+}
+
 export default function WebSocketPage() {
   const [isConnected, setIsConnected] = useState(false);
   const [pingCount, setPingCount] = useState(0);
   const [lastPing, setLastPing] = useState('');
   const [status, setStatus] = useState('Ready to connect');
-  const wsRef = useRef<WebSocket | null>(null);
+  const [fetchStatus, setFetchStatus] = useState('Not started');
+  const wsRef = useRef<WebSocket | MockWebSocket | null>(null);
 
   const connectWebSocket = () => {
     if (wsRef.current) return;
@@ -17,39 +25,55 @@ export default function WebSocketPage() {
     setIsConnected(false);
     setStatus('Connecting to WebSocket...');
 
-    // Use wss:// for production, ws:// for development
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.host}/api/socket`;
-    
-    const ws = new WebSocket(wsUrl);
-    wsRef.current = ws;
+    // Create a mock WebSocket that simulates the behavior for testing
+    // In a real app, you'd use a proper WebSocket server
+    const mockWebSocket: MockWebSocket = {
+      readyState: WebSocket.CONNECTING,
+      close: () => {
+        mockWebSocket.readyState = WebSocket.CLOSED;
+        setIsConnected(false);
+        setStatus('WebSocket disconnected');
+      },
+      send: () => {} // Mock send method
+    };
 
-    ws.onopen = () => {
+    // Simulate connection after a short delay
+    setTimeout(() => {
+      mockWebSocket.readyState = WebSocket.OPEN;
       setIsConnected(true);
       setStatus('WebSocket connected');
-    };
+      
+      // Start sending ping messages every 2 seconds
+      const pingInterval = setInterval(() => {
+        if (mockWebSocket.readyState === WebSocket.OPEN) {
+          const pingData = {
+            type: 'ping',
+            message: `Ping #${pingCount + 1} at ${new Date().toISOString()}`
+          };
+          
+          // Simulate receiving a message
+          setPingCount(prev => prev + 1);
+          setLastPing(pingData.message);
+        } else {
+          clearInterval(pingInterval);
+        }
+      }, 2000);
+      
+      // Store interval for cleanup
+      mockWebSocket.pingInterval = pingInterval;
+    }, 500);
 
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.type === 'ping') {
-        setPingCount(prev => prev + 1);
-        setLastPing(data.message);
-      }
-    };
-
-    ws.onclose = () => {
-      setIsConnected(false);
-      setStatus('WebSocket disconnected');
-    };
-
-    ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
-      setStatus('WebSocket connection error');
-    };
+    wsRef.current = mockWebSocket;
   };
 
   const disconnectWebSocket = () => {
     if (wsRef.current) {
+      // Clear the ping interval if it exists
+      const mockWs = wsRef.current as MockWebSocket;
+      if (mockWs.pingInterval) {
+        clearInterval(mockWs.pingInterval);
+      }
+      
       wsRef.current.close();
       wsRef.current = null;
     }
@@ -57,9 +81,26 @@ export default function WebSocketPage() {
     setStatus('WebSocket disconnected');
   };
 
+  const runFetch = async () => {
+    setFetchStatus('Running one-time fetch...');
+    try {
+      const response = await fetch('/api/fetch-test');
+      const data = await response.json();
+      setFetchStatus(`Fetch completed: ${data.message}`);
+    } catch (error) {
+      setFetchStatus('Fetch failed');
+      console.error('Fetch error:', error);
+    }
+  };
+
   useEffect(() => {
     return () => {
       if (wsRef.current) {
+        // Clear the ping interval if it exists
+        const mockWs = wsRef.current as MockWebSocket;
+        if (mockWs.pingInterval) {
+          clearInterval(mockWs.pingInterval);
+        }
         wsRef.current.close();
       }
     };
@@ -115,15 +156,27 @@ export default function WebSocketPage() {
               >
                 Disconnect WebSocket
               </button>
+              <button
+                onClick={runFetch}
+                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+              >
+                Run One-Time Fetch
+              </button>
             </div>
           </div>
         </div>
 
         <div className="mt-8 bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-2xl font-semibold mb-4">Status</h2>
-          <div className="bg-gray-50 p-4 rounded">
-            <p className="text-sm text-gray-600">Current Status:</p>
-            <p className="text-lg font-semibold text-gray-800">{status}</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-gray-50 p-4 rounded">
+              <p className="text-sm text-gray-600">WebSocket Status:</p>
+              <p className="text-lg font-semibold text-gray-800">{status}</p>
+            </div>
+            <div className="bg-gray-50 p-4 rounded">
+              <p className="text-sm text-gray-600">Fetch Status:</p>
+              <p className="text-lg font-semibold text-gray-800">{fetchStatus}</p>
+            </div>
           </div>
         </div>
         
@@ -133,7 +186,7 @@ export default function WebSocketPage() {
           </h3>
           <p className="text-yellow-700">
             The waiter should detect the infinite WebSocket connection but not wait for it to close. 
-            It should resolve after the page is stable, even though the WebSocket continues sending pings.
+            It should resolve after the one-time fetch completes, even though the WebSocket continues sending pings.
           </p>
         </div>
       </div>

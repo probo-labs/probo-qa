@@ -12,9 +12,11 @@ interface RequestResult {
 export default function FailuresPage() {
   const [results, setResults] = useState<RequestResult[]>([]);
   const [isRunning, setIsRunning] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
 
   const runFailureTests = async () => {
     setIsRunning(true);
+    setIsComplete(false);
     setResults([]);
 
     const testRequests = [
@@ -74,6 +76,7 @@ export default function FailuresPage() {
 
     await Promise.allSettled(promises);
     setIsRunning(false);
+    setIsComplete(true);
   };
 
   const getStatusColor = (status: RequestResult['status']) => {
@@ -111,6 +114,12 @@ export default function FailuresPage() {
           >
             {isRunning ? 'Running Tests...' : 'Run Failure Tests'}
           </button>
+          <div className="mt-4 p-3 rounded-lg bg-gray-100">
+            <p className="text-sm text-gray-600">Test Status:</p>
+            <p className="text-lg font-semibold text-gray-800" data-testid="test-completion-status">
+              {isComplete ? '✅ All Tests Complete' : isRunning ? '⏳ Running Tests...' : '🔴 Ready to Start'}
+            </p>
+          </div>
         </div>
 
         <div className="bg-white p-6 rounded-lg shadow-md">
@@ -118,9 +127,9 @@ export default function FailuresPage() {
           {results.length === 0 ? (
             <p className="text-gray-500">Click &quot;Run Failure Tests&quot; to start testing.</p>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-4" data-testid="test-results-container">
               {results.map((result, index) => (
-                <div key={index} className="border border-gray-200 rounded-lg p-4">
+                <div key={index} className="border border-gray-200 rounded-lg p-4" data-testid={`test-result-${index}`}>
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="text-lg font-semibold">{result.url}</h3>
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(result.status)}`}>

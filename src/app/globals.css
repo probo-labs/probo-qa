@@ -12,12 +12,8 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* Remove dark mode override to prevent text visibility issues */
+/* The app uses Tailwind's built-in color system which handles contrast properly */
 
 body {
   background: var(--background);

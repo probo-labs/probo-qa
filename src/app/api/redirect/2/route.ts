@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
-  // Configurable delay - you can increase this if needed
-  const delay = 100; // 100ms delay
+  // Configurable delay - increased for testing
+  const delay = 800; // 800ms delay
   
   // Add the delay
   await new Promise(resolve => setTimeout(resolve, delay));

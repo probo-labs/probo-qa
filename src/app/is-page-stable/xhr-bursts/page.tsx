@@ -6,12 +6,14 @@ export default function XHRBurstsPage() {
   const [requestCount, setRequestCount] = useState(0);
   const [isActive, setIsActive] = useState(false);
   const [status, setStatus] = useState('Ready to start XHR bursts');
+  const [isComplete, setIsComplete] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const startBursts = () => {
     if (isActive) return;
     
     setIsActive(true);
+    setIsComplete(false);
     setRequestCount(0);
     setStatus('Starting XHR bursts every 400ms...');
     
@@ -35,6 +37,7 @@ export default function XHRBurstsPage() {
         intervalRef.current = null;
       }
       setIsActive(false);
+      setIsComplete(true);
       setStatus(`Bursts complete! Total requests: ${requestCount + 1}`);
     }, 3000);
   };
@@ -45,6 +48,7 @@ export default function XHRBurstsPage() {
       intervalRef.current = null;
     }
     setIsActive(false);
+    setIsComplete(true);
     setStatus(`Bursts stopped. Total requests: ${requestCount}`);
   };
 
@@ -82,6 +86,12 @@ export default function XHRBurstsPage() {
                 <p className="text-sm text-red-600">Active:</p>
                 <p className="text-lg font-semibold text-red-800">
                   {isActive ? '🟢 Running' : '🔴 Stopped'}
+                </p>
+              </div>
+              <div className="bg-green-100 p-4 rounded">
+                <p className="text-sm text-green-600">Completion Status:</p>
+                <p className="text-lg font-semibold text-green-800" data-testid="xhr-bursts-completion">
+                  {isComplete ? '✅ All Bursts Complete' : '⏳ In Progress'}
                 </p>
               </div>
             </div>
