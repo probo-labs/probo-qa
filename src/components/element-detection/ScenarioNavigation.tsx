@@ -5,7 +5,11 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
+
+// Lazy load sidebar to reduce initial bundle size
+const HighlighterSidebar = dynamic(() => import('./HighlighterSidebar'), { ssr: false });
 
 interface ScenarioNavigationProps {
   scenarioId: string;
@@ -29,6 +33,48 @@ export default function ScenarioNavigation({
   const router = useRouter();
   const [isResetting, setIsResetting] = useState(false);
   const [isValidating, setIsValidating] = useState(false);
+  const [hasOutputs, setHasOutputs] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(false);
+  const [metadata, setMetadata] = useState<any>(null);
+  const [highlighterAvailable, setHighlighterAvailable] = useState(true);
+  const [highlighterError, setHighlighterError] = useState('');
+
+  // Check if highlighter script is available on mount
+  useEffect(() => {
+    fetch('/api/scenarios/check-highlighter')
+      .then(r => r.json())
+      .then(data => {
+        setHighlighterAvailable(data.available);
+        if (!data.available) {
+          setHighlighterError(data.reason || 'Highlighter script not available');
+        }
+      })
+      .catch(err => {
+        console.error('Failed to check highlighter:', err);
+        setHighlighterAvailable(false);
+        setHighlighterError('Failed to check highlighter availability');
+      });
+  }, []);
+
+  // Check if outputs exist on mount
+  useEffect(() => {
+    fetch(`/api/scenarios/${scenarioId}/outputs`)
+      .then(r => r.json())
+      .then(data => {
+        setHasOutputs(data.exists);
+        if (data.exists) {
+          setMetadata(data);
+
+          // Check if we should auto-open sidebar (after regenerate)
+          if (sessionStorage.getItem('keepSidebarOpen') === 'true') {
+            setShowSidebar(true);
+            sessionStorage.removeItem('keepSidebarOpen');
+          }
+        }
+      })
+      .catch(err => console.error('Failed to check outputs:', err));
+  }, [scenarioId]);
 
   const handleReset = async () => {
     setIsResetting(true);
@@ -76,6 +122,43 @@ export default function ScenarioNavigation({
       console.error('Failed to reset test:', err);
       setIsResetting(false);
     }
+  };
+
+  const handleGenerateOutputs = async () => {
+    setIsGenerating(true);
+    try {
+      const response = await fetch(`/api/scenarios/${scenarioId}/generate-outputs`, {
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate outputs');
+      }
+
+      const data = await response.json();
+      setMetadata(data);
+      setHasOutputs(true);
+      setShowSidebar(true); // Auto-open sidebar after generation
+    } catch (err) {
+      console.error('Failed to generate outputs:', err);
+      alert('Failed to generate outputs. Check console for details.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleRegenerate = async () => {
+    const response = await fetch(`/api/scenarios/${scenarioId}/generate-outputs`, {
+      method: 'POST',
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to regenerate outputs');
+    }
+
+    const data = await response.json();
+    setMetadata(data);
+    // Sidebar stays open - no reload needed
   };
 
   const prevUrl = validationPageNav
@@ -160,6 +243,33 @@ export default function ScenarioNavigation({
         {/* Divider */}
         <div className="w-px h-3 bg-gray-300 mx-1" />
 
+        {/* Generate/View Outputs Button */}
+        {mode === 'test' && (
+          <>
+            {!hasOutputs ? (
+              <button
+                onClick={handleGenerateOutputs}
+                disabled={isGenerating || !highlighterAvailable}
+                className="text-gray-900 bg-blue-100 hover:bg-blue-200 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed px-1.5 py-0.5 rounded text-[9px] transition-colors"
+                title={highlighterAvailable ? 'Generate highlighter outputs (screenshots + JSON)' : highlighterError}
+              >
+                {isGenerating ? 'Generating...' : 'Highlight'}
+              </button>
+            ) : (
+              <button
+                onClick={() => setShowSidebar(!showSidebar)}
+                className="text-gray-900 bg-blue-100 hover:bg-blue-200 px-1.5 py-0.5 rounded text-[9px] transition-colors"
+                title="View highlighter outputs"
+              >
+                {showSidebar ? 'Hide' : 'Highlight'}
+              </button>
+            )}
+          </>
+        )}
+
+        {/* Divider */}
+        <div className="w-px h-3 bg-gray-300 mx-1" />
+
         {/* Action Button - VALIDATE or RETEST */}
         {mode === 'test' ? (
           <button
@@ -179,6 +289,17 @@ export default function ScenarioNavigation({
           </button>
         )}
       </div>
+
+      {/* Highlighter Sidebar */}
+      {hasOutputs && (
+        <HighlighterSidebar
+          scenarioId={scenarioId}
+          isOpen={showSidebar}
+          metadata={metadata}
+          onClose={() => setShowSidebar(false)}
+          onRegenerate={handleRegenerate}
+        />
+      )}
     </>
   );
 }

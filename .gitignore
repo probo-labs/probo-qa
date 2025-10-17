@@ -48,3 +48,6 @@ playwright/.cache/
 # Prisma
 prisma/dev.db
 prisma/dev.db-journal
+
+# Scenario outputs cache
+.cache/
