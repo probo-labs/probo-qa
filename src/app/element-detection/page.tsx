@@ -59,7 +59,6 @@ export default async function ElementDetectionIndex() {
       actionPerformed: action.actionPerformed as ActionType,
       elementInteracted: action.elementInteracted,
       valueFilled: action.valueFilled,
-      isCorrect: action.isCorrect,
       timestamp: action.timestamp,
       metadata: action.metadata as Record<string, unknown> | undefined,
     }));

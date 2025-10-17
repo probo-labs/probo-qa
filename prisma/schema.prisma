@@ -26,9 +26,6 @@ model ScenarioInteractionState {
   // Value for FILL actions
   valueFilled       String?
 
-  // Was this the correct interaction?
-  isCorrect         Boolean  @default(false)
-
   // Timestamp
   timestamp         DateTime @default(now())
 

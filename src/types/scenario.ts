@@ -17,7 +17,6 @@ export interface Scenario {
   labels: ScenarioLabel[];       // Formal dimension tags
 }
 
-// Recorded interaction from database
 export interface ScenarioInteraction {
   id: string;
   scenarioId: string;
@@ -25,7 +24,6 @@ export interface ScenarioInteraction {
   actionPerformed: ActionType;
   elementInteracted: string;
   valueFilled: string | null;
-  isCorrect: boolean;
   timestamp: Date;
   metadata?: Record<string, unknown>;
 }

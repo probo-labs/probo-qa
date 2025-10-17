@@ -1,99 +1,30 @@
 'use client';
 
-// Client Component for Scenario a3c9 - Sparse Landing Page
-// Minimalist SaaS landing page with 3 interactive elements
-
-import { useState } from 'react';
-
 interface ScenarioPageClientProps {
   scenarioId: string;
-  instructionHint: string;
 }
 
-export default function ScenarioPageClient({ scenarioId, instructionHint }: ScenarioPageClientProps) {
-  const handleEmailFocus = async () => {
-    // Record every focus event (no guard) to allow sequence recording
+export default function ScenarioPageClient({ scenarioId }: ScenarioPageClientProps) {
+  const recordAction = async (action: string, element: string) => {
     try {
       const response = await fetch(`/api/tests/${scenarioId}/record`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          action: 'FILL',
-          element: 'newsletter-email',
-          value: '',
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, element, value: '' }),
       });
 
       if (response.ok) {
         const data = await response.json();
-        // Dispatch event with validation data for instant UI update
-        window.dispatchEvent(new CustomEvent('probo:actionRecorded', {
-          detail: data.validation
-        }));
+        window.dispatchEvent(new CustomEvent('probo:actionRecorded', { detail: data.validation }));
       }
     } catch (error) {
       console.error('Failed to record action:', error);
     }
   };
 
-  const handleContactClick = async (e: React.MouseEvent) => {
-    e.preventDefault();
-
-    try {
-      const response = await fetch(`/api/tests/${scenarioId}/record`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          action: 'CLICK',
-          element: 'contact-link',
-          value: '',
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        // Dispatch event with validation data for instant UI update
-        window.dispatchEvent(new CustomEvent('probo:actionRecorded', {
-          detail: data.validation
-        }));
-      }
-    } catch (error) {
-      console.error('Failed to record action:', error);
-    }
-  };
-
-  const handleSubmitClick = async (e: React.MouseEvent) => {
-    e.preventDefault();
-
-    // Record every click event (no guard) to allow sequence recording
-    try {
-      const response = await fetch(`/api/tests/${scenarioId}/record`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          action: 'CLICK',
-          element: 'submit-button',
-          value: '',
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        // Dispatch event with validation data for instant UI update
-        window.dispatchEvent(new CustomEvent('probo:actionRecorded', {
-          detail: data.validation
-        }));
-      }
-    } catch (error) {
-      console.error('Failed to record action:', error);
-    }
-  };
+  const handleEmailFocus = () => recordAction('FILL', 'newsletter-email');
+  const handleContactClick = (e: React.MouseEvent) => (e.preventDefault(), recordAction('CLICK', 'contact-link'));
+  const handleSubmitClick = (e: React.MouseEvent) => (e.preventDefault(), recordAction('CLICK', 'submit-button'));
 
   return (
     <>
@@ -104,19 +35,13 @@ export default function ScenarioPageClient({ scenarioId, instructionHint }: Scen
           box-sizing: border-box;
         }
 
-        body {
+        body,
+        .page-container {
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
           min-height: 100vh;
           display: flex;
           flex-direction: column;
-        }
-
-        .page-container {
-          min-height: 100vh;
-          display: flex;
-          flex-direction: column;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
         header {
@@ -242,27 +167,19 @@ export default function ScenarioPageClient({ scenarioId, instructionHint }: Scen
       `}</style>
 
       <div className="page-container">
-        {/* Header with minimal navigation */}
         <header>
           <div className="logo">Streamline</div>
-          <a
-            href="#"
-            className="nav-link"
-            id="contact-link"
-            onClick={handleContactClick}
-          >
+          <a href="#" className="nav-link" id="contact-link" onClick={handleContactClick}>
             Contact
           </a>
         </header>
 
-        {/* Hero section */}
         <div className="hero">
           <h1>Build Better Workflows, Faster</h1>
           <p className="subtitle">
             The modern platform for teams who ship quality products.
           </p>
 
-          {/* Newsletter signup form */}
           <div className="newsletter-container">
             <h2 className="newsletter-heading">Get Early Access</h2>
             <p className="newsletter-text">
