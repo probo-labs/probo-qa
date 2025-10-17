@@ -8,8 +8,11 @@ import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 
-// Lazy load sidebar to reduce initial bundle size
+import type { TestCase, ValidationResult } from '@/types/scenario';
+
+// Lazy load sidebars to reduce initial bundle size
 const HighlighterSidebar = dynamic(() => import('./HighlighterSidebar'), { ssr: false });
+const ValidationSidebar = dynamic(() => import('./ValidationSidebar'), { ssr: false });
 
 interface ScenarioNavigationProps {
   scenarioId: string;
@@ -19,8 +22,8 @@ interface ScenarioNavigationProps {
   mode?: 'test' | 'validation'; // Determines if we show VALIDATE or RETEST
   validationPageNav?: boolean; // If true, prev/next link to validation pages
   instructionHint?: string; // Optional instruction hint to display
-  onSidebarOpen?: () => void; // Notify when sidebar opens
-  onSidebarClose?: () => void; // Notify when sidebar closes
+  scenario?: TestCase; // Optional scenario data for validation sidebar
+  validationResult?: ValidationResult; // Optional validation result for validation page
 }
 
 export default function ScenarioNavigation({
@@ -31,8 +34,8 @@ export default function ScenarioNavigation({
   mode = 'test',
   validationPageNav = false,
   instructionHint,
-  onSidebarOpen,
-  onSidebarClose
+  scenario,
+  validationResult
 }: ScenarioNavigationProps) {
   const router = useRouter();
   const [isResetting, setIsResetting] = useState(false);
@@ -40,7 +43,9 @@ export default function ScenarioNavigation({
   const [hasOutputs, setHasOutputs] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
+  const [showValidationSidebar, setShowValidationSidebar] = useState(false);
   const [metadata, setMetadata] = useState<any>(null);
+  const [validationData, setValidationData] = useState<any>(null);
   const [highlighterAvailable, setHighlighterAvailable] = useState(true);
   const [highlighterError, setHighlighterError] = useState('');
 
@@ -80,6 +85,46 @@ export default function ScenarioNavigation({
       .catch(err => console.error('Failed to check outputs:', err));
   }, [scenarioId]);
 
+  // Fetch validation result on mount and when actions are recorded
+  // Only in test mode and when scenario exists
+  useEffect(() => {
+    if (mode !== 'test' || !scenario) return;
+
+    const fetchValidation = async () => {
+      try {
+        const response = await fetch(`/api/tests/${scenarioId}/validate`);
+        if (response.ok) {
+          const result = await response.json();
+          setValidationData(result);
+        }
+      } catch (err) {
+        // Silently fail - scenario may not exist
+        console.debug('Validation not available:', err);
+      }
+    };
+
+    // Fetch immediately on mount
+    fetchValidation();
+
+    // Listen for action recorded events and use the validation data from the event
+    const handleActionRecorded = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      if (customEvent.detail) {
+        // Use validation data directly from the event (no extra fetch needed!)
+        setValidationData(customEvent.detail);
+      } else {
+        // Fallback: fetch validation if no data in event
+        fetchValidation();
+      }
+    };
+
+    window.addEventListener('probo:actionRecorded', handleActionRecorded);
+
+    return () => {
+      window.removeEventListener('probo:actionRecorded', handleActionRecorded);
+    };
+  }, [scenarioId, mode, scenario]);
+
   const handleReset = async () => {
     setIsResetting(true);
 
@@ -92,26 +137,30 @@ export default function ScenarioNavigation({
         throw new Error('Failed to reset test');
       }
 
-      // Hard reload to clear state
-      window.location.reload();
+      // Clear validation state immediately (no reload)
+      setValidationData(null);
+
+      // Fetch fresh validation (should show 0 actions)
+      const validationResponse = await fetch(`/api/tests/${scenarioId}/validate`);
+      if (validationResponse.ok) {
+        const result = await validationResponse.json();
+        setValidationData(result);
+      }
     } catch (err) {
       console.error('Failed to reset test:', err);
+    } finally {
       setIsResetting(false);
     }
   };
 
+  const handleReload = () => {
+    // Hard reload to clear all form state (filled inputs, checkboxes, etc.)
+    window.location.reload();
+  };
+
   const handleValidate = async () => {
-    setIsValidating(true);
-    try {
-      const response = await fetch(`/api/tests/${scenarioId}/validate`);
-      if (!response.ok) {
-        throw new Error('Failed to validate test');
-      }
-      router.push(`/element-detection/${scenarioId}/validation`);
-    } catch (err) {
-      console.error('Failed to validate test:', err);
-      setIsValidating(false);
-    }
+    // Just toggle validation sidebar - it will show current validation result
+    setShowValidationSidebar(!showValidationSidebar);
   };
 
   const handleRetest = async () => {
@@ -128,7 +177,8 @@ export default function ScenarioNavigation({
     }
   };
 
-  const handleGenerateOutputs = async () => {
+  // Generate/use cache (called on first open if outputs don't exist)
+  const handleGenerateOrUseCache = async (forceRegenerate = false) => {
     setIsGenerating(true);
     try {
       const response = await fetch(`/api/scenarios/${scenarioId}/generate-outputs`, {
@@ -137,7 +187,8 @@ export default function ScenarioNavigation({
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          pageUrl: window.location.href, // Tell endpoint which page to navigate to
+          pageUrl: window.location.href,
+          forceRegenerate
         }),
       });
 
@@ -148,8 +199,6 @@ export default function ScenarioNavigation({
       const data = await response.json();
       setMetadata(data);
       setHasOutputs(true);
-      setShowSidebar(true); // Auto-open sidebar after generation
-      onSidebarOpen?.(); // Notify wrapper to pin navigation
     } catch (err) {
       console.error('Failed to generate outputs:', err);
       alert('Failed to generate outputs. Check console for details.');
@@ -158,24 +207,35 @@ export default function ScenarioNavigation({
     }
   };
 
-  const handleRegenerate = async () => {
-    const response = await fetch(`/api/scenarios/${scenarioId}/generate-outputs`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        pageUrl: window.location.href, // Tell endpoint which page to navigate to
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to regenerate outputs');
+  // Handle Highlighter button click - toggle highlighter panel (close validation if open)
+  const handleHighlighterClick = () => {
+    if (showSidebar) {
+      // Already showing highlighter - close it
+      setShowSidebar(false);
+    } else {
+      // Open highlighter - close validation if open, generate/use cache if needed
+      setShowValidationSidebar(false);
+      setShowSidebar(true);
+      if (!hasOutputs) {
+        handleGenerateOrUseCache(false);
+      }
     }
+  };
 
-    const data = await response.json();
-    setMetadata(data);
-    // Sidebar stays open - no reload needed
+  // Handle Validate button click - toggle validation panel (close highlighter if open)
+  const handleValidateClick = () => {
+    if (showValidationSidebar) {
+      // Already showing validation - close it
+      setShowValidationSidebar(false);
+    } else {
+      // Open validation - close highlighter if open
+      setShowSidebar(false);
+      setShowValidationSidebar(true);
+    }
+  };
+
+  const handleRegenerate = async () => {
+    await handleGenerateOrUseCache(true); // Force regenerate
   };
 
   const prevUrl = validationPageNav
@@ -239,17 +299,6 @@ export default function ScenarioNavigation({
         {/* Divider */}
         <div className="w-px h-3 bg-gray-300 mx-1" />
 
-        {/* Show Reset only in test mode */}
-        {mode === 'test' && (
-          <button
-            onClick={handleReset}
-            disabled={isResetting}
-            className="text-gray-900 bg-gray-100 hover:bg-gray-200 disabled:bg-gray-50 disabled:text-gray-400 px-1.5 py-0.5 rounded text-[9px] transition-colors"
-          >
-            {isResetting ? '...' : 'Reset'}
-          </button>
-        )}
-
         <Link
           href="/element-detection"
           className="text-gray-900 bg-white border border-gray-300 px-1.5 py-0.5 rounded text-[9px] font-medium hover:bg-gray-50 hover:border-gray-400 transition-colors"
@@ -257,62 +306,98 @@ export default function ScenarioNavigation({
           Index
         </Link>
 
-        {/* Divider */}
-        <div className="w-px h-3 bg-gray-300 mx-1" />
-
-        {/* Generate/View Outputs Button */}
+        {/* Show action count, Reload, and Reset only in test mode */}
         {mode === 'test' && (
           <>
-            {!hasOutputs ? (
-              <button
-                onClick={handleGenerateOutputs}
-                disabled={isGenerating || !highlighterAvailable}
-                className="text-gray-900 bg-blue-100 hover:bg-blue-200 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed px-1.5 py-0.5 rounded text-[9px] transition-colors"
-                title={highlighterAvailable ? 'Generate highlighter outputs (screenshots + JSON)' : highlighterError}
-              >
-                {isGenerating ? 'Generating...' : 'Highlight'}
-              </button>
-            ) : (
-              <button
-                onClick={() => {
-                  const newState = !showSidebar;
-                  setShowSidebar(newState);
-                  if (newState) {
-                    onSidebarOpen?.();
-                  } else {
-                    onSidebarClose?.();
-                  }
-                }}
-                className="text-gray-900 bg-blue-100 hover:bg-blue-200 px-1.5 py-0.5 rounded text-[9px] transition-colors"
-                title="View highlighter outputs"
-              >
-                {showSidebar ? 'Hide' : 'Highlight'}
-              </button>
+            {/* Action count label */}
+            {validationData?.actionCount !== undefined && (
+              <span className="text-gray-600 px-1 text-[9px] font-mono">
+                {validationData.actionCount} action{validationData.actionCount !== 1 ? 's' : ''}
+              </span>
             )}
+
+            <button
+              onClick={handleReload}
+              className="text-gray-900 bg-gray-100 hover:bg-gray-200 px-1.5 py-0.5 rounded text-[9px] transition-colors"
+            >
+              Reload
+            </button>
+
+            <button
+              onClick={handleReset}
+              disabled={isResetting}
+              className="text-gray-900 bg-gray-100 hover:bg-gray-200 disabled:bg-gray-50 disabled:text-gray-400 px-1.5 py-0.5 rounded text-[9px] transition-colors"
+            >
+              {isResetting ? 'Resetting...' : 'Reset'}
+            </button>
           </>
         )}
 
         {/* Divider */}
         <div className="w-px h-3 bg-gray-300 mx-1" />
 
-        {/* Action Button - VALIDATE or RETEST */}
+        {/* Action Button - VALIDATE */}
         {mode === 'test' ? (
           <button
-            onClick={handleValidate}
-            disabled={isValidating}
-            className="text-white bg-green-600 border border-green-600 px-1.5 py-0.5 rounded text-[9px] font-medium hover:bg-green-700 hover:border-green-700 disabled:bg-green-400 disabled:border-green-400 transition-colors"
+            onClick={handleValidateClick}
+            className={`px-1.5 py-0.5 rounded text-[9px] font-medium transition-colors border ${
+              validationData?.actionCount === 0
+                ? showValidationSidebar
+                  ? 'bg-gray-700 text-white border-gray-700 hover:bg-gray-800'
+                  : 'bg-gray-600 text-white border-gray-600 hover:bg-gray-700'
+                : showValidationSidebar
+                ? validationData?.pass
+                  ? 'bg-green-700 text-white border-green-700 hover:bg-green-800'
+                  : 'bg-red-700 text-white border-red-700 hover:bg-red-800'
+                : validationData?.pass
+                ? 'bg-green-600 text-white border-green-600 hover:bg-green-700'
+                : 'bg-red-600 text-white border-red-600 hover:bg-red-700'
+            }`}
+            title={showValidationSidebar ? 'Close validation panel' : 'Open validation panel'}
           >
-            {isValidating ? 'VALIDATING...' : 'VALIDATE'}
+            VALIDATE
           </button>
         ) : (
           <button
-            onClick={handleRetest}
-            disabled={isResetting}
-            className="text-white bg-green-600 border border-green-600 px-1.5 py-0.5 rounded text-[9px] font-medium hover:bg-green-700 hover:border-green-700 disabled:bg-green-400 disabled:border-green-400 transition-colors"
+            onClick={() => setShowValidationSidebar(!showValidationSidebar)}
+            className={`px-1.5 py-0.5 rounded text-[9px] font-medium transition-colors border ${
+              validationResult?.actionCount === 0
+                ? showValidationSidebar
+                  ? 'bg-gray-700 text-white border-gray-700 hover:bg-gray-800'
+                  : 'bg-gray-600 text-white border-gray-600 hover:bg-gray-700'
+                : showValidationSidebar
+                ? validationResult?.pass
+                  ? 'bg-green-700 text-white border-green-700 hover:bg-green-800'
+                  : 'bg-red-700 text-white border-red-700 hover:bg-red-800'
+                : validationResult?.pass
+                ? 'bg-green-600 text-white border-green-600 hover:bg-green-700'
+                : 'bg-red-600 text-white border-red-600 hover:bg-red-700'
+            }`}
+            title={showValidationSidebar ? 'Close validation panel' : 'Open validation panel'}
           >
-            {isResetting ? 'RESETTING...' : 'RETEST'}
+            VALIDATE
           </button>
         )}
+
+        {/* Highlighter Button - Available in both test and validation modes */}
+        <button
+          onClick={handleHighlighterClick}
+          disabled={!highlighterAvailable}
+          className={`px-1.5 py-0.5 rounded text-[9px] transition-colors ${
+            showSidebar
+              ? 'bg-blue-600 text-white hover:bg-blue-700'
+              : 'text-gray-900 bg-blue-100 hover:bg-blue-200'
+          } disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed`}
+          title={
+            !highlighterAvailable
+              ? highlighterError
+              : showSidebar
+              ? 'Close highlighter panel'
+              : 'Open highlighter panel'
+          }
+        >
+          Highlighter
+        </button>
       </div>
 
       {/* Highlighter Sidebar */}
@@ -323,9 +408,23 @@ export default function ScenarioNavigation({
           metadata={metadata}
           onClose={() => {
             setShowSidebar(false);
-            onSidebarClose?.();
           }}
           onRegenerate={handleRegenerate}
+        />
+      )}
+
+      {/* Validation Sidebar - in test mode with fetched data, or validation mode with passed data */}
+      {((mode === 'test' && validationData && scenario) || (mode === 'validation' && validationResult && scenario)) && (
+        <ValidationSidebar
+          scenarioId={scenarioId}
+          scenario={scenario!}
+          result={mode === 'test' ? validationData : validationResult!}
+          isOpen={mode === 'test' ? showValidationSidebar : true}
+          onClose={() => {
+            if (mode === 'test') {
+              setShowValidationSidebar(false);
+            }
+          }}
         />
       )}
     </>

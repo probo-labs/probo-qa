@@ -11,16 +11,10 @@ interface ScenarioPageClientProps {
 }
 
 export default function ScenarioPageClient({ scenarioId, instructionHint }: ScenarioPageClientProps) {
-  const [emailFocused, setEmailFocused] = useState(false);
-  const [submitClicked, setSubmitClicked] = useState(false);
-
   const handleEmailFocus = async () => {
-    if (emailFocused) return;
-
-    setEmailFocused(true);
-
+    // Record every focus event (no guard) to allow sequence recording
     try {
-      await fetch(`/api/tests/${scenarioId}/record`, {
+      const response = await fetch(`/api/tests/${scenarioId}/record`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -31,10 +25,16 @@ export default function ScenarioPageClient({ scenarioId, instructionHint }: Scen
           value: '',
         }),
       });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Dispatch event with validation data for instant UI update
+        window.dispatchEvent(new CustomEvent('probo:actionRecorded', {
+          detail: data.validation
+        }));
+      }
     } catch (error) {
       console.error('Failed to record action:', error);
-      // Reset state on error to allow retry
-      setEmailFocused(false);
     }
   };
 
@@ -42,7 +42,7 @@ export default function ScenarioPageClient({ scenarioId, instructionHint }: Scen
     e.preventDefault();
 
     try {
-      await fetch(`/api/tests/${scenarioId}/record`, {
+      const response = await fetch(`/api/tests/${scenarioId}/record`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -53,6 +53,14 @@ export default function ScenarioPageClient({ scenarioId, instructionHint }: Scen
           value: '',
         }),
       });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Dispatch event with validation data for instant UI update
+        window.dispatchEvent(new CustomEvent('probo:actionRecorded', {
+          detail: data.validation
+        }));
+      }
     } catch (error) {
       console.error('Failed to record action:', error);
     }
@@ -61,11 +69,9 @@ export default function ScenarioPageClient({ scenarioId, instructionHint }: Scen
   const handleSubmitClick = async (e: React.MouseEvent) => {
     e.preventDefault();
 
-    if (submitClicked) return;
-    setSubmitClicked(true);
-
+    // Record every click event (no guard) to allow sequence recording
     try {
-      await fetch(`/api/tests/${scenarioId}/record`, {
+      const response = await fetch(`/api/tests/${scenarioId}/record`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -76,10 +82,16 @@ export default function ScenarioPageClient({ scenarioId, instructionHint }: Scen
           value: '',
         }),
       });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Dispatch event with validation data for instant UI update
+        window.dispatchEvent(new CustomEvent('probo:actionRecorded', {
+          detail: data.validation
+        }));
+      }
     } catch (error) {
       console.error('Failed to record action:', error);
-      // Reset state on error to allow retry
-      setSubmitClicked(false);
     }
   };
 

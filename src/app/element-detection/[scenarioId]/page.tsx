@@ -48,6 +48,7 @@ export default async function ScenarioPage({
         nextTestId={navContext.nextScenarioId}
         position={navContext.position}
         instructionHint={instructionText}
+        scenario={scenario}
       />
     </>
   );

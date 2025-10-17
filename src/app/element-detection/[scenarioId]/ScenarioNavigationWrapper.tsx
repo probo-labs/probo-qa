@@ -3,8 +3,9 @@
 // Wrapper that only renders navigation in DOM when hovering bottom-right corner
 // This prevents hidden elements from being detected by the highlighter
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import ScenarioNavigation from '@/components/element-detection/ScenarioNavigation';
+import type { TestCase } from '@/types/scenario';
 
 interface ScenarioNavigationWrapperProps {
   scenarioId: string;
@@ -12,6 +13,7 @@ interface ScenarioNavigationWrapperProps {
   nextTestId: string | null;
   position: string;
   instructionHint: string;
+  scenario: TestCase;
 }
 
 export default function ScenarioNavigationWrapper({
@@ -20,55 +22,47 @@ export default function ScenarioNavigationWrapper({
   nextTestId,
   position,
   instructionHint,
+  scenario,
 }: ScenarioNavigationWrapperProps) {
   const [isVisible, setIsVisible] = useState(false);
-  const [isPinned, setIsPinned] = useState(false);
-  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Listen for test automation events to show/hide navigation programmatically
+  useEffect(() => {
+    const handleShowNav = () => {
+      setIsVisible(true);
+    };
+
+    const handleHideNav = () => {
+      setIsVisible(false);
+    };
+
+    window.addEventListener('probo:showNavigation', handleShowNav);
+    window.addEventListener('probo:hideNavigation', handleHideNav);
+
+    return () => {
+      window.removeEventListener('probo:showNavigation', handleShowNav);
+      window.removeEventListener('probo:hideNavigation', handleHideNav);
+    };
+  }, []);
 
   const handleMouseEnter = () => {
-    // Cancel any pending hide
-    if (hideTimeoutRef.current) {
-      clearTimeout(hideTimeoutRef.current);
-      hideTimeoutRef.current = null;
-    }
+    // Once navbar is revealed, it stays open
     setIsVisible(true);
-  };
-
-  const handleMouseLeave = () => {
-    // Only hide if not pinned, and with 10 second delay
-    if (!isPinned) {
-      hideTimeoutRef.current = setTimeout(() => {
-        setIsVisible(false);
-        hideTimeoutRef.current = null;
-      }, 10000); // 10 seconds
-    }
-  };
-
-  const handleSidebarOpen = () => {
-    setIsPinned(true);
-  };
-
-  const handleSidebarClose = () => {
-    setIsPinned(false);
-    setIsVisible(false);
   };
 
   return (
     <>
       {/* Hover trigger - small corner area to activate */}
-      {!isVisible && !isPinned && (
+      {!isVisible && (
         <div
-          className="fixed bottom-0 right-0 w-20 h-12 z-[1000]"
+          className="fixed bottom-0 left-0 w-20 h-12 z-[1000]"
           onMouseEnter={handleMouseEnter}
         />
       )}
 
-      {/* Navigation wrapper - exact size of content when visible */}
+      {/* Navigation - stays open once revealed */}
       {isVisible && (
-        <div
-          className="fixed bottom-2.5 right-2.5 z-[1000]"
-          onMouseLeave={handleMouseLeave}
-        >
+        <div className="fixed bottom-2.5 left-2.5 z-[1000]">
           <ScenarioNavigation
             scenarioId={scenarioId}
             prevTestId={prevTestId}
@@ -76,8 +70,7 @@ export default function ScenarioNavigationWrapper({
             position={position}
             mode="test"
             instructionHint={instructionHint}
-            onSidebarOpen={handleSidebarOpen}
-            onSidebarClose={handleSidebarClose}
+            scenario={scenario}
           />
         </div>
       )}

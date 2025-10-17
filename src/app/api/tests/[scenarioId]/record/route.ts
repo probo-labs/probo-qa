@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getSessionId } from '@/lib/session';
 import { getScenario } from '@/lib/scenarios';
+import { validateAndUpdateScenario } from '@/lib/scenario-validation';
 import type { ActionType } from '@/types/scenario';
 
 interface RecordRequestBody {
@@ -61,7 +62,13 @@ export async function POST(
       },
     });
 
-    return NextResponse.json({ success: true });
+    // Validate and return the updated validation result
+    const validationResult = await validateAndUpdateScenario(scenarioId, sessionId);
+
+    return NextResponse.json({
+      success: true,
+      validation: validationResult
+    });
   } catch (error) {
     console.error('Error recording action:', error);
     return NextResponse.json(

@@ -86,10 +86,17 @@ test.describe.serial('Negative Tests - Failure Detection', () => {
     // Navigate and perform wrong action
     await performWrongAction(page, baseURL, SCENARIO_ID, '#submit-button');
 
-    // Go to validation page
+    // Programmatically show navigation (for test automation)
+    await page.evaluate(() => {
+      window.dispatchEvent(new Event('probo:showNavigation'));
+    });
+
+    // Wait for validation button (now shows VALIDATE) and click it
+    await page.waitForSelector('button:has-text("VALIDATE")', { state: 'visible', timeout: 10000 });
     await page.click('button:has-text("VALIDATE")');
-    await page.waitForURL(`**/element-detection/${SCENARIO_ID}/validation`);
-    await page.waitForLoadState('networkidle');
+
+    // Wait for validation sidebar to appear
+    await page.waitForSelector('[data-test-result]', { state: 'visible', timeout: 10000 });
 
     // Check that data-test-result attribute is "fail"
     const resultAttr = await page.getAttribute('[data-test-result]', 'data-test-result');

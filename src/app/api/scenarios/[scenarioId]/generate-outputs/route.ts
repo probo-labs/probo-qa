@@ -16,7 +16,44 @@ export async function POST(
   const cacheDir = process.env.SCENARIO_CACHE_DIR || '.cache/scenarios';
   const scenarioDir = join(process.cwd(), cacheDir, scenarioId);
 
+  // Parse request body to check if we should force regeneration
+  const body = await request.json().catch(() => ({}));
+  const forceRegenerate = body.forceRegenerate === true;
+
   try {
+    // Check if cache exists (all required files)
+    if (!forceRegenerate) {
+      const requiredFiles = [
+        'metadata.json',
+        'base.png',
+        'clickable.png',
+        'fillable.png',
+        'selectable.png',
+        'non-interactive.png',
+        'candidates.json'
+      ];
+
+      const { existsSync, statSync } = await import('fs');
+      const allFilesExist = requiredFiles.every(file =>
+        existsSync(join(scenarioDir, file))
+      );
+
+      if (allFilesExist) {
+        // Cache exists - return cached metadata
+        const metadataPath = join(scenarioDir, 'metadata.json');
+        const metadata = JSON.parse(readFileSync(metadataPath, 'utf8'));
+        const stats = statSync(metadataPath);
+
+        return NextResponse.json({
+          success: true,
+          scenarioId,
+          cached: true,
+          ...metadata,
+          generatedAt: stats.mtime.getTime() // Use filesystem timestamp
+        });
+      }
+    }
+
     // Create cache directory
     mkdirSync(scenarioDir, { recursive: true });
 
@@ -38,7 +75,6 @@ export async function POST(
     });
 
     // Navigate to scenario page - check if pageUrl is provided in body, otherwise use default
-    const body = await request.json().catch(() => ({}));
     const requestUrl = new URL(request.url);
     const baseUrl = `${requestUrl.protocol}//${requestUrl.host}`;
     const scenarioUrl = body.pageUrl || `${baseUrl}/element-detection/${scenarioId}`;

@@ -70,35 +70,22 @@ export default function HighlighterSidebar({
       {/* Sidebar */}
       <div
         className={`
-          fixed right-0 top-0 h-full w-80 bg-white shadow-2xl z-[60]
+          fixed right-0 top-0 h-full w-[480px] bg-white shadow-2xl z-[60]
           transform transition-transform duration-300 ease-in-out
           ${isOpen ? 'translate-x-0' : 'translate-x-full'}
         `}
       >
         {/* Header */}
-        <div className="p-4 border-b bg-gray-50">
-          <div className="flex justify-between items-center mb-2">
-            <h3 className="font-bold text-sm">Highlighter Outputs</h3>
-            <button
-              onClick={onClose}
-              className="text-gray-500 hover:text-gray-700 text-xl leading-none"
-            >
-              ✕
-            </button>
-          </div>
-
-          {/* Cache info and regenerate button */}
-          <div className="flex items-center justify-between text-xs">
-            <span className="text-gray-500">
+        <div className="p-3 border-b bg-gray-50">
+          <div className="flex justify-between items-center">
+            <span className="text-gray-500 text-xs">
               Cached • {timeAgo()}
             </span>
             <button
-              onClick={handleRegenerate}
-              disabled={isRegenerating}
-              className="text-blue-600 hover:text-blue-800 disabled:text-gray-400 disabled:cursor-not-allowed"
-              title="Rerun highlighter"
+              onClick={onClose}
+              className="text-gray-500 hover:text-gray-700 text-lg leading-none"
             >
-              {isRegenerating ? 'Highlighting...' : '↻ Rerun Highlight'}
+              ✕
             </button>
           </div>
         </div>
@@ -124,7 +111,7 @@ export default function HighlighterSidebar({
         </div>
 
         {/* Thumbnail Gallery */}
-        <div className="p-3 space-y-2 overflow-y-auto h-[calc(100vh-180px)]">
+        <div className="p-3 space-y-2 overflow-y-auto h-[calc(100vh-220px)]">
           <Thumbnail
             label="Base (no highlights)"
             src={imageUrl('base.png')}
@@ -163,6 +150,18 @@ export default function HighlighterSidebar({
             <div className="text-xs font-medium text-gray-900">📄 Candidates JSON</div>
             <div className="text-xs text-gray-500 mt-1">Click to view full data</div>
           </div>
+        </div>
+
+        {/* Footer - Regenerate Button */}
+        <div className="absolute bottom-0 left-0 right-0 p-3 bg-gray-50 border-t">
+          <button
+            onClick={handleRegenerate}
+            disabled={isRegenerating}
+            className="w-full text-blue-600 bg-white hover:bg-blue-50 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed px-3 py-2 rounded border border-blue-200 text-sm font-medium transition-colors"
+            title="Rerun highlighter to regenerate all outputs"
+          >
+            {isRegenerating ? 'Highlighting...' : '↻ Rerun Highlighter'}
+          </button>
         </div>
       </div>
 

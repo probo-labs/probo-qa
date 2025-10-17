@@ -1,10 +1,9 @@
 // Validation Results Page
-// Shows pass/fail status for test
+// Shows pass/fail status in sidebar
 
 import { getSessionId } from '@/lib/session';
 import { getScenario, getNavigationContext } from '@/lib/scenarios';
 import { validateAndUpdateScenario } from '@/lib/scenario-validation';
-import ValidationResult from '@/components/element-detection/ValidationResult';
 import ScenarioNavigation from '@/components/element-detection/ScenarioNavigation';
 import { notFound } from 'next/navigation';
 
@@ -30,18 +29,9 @@ export default async function ValidationPage({
   const result = await validateAndUpdateScenario(scenarioId, sessionId);
 
   return (
-    <div className="min-h-screen bg-[#fafafa] py-5">
-      <ValidationResult
-        scenarioId={scenarioId}
-        scenario={test}
-        result={result}
-        prevTestId={navContext.prevTestId}
-        nextTestId={navContext.nextTestId}
-        position={navContext.position}
-      />
-
-      {/* Navigation - Bottom Right */}
-      <div className="fixed bottom-2.5 right-2.5 z-[1000]">
+    <div className="min-h-screen bg-[#fafafa]">
+      {/* Navigation - Bottom Left */}
+      <div className="fixed bottom-2.5 left-2.5 z-[1000]">
         <ScenarioNavigation
           scenarioId={scenarioId}
           prevTestId={navContext.prevTestId}
@@ -49,6 +39,8 @@ export default async function ValidationPage({
           position={navContext.position}
           mode="validation"
           validationPageNav={true}
+          scenario={test}
+          validationResult={result}
         />
       </div>
     </div>

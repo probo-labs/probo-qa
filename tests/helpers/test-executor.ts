@@ -59,20 +59,27 @@ export async function validateTest(
   page: Page,
   scenarioId: string
 ): Promise<boolean> {
-  // Click VALIDATE button
+  // Programmatically show navigation (for test automation)
+  await page.evaluate(() => {
+    window.dispatchEvent(new Event('probo:showNavigation'));
+  });
+
+  // Wait for validation button to appear (now always shows "VALIDATE")
+  await page.waitForSelector('button:has-text("VALIDATE")', { state: 'visible', timeout: 10000 });
+
+  // Click validation button to open sidebar
   await page.click('button:has-text("VALIDATE")');
 
-  // Wait for navigation to validation page
-  await page.waitForURL(`**/element-detection/${scenarioId}/validation`);
-  await page.waitForLoadState('networkidle');
+  // Wait for validation sidebar to appear
+  await page.waitForSelector('[data-test-result]', { state: 'visible', timeout: 10000 });
 
-  // Check data-test-result attribute
+  // Check data-test-result attribute in the sidebar
   const resultElement = page.locator('[data-test-result]');
   const result = await resultElement.getAttribute('data-test-result');
 
   // Ensure element was found
   if (result === null) {
-    throw new Error('Validation result element [data-test-result] not found on page');
+    throw new Error('Validation result element [data-test-result] not found in sidebar');
   }
 
   return result === 'pass';
