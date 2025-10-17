@@ -2,9 +2,9 @@
 // Clean test page with no hints - records user interactions
 
 import { getScenario, getNavigationContext } from '@/lib/scenarios';
-import ScenarioNavigation from '@/components/element-detection/ScenarioNavigation';
 import { notFound } from 'next/navigation';
 import ScenarioPageClient from './ScenarioPageClient';
+import ScenarioNavigationWrapper from './ScenarioNavigationWrapper';
 
 export default async function ScenarioPage({
   params,
@@ -38,20 +38,17 @@ export default async function ScenarioPage({
 
   return (
     <>
-      {/* Scenario Content */}
+      {/* Scenario Content - Clean page with no navigation */}
       <ScenarioPageClient scenarioId={scenarioId} instructionHint={instructionText} />
 
-      {/* Test Controls - Bottom Right */}
-      <div className="fixed bottom-2.5 right-2.5 z-[1000]">
-        <ScenarioNavigation
-          scenarioId={scenarioId}
-          prevScenarioId={navContext.prevScenarioId}
-          nextScenarioId={navContext.nextScenarioId}
-          position={navContext.position}
-          mode="test"
-          instructionHint={instructionText}
-        />
-      </div>
+      {/* Test Controls - Only rendered in DOM on hover */}
+      <ScenarioNavigationWrapper
+        scenarioId={scenarioId}
+        prevTestId={navContext.prevScenarioId}
+        nextTestId={navContext.nextScenarioId}
+        position={navContext.position}
+        instructionHint={instructionText}
+      />
     </>
   );
 }

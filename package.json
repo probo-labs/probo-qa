@@ -13,7 +13,6 @@
   "dependencies": {
     "@prisma/client": "^6.17.1",
     "next": "15.5.3",
-    "playwright": "^1.56.1",
     "prisma": "^6.17.1",
     "react": "19.1.0",
     "react-dom": "19.1.0"
@@ -21,6 +20,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@playwright/test": "^1.56.0",
+    "playwright": "^1.56.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

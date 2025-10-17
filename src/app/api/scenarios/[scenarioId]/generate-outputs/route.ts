@@ -37,10 +37,11 @@ export async function POST(
       viewport: { width: 1920, height: 1080 }
     });
 
-    // Navigate to scenario page - use request URL to detect host and port
+    // Navigate to scenario page - check if pageUrl is provided in body, otherwise use default
+    const body = await request.json().catch(() => ({}));
     const requestUrl = new URL(request.url);
     const baseUrl = `${requestUrl.protocol}//${requestUrl.host}`;
-    const scenarioUrl = `${baseUrl}/element-detection/${scenarioId}`;
+    const scenarioUrl = body.pageUrl || `${baseUrl}/element-detection/${scenarioId}`;
 
     console.log(`[Generate Outputs] Navigating to: ${scenarioUrl}`);
 

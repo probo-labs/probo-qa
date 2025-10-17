@@ -19,6 +19,8 @@ interface ScenarioNavigationProps {
   mode?: 'test' | 'validation'; // Determines if we show VALIDATE or RETEST
   validationPageNav?: boolean; // If true, prev/next link to validation pages
   instructionHint?: string; // Optional instruction hint to display
+  onSidebarOpen?: () => void; // Notify when sidebar opens
+  onSidebarClose?: () => void; // Notify when sidebar closes
 }
 
 export default function ScenarioNavigation({
@@ -28,7 +30,9 @@ export default function ScenarioNavigation({
   position,
   mode = 'test',
   validationPageNav = false,
-  instructionHint
+  instructionHint,
+  onSidebarOpen,
+  onSidebarClose
 }: ScenarioNavigationProps) {
   const router = useRouter();
   const [isResetting, setIsResetting] = useState(false);
@@ -129,6 +133,12 @@ export default function ScenarioNavigation({
     try {
       const response = await fetch(`/api/scenarios/${scenarioId}/generate-outputs`, {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          pageUrl: window.location.href, // Tell endpoint which page to navigate to
+        }),
       });
 
       if (!response.ok) {
@@ -139,6 +149,7 @@ export default function ScenarioNavigation({
       setMetadata(data);
       setHasOutputs(true);
       setShowSidebar(true); // Auto-open sidebar after generation
+      onSidebarOpen?.(); // Notify wrapper to pin navigation
     } catch (err) {
       console.error('Failed to generate outputs:', err);
       alert('Failed to generate outputs. Check console for details.');
@@ -150,6 +161,12 @@ export default function ScenarioNavigation({
   const handleRegenerate = async () => {
     const response = await fetch(`/api/scenarios/${scenarioId}/generate-outputs`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        pageUrl: window.location.href, // Tell endpoint which page to navigate to
+      }),
     });
 
     if (!response.ok) {
@@ -257,7 +274,15 @@ export default function ScenarioNavigation({
               </button>
             ) : (
               <button
-                onClick={() => setShowSidebar(!showSidebar)}
+                onClick={() => {
+                  const newState = !showSidebar;
+                  setShowSidebar(newState);
+                  if (newState) {
+                    onSidebarOpen?.();
+                  } else {
+                    onSidebarClose?.();
+                  }
+                }}
                 className="text-gray-900 bg-blue-100 hover:bg-blue-200 px-1.5 py-0.5 rounded text-[9px] transition-colors"
                 title="View highlighter outputs"
               >
@@ -296,7 +321,10 @@ export default function ScenarioNavigation({
           scenarioId={scenarioId}
           isOpen={showSidebar}
           metadata={metadata}
-          onClose={() => setShowSidebar(false)}
+          onClose={() => {
+            setShowSidebar(false);
+            onSidebarClose?.();
+          }}
           onRegenerate={handleRegenerate}
         />
       )}
