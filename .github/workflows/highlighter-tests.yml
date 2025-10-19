@@ -10,14 +10,13 @@ jobs:
   highlighter-tests:
     runs-on: windows-latest
     timeout-minutes: 15
-    env:
-      HIGHLIGHTER_SCRIPT_PATH: node_modules/@probolabs/highlighter/dist/probolabs.umd.js
-      SCENARIO_CACHE_DIR: .cache/scenarios
-      DATABASE_URL: file:./test.db
 
     steps:
       - name: Checkout probo-qa
         uses: actions/checkout@v4
+
+      - name: Setup CI environment
+        run: cp .env.ci .env
 
       - name: Enable Corepack
         run: corepack enable
