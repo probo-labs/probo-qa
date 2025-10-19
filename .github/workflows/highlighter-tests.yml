@@ -57,8 +57,21 @@ jobs:
       - name: Setup database
         run: pnpm exec prisma generate && pnpm exec prisma db push
 
+      - name: Clear Next.js cache
+        run: rm -rf .next
+
+      - name: Verify environment before tests
+        run: |
+          echo "Contents of .env:"
+          cat .env
+          echo ""
+          echo "Highlighter bundle exists:"
+          ls -lh node_modules/@probolabs/highlighter/dist/probolabs.umd.js
+
       - name: Run highlighter tests
-        run: pnpm test tests/specs/highlighter.spec.ts
+        run: |
+          export $(cat .env | xargs)
+          pnpm test tests/specs/highlighter.spec.ts
         env:
           CI: true
           PORT: 3000
