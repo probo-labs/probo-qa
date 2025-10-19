@@ -30,19 +30,23 @@ export default function ValidationSidebar({
       `}
     >
       {/* Header */}
-      <div className="p-3 border-b bg-gray-50">
+      <div className={`p-3 border-b ${
+        status === 'pass' ? 'bg-green-600' : status === 'fail' ? 'bg-red-600' : 'bg-gray-100'
+      }`}>
         <div className="flex justify-between items-center">
           <div
             data-test-result={status}
             className={`font-mono text-sm font-bold uppercase ${
-              status === 'pass' ? 'text-green-600' : status === 'fail' ? 'text-red-600' : 'text-gray-600'
+              status === 'pass' || status === 'fail' ? 'text-white' : 'text-gray-900'
             }`}
           >
             {status === 'pass' ? 'SUCCESS' : status === 'fail' ? 'FAIL' : 'PENDING'}
           </div>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 text-lg leading-none"
+            className={`text-lg leading-none ${
+              status === 'pass' || status === 'fail' ? 'text-white hover:text-gray-200' : 'text-gray-500 hover:text-gray-700'
+            }`}
           >
             ✕
           </button>
