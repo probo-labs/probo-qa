@@ -4,6 +4,7 @@
 // Displays thumbnails of highlighter outputs (screenshots + JSON)
 
 import { useState } from 'react';
+import Image from 'next/image';
 import ExpandedViewModal from './ExpandedViewModal';
 
 interface HighlighterSidebarProps {
@@ -193,11 +194,15 @@ function Thumbnail({
       className="border rounded overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
       onClick={onClick}
     >
-      <img
-        src={src}
-        alt={label}
-        className="w-full h-24 object-cover bg-gray-100"
-      />
+      <div className="relative w-full h-24 bg-gray-100">
+        <Image
+          src={src}
+          alt={label}
+          fill
+          className="object-cover"
+          unoptimized
+        />
+      </div>
       <div className="p-2 text-xs font-medium bg-white border-t">{label}</div>
     </div>
   );

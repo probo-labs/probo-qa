@@ -4,15 +4,17 @@
 // Shows full-size images or JSON data
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 // Simple collapsible JSON viewer component
 function JsonViewer({
   data,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   name = 'root',
   depth = 0,
   globalCollapsed
 }: {
-  data: any;
+  data: unknown;
   name?: string;
   depth?: number;
   globalCollapsed?: boolean;
@@ -32,7 +34,7 @@ function JsonViewer({
   const type = typeof data;
 
   if (type === 'string') {
-    return <span className="text-green-400">&quot;{data}&quot;</span>;
+    return <span className="text-green-400">&quot;{data as string}&quot;</span>;
   }
 
   if (type === 'number' || type === 'boolean') {
@@ -66,7 +68,8 @@ function JsonViewer({
   }
 
   if (type === 'object') {
-    const keys = Object.keys(data);
+    const objData = data as Record<string, unknown>;
+    const keys = Object.keys(objData);
     if (keys.length === 0) return <span className="text-gray-400">{'{}'}</span>;
 
     return (
@@ -83,7 +86,7 @@ function JsonViewer({
             {keys.map((key) => (
               <div key={key}>
                 <span className="text-purple-400">{key}: </span>
-                <JsonViewer data={data[key]} name={key} depth={depth + 1} globalCollapsed={globalCollapsed} />
+                <JsonViewer data={objData[key]} name={key} depth={depth + 1} globalCollapsed={globalCollapsed} />
               </div>
             ))}
           </div>
@@ -108,7 +111,7 @@ export default function ExpandedViewModal({
   timestamp,
   onClose
 }: ExpandedViewModalProps) {
-  const [jsonData, setJsonData] = useState<any>(null);
+  const [jsonData, setJsonData] = useState<unknown>(null);
   const [globalCollapsed, setGlobalCollapsed] = useState<boolean | undefined>(undefined);
   const isJson = filename === 'candidates.json';
   const url = `/api/scenarios/${scenarioId}/outputs/${filename}?t=${timestamp}`;
@@ -167,11 +170,15 @@ export default function ExpandedViewModal({
               {jsonData ? <JsonViewer data={jsonData} globalCollapsed={globalCollapsed} /> : <span className="text-gray-400">Loading...</span>}
             </div>
           ) : (
-            <img
-              src={url}
-              alt={filename}
-              className="max-w-full h-auto mx-auto rounded"
-            />
+            <div className="relative w-full min-h-[400px]">
+              <Image
+                src={url}
+                alt={filename}
+                fill
+                className="object-contain rounded"
+                unoptimized
+              />
+            </div>
           )}
         </div>
       </div>

@@ -13,11 +13,9 @@ interface ScenarioControlsProps {
 export default function ScenarioControls({ scenarioId }: ScenarioControlsProps) {
   const router = useRouter();
   const [isValidating, setIsValidating] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const handleValidate = async () => {
     setIsValidating(true);
-    setError(null);
 
     try {
       const response = await fetch(`/api/tests/${scenarioId}/validate`);
@@ -26,10 +24,9 @@ export default function ScenarioControls({ scenarioId }: ScenarioControlsProps) 
         throw new Error('Failed to validate test');
       }
 
-      // Redirect to validation page
       router.push(`/element-detection/${scenarioId}/validation`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Validation failed');
+      console.error('Validation failed:', err);
       setIsValidating(false);
     }
   };

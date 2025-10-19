@@ -20,8 +20,7 @@ export async function GET(
 ) {
   const { scenarioId, filename } = await params;
 
-  // Security: Only allow specific filenames
-  if (!ALLOWED_FILES.includes(filename as any)) {
+  if (!ALLOWED_FILES.includes(filename as typeof ALLOWED_FILES[number])) {
     return NextResponse.json(
       { error: 'Invalid filename' },
       { status: 400 }

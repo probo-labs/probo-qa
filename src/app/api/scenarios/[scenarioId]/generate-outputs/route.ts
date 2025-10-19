@@ -6,7 +6,32 @@ import { writeFileSync, mkdirSync, readFileSync } from 'fs';
 import { join, resolve } from 'path';
 import { NextRequest, NextResponse } from 'next/server';
 
-export const maxDuration = 60; // 60 seconds timeout for Playwright operations
+interface ProboLabsWindow extends Window {
+  ProboLabs?: {
+    ElementTag: Record<string, string>;
+    highlight: {
+      generateJSON: () => Promise<unknown>;
+      execute: (elementTypes: string[]) => void;
+      unexecute: () => void;
+    };
+    findElements: (elementType: string) => Promise<Array<{ element: Element; [key: string]: unknown }>>;
+  };
+}
+
+declare let window: ProboLabsWindow;
+
+interface CandidatesJson {
+  viewport: {
+    width: number;
+    height: number;
+    documentWidth: number;
+    documentHeight: number;
+    timestamp: string;
+  };
+  [key: string]: unknown;
+}
+
+export const maxDuration = 60;
 
 export async function POST(
   request: NextRequest,
@@ -98,29 +123,27 @@ export async function POST(
 
     // Wait for ProboLabs to be available
     await page.waitForFunction(() => {
-      return typeof (window as any).ProboLabs?.highlight?.generateJSON === 'function';
+      return typeof window.ProboLabs?.highlight?.generateJSON === 'function';
     }, { timeout: 5000 });
 
     // Generate JSON - need to handle this differently because generateJSON has issues with React elements
     // Get the raw data first, then manually serialize
-    const candidatesJson = await page.evaluate(async () => {
-      const json: any = {};
-
-      // Capture viewport
-      json.viewport = {
-        width: window.innerWidth,
-        height: window.innerHeight,
-        documentWidth: document.documentElement.clientWidth,
-        documentHeight: document.documentElement.clientHeight,
-        timestamp: new Date().toISOString()
+    const candidatesJson = await page.evaluate(async (): Promise<CandidatesJson> => {
+      const json: CandidatesJson = {
+        viewport: {
+          width: window.innerWidth,
+          height: window.innerHeight,
+          documentWidth: document.documentElement.clientWidth,
+          documentHeight: document.documentElement.clientHeight,
+          timestamp: new Date().toISOString()
+        }
       };
 
-      // Get elements for each type and strip the 'element' property
-      const ElementTag = (window as any).ProboLabs.ElementTag;
+      const ElementTag = window.ProboLabs!.ElementTag;
       for (const elementType of Object.values(ElementTag)) {
-        const elements = await (window as any).ProboLabs.findElements(elementType);
-        // Strip out the 'element' property which causes circular reference issues
-        json[elementType as string] = elements.map(({element, ...rest}: any) => rest);
+        const elements = await window.ProboLabs!.findElements(elementType);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        json[elementType as string] = elements.map(({ element: _, ...rest }) => rest);
       }
 
       return json;
@@ -148,31 +171,27 @@ export async function POST(
     ];
 
     for (const { type, file } of elementTypes) {
-      // Highlight elements of this type
       await page.evaluate((elementType) => {
-        (window as any).ProboLabs.highlight.execute([elementType]);
+        window.ProboLabs!.highlight.execute([elementType]);
       }, type);
 
-      // Take screenshot
       await page.screenshot({
         path: join(scenarioDir, file),
         fullPage: true
       });
 
-      // Remove highlights
       await page.evaluate(() => {
-        (window as any).ProboLabs.highlight.unexecute();
+        window.ProboLabs!.highlight.unexecute();
       });
     }
 
     await browser.close();
 
-    // Calculate stats
     const stats = {
-      clickableCount: candidatesJson.CLICKABLE?.length || 0,
-      fillableCount: candidatesJson.FILLABLE?.length || 0,
-      selectableCount: candidatesJson.SELECTABLE?.length || 0,
-      nonInteractiveCount: candidatesJson.NON_INTERACTIVE_ELEMENT?.length || 0,
+      clickableCount: (candidatesJson.CLICKABLE as unknown[])?.length || 0,
+      fillableCount: (candidatesJson.FILLABLE as unknown[])?.length || 0,
+      selectableCount: (candidatesJson.SELECTABLE as unknown[])?.length || 0,
+      nonInteractiveCount: (candidatesJson.NON_INTERACTIVE_ELEMENT as unknown[])?.length || 0,
     };
 
     // Save metadata

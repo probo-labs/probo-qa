@@ -7,7 +7,41 @@ on:
     branches: [main, master]
 
 jobs:
-  tests:
+  # Job 1: Build smoke tests (fail fast, no server)
+  build-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Setup database
+        run: pnpm exec prisma generate && pnpm exec prisma db push
+        env:
+          DATABASE_URL: file:./test.db
+
+      - name: Run build smoke tests
+        run: pnpm test:build
+        env:
+          DATABASE_URL: file:./test.db
+          CI: true
+
+  # Job 2: Functional tests (with dev server, after build tests pass)
+  functional-tests:
+    needs: build-tests
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -35,7 +69,7 @@ jobs:
         env:
           DATABASE_URL: file:./test.db
 
-      - name: Run tests
+      - name: Run functional tests
         run: pnpm test
         env:
           DATABASE_URL: file:./test.db

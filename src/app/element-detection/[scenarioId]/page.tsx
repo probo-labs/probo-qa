@@ -39,7 +39,7 @@ export default async function ScenarioPage({
   return (
     <>
       {/* Scenario Content - Clean page with no navigation */}
-      <ScenarioPageClient scenarioId={scenarioId} instructionHint={instructionText} />
+      <ScenarioPageClient scenarioId={scenarioId} />
 
       {/* Test Controls - Only rendered in DOM on hover */}
       <ScenarioNavigationWrapper

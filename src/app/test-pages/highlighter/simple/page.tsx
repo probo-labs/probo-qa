@@ -63,6 +63,7 @@ export default function SimpleHighlighterTestPage() {
         <div className="bg-gray-100 p-4 rounded">
           <span>A div with some content</span>
         </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect width='100' height='100' fill='%23ddd'/%3E%3C/svg%3E" alt="Test image" className="mt-4" />
       </div>
       </div>

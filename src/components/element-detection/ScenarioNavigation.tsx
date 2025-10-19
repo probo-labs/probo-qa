@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import type { TestCase, ValidationResult } from '@/types/scenario';
+import type { Scenario, ValidationResult } from '@/types/scenario';
 
 const HighlighterSidebar = dynamic(() => import('./HighlighterSidebar'), { ssr: false });
 const ValidationSidebar = dynamic(() => import('./ValidationSidebar'), { ssr: false });
@@ -16,13 +16,19 @@ interface ScenarioNavigationProps {
   mode?: 'test' | 'validation';
   validationPageNav?: boolean;
   instructionHint?: string;
-  scenario?: TestCase;
+  scenario?: Scenario;
   validationResult?: ValidationResult;
 }
 
 interface MetadataType {
   exists: boolean;
-  [key: string]: any;
+  generatedAt: number;
+  stats: {
+    clickableCount: number;
+    fillableCount: number;
+    selectableCount: number;
+    nonInteractiveCount: number;
+  };
 }
 
 const SIDEBAR_STORAGE_KEY = 'keepSidebarOpen';
@@ -124,7 +130,11 @@ export default function ScenarioNavigation({
 
     const handleActionRecorded = (event: Event) => {
       const customEvent = event as CustomEvent;
-      customEvent.detail ? setValidationData(customEvent.detail) : fetchValidation();
+      if (customEvent.detail) {
+        setValidationData(customEvent.detail);
+      } else {
+        fetchValidation();
+      }
     };
 
     window.addEventListener('probo:actionRecorded', handleActionRecorded);

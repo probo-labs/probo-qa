@@ -78,7 +78,7 @@ export default async function ElementDetectionIndex() {
     <div className="min-h-screen bg-[#fafafa] p-5">
       <div className="max-w-6xl mx-auto">
         {/* Header with Reset All button */}
-        <IndexHeader totalTests={totalTests} />
+        <IndexHeader />
 
         {/* Tests grouped by density */}
         {densityOrder.map((density) => {

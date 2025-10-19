@@ -4,18 +4,18 @@
 // Displays pass/fail status and recorded actions
 // Styled to match Django validation page with monospace aesthetic
 
-import type { ValidationResult as ValidationResultType, TestCase } from '@/types/scenario';
+import type { ValidationResult as ValidationResultType, Scenario } from '@/types/scenario';
 
 interface ValidationResultProps {
   scenarioId: string;
-  scenario: TestCase;
+  scenario: Scenario;
   result: ValidationResultType;
   prevTestId?: string | null;
   nextTestId?: string | null;
   position?: string;
 }
 
-export default function ValidationResult({ scenarioId, scenario, result }: ValidationResultProps) {
+export default function ValidationResult({ scenario, result }: ValidationResultProps) {
   const { pass, actions, actionCount } = result;
 
   return (
@@ -70,7 +70,7 @@ export default function ValidationResult({ scenarioId, scenario, result }: Valid
                   {' '}
                   {action.elementInteracted}
                   {action.valueFilled && (
-                    <span className="text-gray-500"> = "{action.valueFilled}"</span>
+                    <span className="text-gray-500"> = &quot;{action.valueFilled}&quot;</span>
                   )}
                 </div>
               );
@@ -103,8 +103,8 @@ export default function ValidationResult({ scenarioId, scenario, result }: Valid
         </div>
         <div className="bg-gray-50 border border-gray-200 p-3 font-mono text-xs text-gray-700 space-y-1">
           <div>✓ Check: actions.length === 1</div>
-          <div>✓ Check: actions[0].actionPerformed === "{scenario.expectedAction}"</div>
-          <div>✓ Check: actions[0].elementInteracted === "{scenario.expectedTarget}"</div>
+          <div>✓ Check: actions[0].actionPerformed === &quot;{scenario.expectedAction}&quot;</div>
+          <div>✓ Check: actions[0].elementInteracted === &quot;{scenario.expectedTarget}&quot;</div>
           <div className="pt-1.5 border-t border-gray-300 mt-2">
             Result: <span className={pass ? 'text-green-600 font-bold' : 'text-red-600 font-bold'}>
               {pass ? 'PASS' : 'FAIL'}

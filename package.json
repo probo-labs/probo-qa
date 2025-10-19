@@ -8,7 +8,9 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "test": "playwright test --reporter=list"
+    "test": "playwright test --grep-invert 'Build Smoke Tests' --reporter=list",
+    "test:build": "playwright test --config=playwright.build.config.ts --grep 'Build Smoke Tests' --reporter=list",
+    "test:all": "pnpm test:build && pnpm test"
   },
   "dependencies": {
     "@prisma/client": "^6.17.1",

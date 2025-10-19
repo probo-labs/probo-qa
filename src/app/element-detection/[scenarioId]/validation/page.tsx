@@ -34,8 +34,8 @@ export default async function ValidationPage({
       <div className="fixed bottom-2.5 left-2.5 z-[1000]">
         <ScenarioNavigation
           scenarioId={scenarioId}
-          prevTestId={navContext.prevTestId}
-          nextTestId={navContext.nextTestId}
+          prevTestId={navContext.prevScenarioId}
+          nextTestId={navContext.nextScenarioId}
           position={navContext.position}
           mode="validation"
           validationPageNav={true}

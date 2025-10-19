@@ -2,10 +2,10 @@
 // Card for displaying test in index page
 
 import Link from 'next/link';
-import type { TestCase } from '@/types/scenario';
+import type { Scenario } from '@/types/scenario';
 
 interface ScenarioCardProps {
-  test: TestCase;
+  test: Scenario;
   index?: number;
 }
 
@@ -42,7 +42,7 @@ export default function ScenarioCard({ test, index }: ScenarioCardProps) {
           {/* Labels */}
           <div className="flex flex-wrap gap-1">
             {test.labels.map((label) => {
-              const [dimension, value] = label.split('=');
+              const [, value] = label.split('=');
               return (
                 <span
                   key={label}

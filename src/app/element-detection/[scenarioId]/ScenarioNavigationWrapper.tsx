@@ -3,9 +3,9 @@
 // Wrapper that only renders navigation in DOM when hovering bottom-right corner
 // This prevents hidden elements from being detected by the highlighter
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import ScenarioNavigation from '@/components/element-detection/ScenarioNavigation';
-import type { TestCase } from '@/types/scenario';
+import type { Scenario } from '@/types/scenario';
 
 interface ScenarioNavigationWrapperProps {
   scenarioId: string;
@@ -13,7 +13,7 @@ interface ScenarioNavigationWrapperProps {
   nextTestId: string | null;
   position: string;
   instructionHint: string;
-  scenario: TestCase;
+  scenario?: Scenario;
 }
 
 export default function ScenarioNavigationWrapper({

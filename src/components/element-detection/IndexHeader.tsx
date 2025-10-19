@@ -1,12 +1,8 @@
 'use client';
 
-// Client Component for Index Header with Reset All button
-
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export default function IndexHeader({ totalTests }: { totalTests: number }) {
-  const router = useRouter();
+export default function IndexHeader() {
   const [isResetting, setIsResetting] = useState(false);
 
   const handleResetAll = async () => {

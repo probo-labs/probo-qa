@@ -3,18 +3,17 @@
 // Validation Sidebar Component
 // Displays validation results (pass/fail, actions, expected action)
 
-import type { ValidationResult, TestCase } from '@/types/scenario';
+import type { ValidationResult, Scenario } from '@/types/scenario';
 
 interface ValidationSidebarProps {
   scenarioId: string;
-  scenario: TestCase;
+  scenario: Scenario;
   result: ValidationResult;
   isOpen: boolean;
   onClose: () => void;
 }
 
 export default function ValidationSidebar({
-  scenarioId,
   scenario,
   result,
   isOpen,
@@ -92,7 +91,7 @@ export default function ValidationSidebar({
                     {' '}
                     {action.elementInteracted}
                     {action.valueFilled && (
-                      <span className="text-gray-500"> = "{action.valueFilled}"</span>
+                      <span className="text-gray-500"> = &quot;{action.valueFilled}&quot;</span>
                     )}
                   </div>
                 );
@@ -125,8 +124,8 @@ export default function ValidationSidebar({
           </div>
           <div className="bg-gray-50 border border-gray-200 p-3 font-mono text-xs text-gray-700 space-y-1">
             <div>✓ Check: actions.length === 1</div>
-            <div>✓ Check: actions[0].actionPerformed === "{scenario.expectedAction}"</div>
-            <div>✓ Check: actions[0].elementInteracted === "{scenario.expectedTarget}"</div>
+            <div>✓ Check: actions[0].actionPerformed === &quot;{scenario.expectedAction}&quot;</div>
+            <div>✓ Check: actions[0].elementInteracted === &quot;{scenario.expectedTarget}&quot;</div>
             <div className="pt-1.5 border-t border-gray-300 mt-2">
               Result: <span className={pass ? 'text-green-600 font-bold' : 'text-red-600 font-bold'}>
                 {pass ? 'PASS' : 'FAIL'}
