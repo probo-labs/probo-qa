@@ -10,6 +10,10 @@ jobs:
   highlighter-tests:
     runs-on: windows-latest
     timeout-minutes: 15
+    env:
+      HIGHLIGHTER_SCRIPT_PATH: node_modules/@probolabs/highlighter/dist/probolabs.umd.js
+      SCENARIO_CACHE_DIR: .cache/scenarios
+      DATABASE_URL: file:./test.db
 
     steps:
       - name: Checkout probo-qa
@@ -43,15 +47,10 @@ jobs:
 
       - name: Setup database
         run: pnpm exec prisma generate && pnpm exec prisma db push
-        env:
-          DATABASE_URL: file:./test.db
 
       - name: Run highlighter tests
         run: pnpm test tests/specs/highlighter.spec.ts
         env:
-          DATABASE_URL: file:./test.db
-          HIGHLIGHTER_SCRIPT_PATH: node_modules/@probolabs/highlighter/dist/probolabs.umd.js
-          SCENARIO_CACHE_DIR: .cache/scenarios
           CI: true
           PORT: 3000
 
