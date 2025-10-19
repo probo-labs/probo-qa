@@ -68,6 +68,28 @@ jobs:
           echo "Highlighter bundle exists:"
           ls -lh node_modules/@probolabs/highlighter/dist/probolabs.umd.js
 
+      - name: Test env vars are passed to Next.js
+        run: |
+          echo "Starting Next.js dev server to test env vars..."
+          HIGHLIGHTER_SCRIPT_PATH=node_modules/@probolabs/highlighter/dist/probolabs.umd.js DATABASE_URL=file:./test.db SCENARIO_CACHE_DIR=.cache/scenarios PORT=3099 pnpm dev &
+          SERVER_PID=$!
+          echo "Server PID: $SERVER_PID"
+
+          # Wait for server to start
+          echo "Waiting for server to start..."
+          sleep 10
+
+          # Test the API endpoint
+          echo "Testing /api/scenarios/check-highlighter endpoint..."
+          curl -v http://localhost:3099/api/scenarios/check-highlighter || true
+
+          # Kill the server
+          echo "Stopping server..."
+          kill $SERVER_PID || true
+          sleep 2
+        env:
+          CI: true
+
       - name: Run highlighter tests
         run: pnpm test tests/specs/highlighter.spec.ts
         env:

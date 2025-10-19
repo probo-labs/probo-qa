@@ -8,6 +8,13 @@ import { NextResponse } from 'next/server';
 export async function GET() {
   const scriptPath = process.env.HIGHLIGHTER_SCRIPT_PATH;
 
+  // Debug logging for CI
+  if (process.env.CI) {
+    console.log('[check-highlighter] CI detected');
+    console.log('[check-highlighter] HIGHLIGHTER_SCRIPT_PATH:', scriptPath);
+    console.log('[check-highlighter] All env vars:', Object.keys(process.env).filter(k => k.includes('HIGHLIGHTER') || k.includes('DATABASE') || k.includes('SCENARIO')));
+  }
+
   if (!scriptPath) {
     return NextResponse.json({
       available: false,

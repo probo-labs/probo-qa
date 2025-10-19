@@ -64,16 +64,10 @@ export default defineConfig({
 
   // Start dev server before running tests (only in CI, locally use existing server)
   webServer: process.env.CI ? {
-    command: 'pnpm dev',
+    command: `HIGHLIGHTER_SCRIPT_PATH=node_modules/@probolabs/highlighter/dist/probolabs.umd.js DATABASE_URL=file:./test.db SCENARIO_CACHE_DIR=.cache/scenarios PORT=${PORT} pnpm dev`,
     url: baseURL,
     reuseExistingServer: false,
     timeout: 120000, // 2 minutes to start
-    env: {
-      PORT: PORT,
-      HIGHLIGHTER_SCRIPT_PATH: 'node_modules/@probolabs/highlighter/dist/probolabs.umd.js',
-      DATABASE_URL: 'file:./test.db',
-      SCENARIO_CACHE_DIR: '.cache/scenarios',
-    },
   } : {
     command: `PORT=${PORT} pnpm dev`,
     url: baseURL,
