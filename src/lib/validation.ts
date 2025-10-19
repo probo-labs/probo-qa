@@ -21,19 +21,20 @@ export function validateScenario(
 ): ValidationResult {
   const actionCount = actions.length;
 
-  // Rule 1: Must have exactly 1 action
+  // Rule 1: Neutral state if no actions recorded
   if (actionCount === 0) {
     return {
-      pass: false,
-      message: 'NO ACTIONS - No interaction recorded',
-      actions,
-      actionCount,
+      status: 'neutral',
+      message: 'No actions recorded yet',
+      actions: [],
+      actionCount: 0,
     };
   }
 
+  // Multiple actions = fail
   if (actionCount > 1) {
     return {
-      pass: false,
+      status: 'fail',
       message: `FAIL - Multiple actions recorded (${actionCount} actions, expected 1)`,
       actions,
       actionCount,
@@ -47,7 +48,7 @@ export function validateScenario(
 
   if (isCorrectAction && isCorrectElement) {
     return {
-      pass: true,
+      status: 'pass',
       message: 'PASS - Exactly one correct action',
       actions,
       actionCount,
@@ -59,7 +60,7 @@ export function validateScenario(
   const actualStr = `${action.actionPerformed} on ${action.elementInteracted}`;
 
   return {
-    pass: false,
+    status: 'fail',
     message: `FAIL - Wrong action/element (expected ${expectedStr}, got ${actualStr})`,
     actions,
     actionCount,

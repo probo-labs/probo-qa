@@ -19,7 +19,7 @@ export default function ValidationSidebar({
   isOpen,
   onClose
 }: ValidationSidebarProps) {
-  const { pass, actions, actionCount } = result;
+  const { status, actions, actionCount } = result;
 
   return (
     <div
@@ -33,12 +33,12 @@ export default function ValidationSidebar({
       <div className="p-3 border-b bg-gray-50">
         <div className="flex justify-between items-center">
           <div
-            data-test-result={pass ? 'pass' : 'fail'}
+            data-test-result={status}
             className={`font-mono text-sm font-bold uppercase ${
-              pass ? 'text-green-600' : 'text-red-600'
+              status === 'pass' ? 'text-green-600' : status === 'fail' ? 'text-red-600' : 'text-gray-600'
             }`}
           >
-            {pass ? 'SUCCESS' : 'FAIL'}
+            {status === 'pass' ? 'SUCCESS' : status === 'fail' ? 'FAIL' : 'PENDING'}
           </div>
           <button
             onClick={onClose}
@@ -53,7 +53,7 @@ export default function ValidationSidebar({
       <div className="p-4 space-y-4 overflow-y-auto h-[calc(100vh-60px)]">
         {/* Result Summary */}
         <div className="text-gray-600 text-sm font-mono">
-          {pass
+          {status === 'pass'
             ? 'Exactly 1 correct action recorded'
             : actionCount === 0
             ? 'No actions recorded'
@@ -127,8 +127,8 @@ export default function ValidationSidebar({
             <div>✓ Check: actions[0].actionPerformed === &quot;{scenario.expectedAction}&quot;</div>
             <div>✓ Check: actions[0].elementInteracted === &quot;{scenario.expectedTarget}&quot;</div>
             <div className="pt-1.5 border-t border-gray-300 mt-2">
-              Result: <span className={pass ? 'text-green-600 font-bold' : 'text-red-600 font-bold'}>
-                {pass ? 'PASS' : 'FAIL'}
+              Result: <span className={status === 'pass' ? 'text-green-600 font-bold' : status === 'fail' ? 'text-red-600 font-bold' : 'text-gray-600 font-bold'}>
+                {status === 'pass' ? 'PASS' : status === 'fail' ? 'FAIL' : 'PENDING'}
               </span>
             </div>
           </div>

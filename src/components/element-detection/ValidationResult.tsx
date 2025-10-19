@@ -16,22 +16,22 @@ interface ValidationResultProps {
 }
 
 export default function ValidationResult({ scenario, result }: ValidationResultProps) {
-  const { pass, actions, actionCount } = result;
+  const { status, actions, actionCount } = result;
 
   return (
     <div className="max-w-4xl mx-auto p-5">
       {/* Result Header - Compact */}
       <div
-        data-test-result={pass ? 'pass' : 'fail'}
+        data-test-result={status}
         className={`mb-5 p-3 border-l-4 bg-gray-50 font-mono text-sm ${
-        pass ? 'border-green-600' : 'border-red-600'
+        status === 'pass' ? 'border-green-600' : status === 'fail' ? 'border-red-600' : 'border-gray-600'
       }`}>
-        <span className={`font-bold uppercase ${pass ? 'text-green-600' : 'text-red-600'}`}>
-          {pass ? 'SUCCESS' : 'FAIL'}
+        <span className={`font-bold uppercase ${status === 'pass' ? 'text-green-600' : status === 'fail' ? 'text-red-600' : 'text-gray-600'}`}>
+          {status === 'pass' ? 'SUCCESS' : status === 'fail' ? 'FAIL' : 'PENDING'}
         </span>
         <span className="text-gray-600"> — </span>
         <span className="text-gray-600">
-          {pass
+          {status === 'pass'
             ? 'Exactly 1 correct action recorded'
             : actionCount === 0
             ? 'No actions recorded'
@@ -106,8 +106,8 @@ export default function ValidationResult({ scenario, result }: ValidationResultP
           <div>✓ Check: actions[0].actionPerformed === &quot;{scenario.expectedAction}&quot;</div>
           <div>✓ Check: actions[0].elementInteracted === &quot;{scenario.expectedTarget}&quot;</div>
           <div className="pt-1.5 border-t border-gray-300 mt-2">
-            Result: <span className={pass ? 'text-green-600 font-bold' : 'text-red-600 font-bold'}>
-              {pass ? 'PASS' : 'FAIL'}
+            Result: <span className={status === 'pass' ? 'text-green-600 font-bold' : status === 'fail' ? 'text-red-600 font-bold' : 'text-gray-600 font-bold'}>
+              {status === 'pass' ? 'PASS' : status === 'fail' ? 'FAIL' : 'PENDING'}
             </span>
           </div>
         </div>

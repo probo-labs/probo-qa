@@ -38,16 +38,22 @@ const BTN_GRAY = `${BASE_BTN} ${BTN_SMALL} text-gray-900 bg-gray-100 hover:bg-gr
 const BTN_DISABLED = 'disabled:bg-gray-50 disabled:text-gray-400';
 const NAV_DISABLED = `${BTN_SMALL} text-gray-300 bg-gray-50 px-1.5 py-0.5 rounded cursor-not-allowed`;
 
-const getValidateButtonClass = (actionCount: number | undefined, pass: boolean | undefined, isOpen: boolean) => {
+const getValidateButtonClass = (status: 'neutral' | 'pass' | 'fail' | undefined, isOpen: boolean) => {
   const base = `${BASE_BTN} ${BTN_SMALL} font-medium border`;
-  const variants = {
-    gray: isOpen ? 'bg-gray-700 text-white border-gray-700 hover:bg-gray-800' : 'bg-gray-600 text-white border-gray-600 hover:bg-gray-700',
-    green: isOpen ? 'bg-green-700 text-white border-green-700 hover:bg-green-800' : 'bg-green-600 text-white border-green-600 hover:bg-green-700',
-    red: isOpen ? 'bg-red-700 text-white border-red-700 hover:bg-red-800' : 'bg-red-600 text-white border-red-600 hover:bg-red-700',
-  };
 
-  if (actionCount === undefined || actionCount === 0) return `${base} ${variants.gray}`;
-  return `${base} ${pass ? variants.green : variants.red}`;
+  if (isOpen) {
+    return `${base} bg-blue-600 text-white hover:bg-blue-700 border-blue-600`;
+  }
+
+  if (status === 'pass') {
+    return `${base} text-white bg-green-600 border-green-600 hover:bg-green-700`;
+  }
+
+  if (status === 'fail') {
+    return `${base} text-white bg-red-600 border-red-600 hover:bg-red-700`;
+  }
+
+  return `${base} text-gray-900 bg-blue-100 hover:bg-blue-200 border-blue-100`;
 };
 
 const getHighlighterButtonClass = (isOpen: boolean, isAvailable: boolean) => {
@@ -240,7 +246,7 @@ export default function ScenarioNavigation({
 
         <button
           onClick={handleValidateClick}
-          className={getValidateButtonClass(currentValidation?.actionCount, currentValidation?.pass, showValidationSidebar)}
+          className={getValidateButtonClass(currentValidation?.status, showValidationSidebar)}
           title={showValidationSidebar ? 'Close validation panel' : 'Open validation panel'}
         >
           VALIDATE

@@ -28,9 +28,12 @@ export interface ScenarioInteraction {
   metadata?: Record<string, unknown>;
 }
 
+// Validation status
+export type ValidationStatus = 'neutral' | 'pass' | 'fail';
+
 // Validation result
 export interface ValidationResult {
-  pass: boolean;
+  status: ValidationStatus;  // neutral = no actions, pass = correct, fail = wrong
   message: string;
   actions: ScenarioInteraction[];
   actionCount: number;

@@ -38,7 +38,7 @@ export default async function ElementDetectionIndex() {
   }, {} as Record<string, typeof allDbActions>);
 
   // Get validation status for all tests
-  const validationStatuses: Record<string, 'pass' | 'fail' | null> = {};
+  const validationStatuses: Record<string, 'pass' | 'fail' | 'neutral'> = {};
 
   for (const scenarioId of allIds) {
     const test = getScenario(scenarioId);
@@ -47,7 +47,7 @@ export default async function ElementDetectionIndex() {
     const dbActions = actionsByTestId[scenarioId] || [];
 
     if (dbActions.length === 0) {
-      validationStatuses[scenarioId] = null; // No validation yet
+      validationStatuses[scenarioId] = 'neutral'; // No actions recorded yet
       continue;
     }
 
@@ -65,7 +65,7 @@ export default async function ElementDetectionIndex() {
 
     // Validate
     const result = validateScenario(test, actions);
-    validationStatuses[scenarioId] = result.pass ? 'pass' : 'fail';
+    validationStatuses[scenarioId] = result.status;
   }
 
   // Group tests by element density
