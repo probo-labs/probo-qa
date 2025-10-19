@@ -14,67 +14,43 @@ jobs:
     steps:
       - name: Checkout probo-qa
         uses: actions/checkout@v4
-        with:
-          path: probo-qa
-
-      - name: Checkout probo-js (private repo)
-        uses: actions/checkout@v4
-        with:
-          repository: probolabs/probo-js
-          token: ${{ secrets.GITHUB_TOKEN }}
-          path: probo-js
 
       - name: Enable Corepack
         run: corepack enable
-        working-directory: probo-qa
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
-          cache-dependency-path: probo-qa/pnpm-lock.yaml
 
-      - name: Install probo-qa dependencies
+      - name: Install dependencies (includes @probolabs/highlighter from npm)
         run: pnpm install --frozen-lockfile
-        working-directory: probo-qa
-
-      - name: Install probo-js dependencies
-        run: pnpm install --frozen-lockfile
-        working-directory: probo-js
-
-      - name: Build highlighter UMD bundle
-        run: pnpm --filter probo-highlighter build
-        working-directory: probo-js
 
       - name: Verify highlighter bundle exists
         run: |
-          if (Test-Path "../probo-js/packages/probo-highlighter/dist/probolabs.umd.js") {
-            Write-Host "✓ Highlighter bundle found"
-            Get-Item "../probo-js/packages/probo-highlighter/dist/probolabs.umd.js" | Select-Object Name, Length
+          if (Test-Path "node_modules/@probolabs/highlighter/dist/probolabs.umd.js") {
+            Write-Host "✓ Highlighter bundle found in node_modules"
+            Get-Item "node_modules/@probolabs/highlighter/dist/probolabs.umd.js" | Select-Object Name, Length
           } else {
             Write-Error "✗ Highlighter bundle not found"
             exit 1
           }
-        working-directory: probo-qa
         shell: pwsh
 
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps chromium
-        working-directory: probo-qa
 
       - name: Setup database
         run: pnpm exec prisma generate && pnpm exec prisma db push
-        working-directory: probo-qa
         env:
           DATABASE_URL: file:./test.db
 
       - name: Run highlighter tests
         run: pnpm test tests/specs/highlighter.spec.ts
-        working-directory: probo-qa
         env:
           DATABASE_URL: file:./test.db
-          HIGHLIGHTER_SCRIPT_PATH: ../probo-js/packages/probo-highlighter/dist/probolabs.umd.js
+          HIGHLIGHTER_SCRIPT_PATH: node_modules/@probolabs/highlighter/dist/probolabs.umd.js
           SCENARIO_CACHE_DIR: .cache/scenarios
           CI: true
           PORT: 3000
@@ -85,7 +61,7 @@ jobs:
         with:
           name: highlighter-test-artifacts
           path: |
-            probo-qa/playwright-report/
-            probo-qa/test-results/
-            probo-qa/.cache/scenarios/
+            playwright-report/
+            test-results/
+            .cache/scenarios/
           retention-days: 7
