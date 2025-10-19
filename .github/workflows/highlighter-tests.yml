@@ -69,12 +69,9 @@ jobs:
           ls -lh node_modules/@probolabs/highlighter/dist/probolabs.umd.js
 
       - name: Run highlighter tests
-        run: |
-          export $(cat .env | xargs)
-          pnpm test tests/specs/highlighter.spec.ts
+        run: pnpm test tests/specs/highlighter.spec.ts
         env:
           CI: true
-          PORT: 3000
 
       - name: Upload test artifacts
         uses: actions/upload-artifact@v4
