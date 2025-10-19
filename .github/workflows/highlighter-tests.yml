@@ -8,7 +8,7 @@ on:
 
 jobs:
   highlighter-tests:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 15
 
     steps:
@@ -17,6 +17,16 @@ jobs:
 
       - name: Setup CI environment
         run: cp .env.ci .env
+
+      - name: Verify .env file
+        run: |
+          if [ -f .env ]; then
+            echo "✓ .env file exists"
+            cat .env
+          else
+            echo "✗ .env file not found"
+            exit 1
+          fi
 
       - name: Enable Corepack
         run: corepack enable
