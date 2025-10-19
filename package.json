@@ -22,7 +22,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@playwright/test": "^1.56.0",
-    "@probolabs/highlighter": "^0.1.0",
+    "@probolabs/highlighter": "^1.0.12",
     "playwright": "^1.56.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
