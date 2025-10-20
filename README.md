@@ -1,4 +1,18 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This is a QA testing application for Probo Labs, built with [Next.js](https://nextjs.org).
+
+It includes element detection benchmarking tests that use the `@probolabs/highlighter` package to analyze and highlight interactive elements on web pages.
+
+## Running Tests
+
+Run Playwright tests locally:
+
+```bash
+pnpm test
+```
+
+For local development, copy `.env.example` to `.env` and configure the highlighter path:
+- Use `../probo-js/packages/probo-highlighter/dist/probolabs.umd.js` to test against local probo-js repo
+- Or use `node_modules/@probolabs/highlighter/dist/probolabs.umd.js` to test against the published npm package
 
 ## Getting Started
 
