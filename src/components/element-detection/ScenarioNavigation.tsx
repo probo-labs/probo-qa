@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import type { Scenario, ValidationResult } from '@/types/scenario';
+import type { Scenario, ValidationResult, ScenarioInteraction } from '@/types/scenario';
+import { validateScenario } from '@/lib/validation';
 
 const HighlighterSidebar = dynamic(() => import('./HighlighterSidebar'), { ssr: false });
 const ValidationSidebar = dynamic(() => import('./ValidationSidebar'), { ssr: false });
@@ -18,6 +19,8 @@ interface ScenarioNavigationProps {
   instructionHint?: string;
   scenario?: Scenario;
   validationResult?: ValidationResult;
+  interactions?: ScenarioInteraction[];
+  onReset?: () => void;
 }
 
 interface MetadataType {
@@ -80,7 +83,9 @@ export default function ScenarioNavigation({
   validationPageNav = false,
   instructionHint,
   scenario,
-  validationResult
+  validationResult,
+  interactions = [],
+  onReset
 }: ScenarioNavigationProps) {
   const [isResetting, setIsResetting] = useState(false);
   const [hasOutputs, setHasOutputs] = useState(false);
@@ -123,43 +128,15 @@ export default function ScenarioNavigation({
   useEffect(() => {
     if (mode !== 'test' || !scenario) return;
 
-    const fetchValidation = async () => {
-      try {
-        const response = await fetch(`/api/tests/${scenarioId}/validate`);
-        if (response.ok) setValidationData(await response.json());
-      } catch (err) {
-        console.debug('Validation not available:', err);
-      }
-    };
+    const result = validateScenario(scenario, interactions);
+    setValidationData(result);
+  }, [interactions, scenario, mode]);
 
-    fetchValidation();
-
-    const handleActionRecorded = (event: Event) => {
-      const customEvent = event as CustomEvent;
-      if (customEvent.detail) {
-        setValidationData(customEvent.detail);
-      } else {
-        fetchValidation();
-      }
-    };
-
-    window.addEventListener('probo:actionRecorded', handleActionRecorded);
-    return () => window.removeEventListener('probo:actionRecorded', handleActionRecorded);
-  }, [scenarioId, mode, scenario]);
-
-  const handleReset = async () => {
-    setIsResetting(true);
-    try {
-      const response = await fetch(`/api/tests/${scenarioId}/reset`, { method: 'POST' });
-      if (!response.ok) throw new Error('Failed to reset test');
-
-      setValidationData(null);
-      const validationResponse = await fetch(`/api/tests/${scenarioId}/validate`);
-      if (validationResponse.ok) setValidationData(await validationResponse.json());
-    } catch (err) {
-      console.error('Failed to reset test:', err);
-    } finally {
-      setIsResetting(false);
+  const handleReset = () => {
+    if (onReset) {
+      setIsResetting(true);
+      onReset();
+      setTimeout(() => setIsResetting(false), 100);
     }
   };
 

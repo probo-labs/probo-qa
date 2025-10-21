@@ -1,30 +1,16 @@
 'use client';
 
+import type { ActionType } from '@/types/scenario';
+
 interface ScenarioPageClientProps {
   scenarioId: string;
+  onAction: (action: ActionType, element: string) => void;
 }
 
-export default function ScenarioPageClient({ scenarioId }: ScenarioPageClientProps) {
-  const recordAction = async (action: string, element: string) => {
-    try {
-      const response = await fetch(`/api/tests/${scenarioId}/record`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action, element, value: '' }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        window.dispatchEvent(new CustomEvent('probo:actionRecorded', { detail: data.validation }));
-      }
-    } catch (error) {
-      console.error('Failed to record action:', error);
-    }
-  };
-
-  const handleEmailFocus = () => recordAction('FILL', 'newsletter-email');
-  const handleContactClick = (e: React.MouseEvent) => (e.preventDefault(), recordAction('CLICK', 'contact-link'));
-  const handleSubmitClick = (e: React.MouseEvent) => (e.preventDefault(), recordAction('CLICK', 'submit-button'));
+export default function ScenarioPageClient({ scenarioId, onAction }: ScenarioPageClientProps) {
+  const handleEmailFocus = () => onAction('FILL', 'newsletter-email');
+  const handleContactClick = (e: React.MouseEvent) => (e.preventDefault(), onAction('CLICK', 'contact-link'));
+  const handleSubmitClick = (e: React.MouseEvent) => (e.preventDefault(), onAction('CLICK', 'submit-button'));
 
   return (
     <>

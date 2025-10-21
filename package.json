@@ -3,9 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@10.18.3",
+  "engines": {
+    "node": ">=20.19.5",
+    "pnpm": ">=10.18.3"
+  },
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "prisma generate && pnpm type-check && next build --turbopack",
+    "build": "pnpm type-check && next build --turbopack",
     "start": "next start",
     "lint": "eslint",
     "type-check": "tsc --noEmit",
@@ -14,9 +18,7 @@
     "test:all": "pnpm test:build && pnpm test"
   },
   "dependencies": {
-    "@prisma/client": "^6.17.1",
     "next": "15.5.3",
-    "prisma": "^6.17.1",
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },

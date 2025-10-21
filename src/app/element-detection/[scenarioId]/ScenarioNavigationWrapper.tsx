@@ -5,7 +5,7 @@
 
 import { useState, useEffect } from 'react';
 import ScenarioNavigation from '@/components/element-detection/ScenarioNavigation';
-import type { Scenario } from '@/types/scenario';
+import type { Scenario, ScenarioInteraction } from '@/types/scenario';
 
 interface ScenarioNavigationWrapperProps {
   scenarioId: string;
@@ -14,6 +14,8 @@ interface ScenarioNavigationWrapperProps {
   position: string;
   instructionHint: string;
   scenario?: Scenario;
+  interactions: ScenarioInteraction[];
+  onReset: () => void;
 }
 
 export default function ScenarioNavigationWrapper({
@@ -23,6 +25,8 @@ export default function ScenarioNavigationWrapper({
   position,
   instructionHint,
   scenario,
+  interactions,
+  onReset,
 }: ScenarioNavigationWrapperProps) {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -71,6 +75,8 @@ export default function ScenarioNavigationWrapper({
             mode="test"
             instructionHint={instructionHint}
             scenario={scenario}
+            interactions={interactions}
+            onReset={onReset}
           />
         </div>
       )}
