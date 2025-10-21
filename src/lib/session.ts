@@ -7,10 +7,25 @@ const SESSION_COOKIE_NAME = 'test_session_id';
 // Session expires when browser closes (no maxAge = session-only cookie)
 
 /**
- * Get or create a session ID from cookies
- * @returns Session UUID
+ * Get session ID from cookies (read-only, safe for page components)
+ * Returns the session ID if it exists, otherwise returns a default/temporary ID
+ * @returns Session UUID or default ID if not set
  */
 export async function getSessionId(): Promise<string> {
+  const cookieStore = await cookies();
+  const sessionId = cookieStore.get(SESSION_COOKIE_NAME)?.value;
+  
+  // Return existing session or generate a temporary one
+  // Note: The temporary ID should be set by a route handler/server action
+  return sessionId || crypto.randomUUID();
+}
+
+/**
+ * Get or create a session ID (use only in Server Actions or Route Handlers)
+ * This function can modify cookies, so it must not be called during page render
+ * @returns Session UUID
+ */
+export async function getOrCreateSessionId(): Promise<string> {
   const cookieStore = await cookies();
   let sessionId = cookieStore.get(SESSION_COOKIE_NAME)?.value;
 

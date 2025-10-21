@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
-import { getSessionId } from '@/lib/session';
+import { getOrCreateSessionId } from '@/lib/session';
 import { getScenario } from '@/lib/scenarios';
 import { validateAndUpdateScenario } from '@/lib/scenario-validation';
 import type { ActionType } from '@/types/scenario';
@@ -29,7 +29,7 @@ export async function POST(
       return NextResponse.json({ error: 'Missing required fields: action, element' }, { status: 400 });
     }
 
-    const sessionId = await getSessionId();
+    const sessionId = await getOrCreateSessionId();
 
     await prisma.scenarioInteractionState.create({
       data: {
