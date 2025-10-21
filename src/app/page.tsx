@@ -1,6 +1,10 @@
 import Link from "next/link";
+import { getAllScenarioIds } from '@/lib/scenarios';
 
 export default function Home() {
+  // Get actual test count from element-detection
+  const elementDetectionTestCount = getAllScenarioIds().length;
+
   const testCategories = [
     {
       path: "/is-page-stable",
@@ -8,29 +12,16 @@ export default function Home() {
       description: "Test scenarios for page stability detection and waiter behavior",
       icon: "🎯",
       color: "bg-blue-100 hover:bg-blue-200",
-      tests: [
-        "Classic Load",
-        "Redirect Chain", 
-        "Hash Navigation",
-        "SPA PushState",
-        "XHR Bursts",
-        "Failed Requests",
-        "Server-Sent Events",
-        "WebSocket Connections",
-        "DOM Churn",
-        "Layout Shifts",
-        "Iframes",
-        "Performance Mix"
-      ]
+      testCount: 12 // Hardcoded for now
+    },
+    {
+      path: "/element-detection",
+      title: "Element Detection",
+      description: "Test scenarios for annotation failure modes in AI-powered web automation",
+      icon: "🔍",
+      color: "bg-green-100 hover:bg-green-200",
+      testCount: elementDetectionTestCount
     }
-    // Future categories can be added here:
-    // {
-    //   path: "/element-detection",
-    //   title: "Element Detection",
-    //   description: "Test scenarios for element detection and interaction",
-    //   icon: "🔍",
-    //   color: "bg-green-100 hover:bg-green-200"
-    // }
   ];
 
   return (
@@ -64,30 +55,13 @@ export default function Home() {
                 <h2 className="text-2xl font-bold text-gray-900 mb-3">
                   {category.title}
                 </h2>
-                <p className="text-gray-600 mb-6">
+                <p className="text-gray-600 mb-4">
                   {category.description}
                 </p>
-                
-                {category.tests && (
-                  <div className="text-left">
-                    <h3 className="text-sm font-semibold text-gray-700 mb-2">
-                      Test Scenarios:
-                    </h3>
-                    <ul className="text-xs text-gray-600 space-y-1">
-                      {category.tests.slice(0, 6).map((test, testIndex) => (
-                        <li key={testIndex} className="flex items-center">
-                          <span className="w-1 h-1 bg-gray-400 rounded-full mr-2"></span>
-                          {test}
-                        </li>
-                      ))}
-                      {category.tests.length > 6 && (
-                        <li className="text-gray-500 italic">
-                          +{category.tests.length - 6} more...
-                        </li>
-                      )}
-                    </ul>
-                  </div>
-                )}
+
+                <div className="text-sm font-semibold text-gray-700">
+                  {category.testCount} {category.testCount === 1 ? 'Test' : 'Tests'}
+                </div>
               </div>
             </Link>
           ))}
@@ -106,11 +80,11 @@ export default function Home() {
               <p className="text-sm text-gray-600">Navigation, network, UI changes, performance</p>
             </div>
             <div className="text-center">
-              <div className="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <span className="text-gray-600 text-2xl">🔍</span>
+              <div className="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <span className="text-green-600 text-2xl">🔍</span>
               </div>
               <h3 className="font-semibold text-gray-900 mb-2">Element Detection</h3>
-              <p className="text-sm text-gray-600">Coming soon - element finding and interaction</p>
+              <p className="text-sm text-gray-600">Annotation failure modes, label positions, widget interactions</p>
             </div>
             <div className="text-center">
               <div className="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
