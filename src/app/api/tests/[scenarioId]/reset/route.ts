@@ -4,7 +4,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
-import { getSessionId } from '@/lib/session';
+import { getOrCreateSessionId } from '@/lib/session';
 import { getScenario } from '@/lib/scenarios';
 
 export async function POST(
@@ -14,7 +14,6 @@ export async function POST(
   try {
     const { scenarioId } = await params;
 
-    // Validate test exists
     const scenario = getScenario(scenarioId);
     if (!scenario) {
       return NextResponse.json(
@@ -23,10 +22,7 @@ export async function POST(
       );
     }
 
-    // Get session ID from cookie
-    const sessionId = await getSessionId();
-
-    // Delete all actions for this test + session
+    const sessionId = await getOrCreateSessionId();
     const result = await prisma.scenarioInteractionState.deleteMany({
       where: {
         scenarioId,

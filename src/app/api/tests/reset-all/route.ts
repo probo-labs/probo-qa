@@ -3,13 +3,12 @@
 
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
-import { getSessionId } from '@/lib/session';
+import { getOrCreateSessionId } from '@/lib/session';
 
 export async function POST() {
   try {
-    const sessionId = await getSessionId();
+    const sessionId = await getOrCreateSessionId();
 
-    // Delete all test interactions for this session
     const result = await prisma.scenarioInteractionState.deleteMany({
       where: {
         sessionId,

@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@10.18.3",
+  "engines": {
+    "node": ">=20.19.5",
+    "pnpm": ">=10.18.3"
+  },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "prisma generate && pnpm type-check && next build --turbopack",

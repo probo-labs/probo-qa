@@ -3,7 +3,7 @@
 // Validates recorded actions against expected behavior
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getSessionId } from '@/lib/session';
+import { getOrCreateSessionId } from '@/lib/session';
 import { validateAndUpdateScenario } from '@/lib/scenario-validation';
 
 export async function GET(
@@ -13,18 +13,14 @@ export async function GET(
   try {
     const { scenarioId } = await params;
 
-    // Get session ID from cookie
-    const sessionId = await getSessionId();
+    const sessionId = await getOrCreateSessionId();
 
-    // Use shared validation service
     const result = await validateAndUpdateScenario(scenarioId, sessionId);
 
-    // Return validation result
     return NextResponse.json(result);
   } catch (error) {
     console.error('Error validating test:', error);
 
-    // Check if it's a "not found" error
     if (error instanceof Error && error.message.includes('not found')) {
       return NextResponse.json(
         { error: error.message },
