@@ -5,7 +5,7 @@
 
 import { useState, useEffect } from 'react';
 import ScenarioNavigation from '@/components/element-detection/ScenarioNavigation';
-import type { Scenario } from '@/types/scenario';
+import type { Scenario, ScenarioInteraction } from '@/types/scenario';
 
 interface ScenarioNavigationWrapperProps {
   scenarioId: string;
@@ -14,6 +14,8 @@ interface ScenarioNavigationWrapperProps {
   position: string;
   instructionHint: string;
   scenario?: Scenario;
+  interactions: ScenarioInteraction[];
+  onReset: () => void;
 }
 
 export default function ScenarioNavigationWrapper({
@@ -23,17 +25,29 @@ export default function ScenarioNavigationWrapper({
   position,
   instructionHint,
   scenario,
+  interactions,
+  onReset,
 }: ScenarioNavigationWrapperProps) {
   const [isVisible, setIsVisible] = useState(false);
+
+  // Initialize from localStorage on mount
+  useEffect(() => {
+    const savedState = localStorage.getItem('probo-navbar-revealed');
+    if (savedState === 'true') {
+      setIsVisible(true);
+    }
+  }, []);
 
   // Listen for test automation events to show/hide navigation programmatically
   useEffect(() => {
     const handleShowNav = () => {
       setIsVisible(true);
+      localStorage.setItem('probo-navbar-revealed', 'true');
     };
 
     const handleHideNav = () => {
       setIsVisible(false);
+      localStorage.setItem('probo-navbar-revealed', 'false');
     };
 
     window.addEventListener('probo:showNavigation', handleShowNav);
@@ -46,8 +60,14 @@ export default function ScenarioNavigationWrapper({
   }, []);
 
   const handleMouseEnter = () => {
-    // Once navbar is revealed, it stays open
+    // Once navbar is revealed, it stays open and persists across navigation
     setIsVisible(true);
+    localStorage.setItem('probo-navbar-revealed', 'true');
+  };
+
+  const handleHideClick = () => {
+    setIsVisible(false);
+    localStorage.setItem('probo-navbar-revealed', 'false');
   };
 
   return (
@@ -60,18 +80,30 @@ export default function ScenarioNavigationWrapper({
         />
       )}
 
-      {/* Navigation - stays open once revealed */}
+      {/* Navigation - stays open once revealed, pinned to left edge */}
       {isVisible && (
-        <div className="fixed bottom-2.5 left-2.5 z-[1000]">
-          <ScenarioNavigation
-            scenarioId={scenarioId}
-            prevTestId={prevTestId}
-            nextTestId={nextTestId}
-            position={position}
-            mode="test"
-            instructionHint={instructionHint}
-            scenario={scenario}
-          />
+        <div className="fixed bottom-0 left-0 z-[1000]">
+          <div className="relative">
+            <ScenarioNavigation
+              scenarioId={scenarioId}
+              prevTestId={prevTestId}
+              nextTestId={nextTestId}
+              position={position}
+              mode="test"
+              instructionHint={instructionHint}
+              scenario={scenario}
+              interactions={interactions}
+              onReset={onReset}
+            />
+            {/* Hide button in top-right of navbar */}
+            <button
+              onClick={handleHideClick}
+              className="absolute top-0 right-0 px-2 py-1 text-xs text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"
+              title="Hide navigation (hover bottom-left to show again)"
+            >
+              ✕
+            </button>
+          </div>
         </div>
       )}
     </>

@@ -1,15 +1,10 @@
 // Element Detection Test Suite - Index Page
 // Minimal directory listing - Django style
 
-import { getAllScenarioIds, groupByDimension, getScenario } from '@/lib/scenarios';
-import { getSessionId } from '@/lib/session';
-import { prisma } from '@/lib/db';
-import { validateScenario } from '@/lib/validation';
-import type { ActionType, ScenarioInteraction } from '@/types/scenario';
+import { getAllScenarioIds, groupByDimension } from '@/lib/scenarios';
 import Link from 'next/link';
 import IndexHeader from '@/components/element-detection/IndexHeader';
 
-// Labels that represent default/expected behavior and should be hidden
 const DEFAULT_LABELS = [
   'action_complexity=single-action',
 ];
@@ -17,56 +12,6 @@ const DEFAULT_LABELS = [
 export default async function ElementDetectionIndex() {
   const allIds = getAllScenarioIds();
   const totalTests = allIds.length;
-
-  // Get session ID
-  const sessionId = await getSessionId();
-
-  // PERFORMANCE FIX: Fetch ALL interactions for this session in a single query
-  // instead of one query per test (N+1 problem)
-  const allDbActions = await prisma.scenarioInteractionState.findMany({
-    where: { sessionId },
-    orderBy: { timestamp: 'asc' },
-  });
-
-  // Group actions by scenarioId in memory
-  const actionsByTestId = allDbActions.reduce((acc, action) => {
-    if (!acc[action.scenarioId]) {
-      acc[action.scenarioId] = [];
-    }
-    acc[action.scenarioId].push(action);
-    return acc;
-  }, {} as Record<string, typeof allDbActions>);
-
-  // Get validation status for all tests
-  const validationStatuses: Record<string, 'pass' | 'fail' | 'neutral'> = {};
-
-  for (const scenarioId of allIds) {
-    const test = getScenario(scenarioId);
-    if (!test) continue;
-
-    const dbActions = actionsByTestId[scenarioId] || [];
-
-    if (dbActions.length === 0) {
-      validationStatuses[scenarioId] = 'neutral'; // No actions recorded yet
-      continue;
-    }
-
-    // Convert to ScenarioInteraction type
-    const actions: ScenarioInteraction[] = dbActions.map(action => ({
-      id: action.id,
-      scenarioId: action.scenarioId,
-      sessionId: action.sessionId,
-      actionPerformed: action.actionPerformed as ActionType,
-      elementInteracted: action.elementInteracted,
-      valueFilled: action.valueFilled,
-      timestamp: action.timestamp,
-      metadata: action.metadata as Record<string, unknown> | undefined,
-    }));
-
-    // Validate
-    const result = validateScenario(test, actions);
-    validationStatuses[scenarioId] = result.status;
-  }
 
   // Group tests by element density
   const groupedByDensity = groupByDimension('element_density');
@@ -94,38 +39,10 @@ export default async function ElementDetectionIndex() {
               <ul className="list-none">
                 {tests.map((test) => {
                   const globalIndex = allIds.indexOf(test.id) + 1;
-                  const status = validationStatuses[test.id];
-
-                  // Determine Val button styling based on status
-                  let valButtonClass = "px-3 py-1 text-[0.65rem] border transition-all rounded-xl h-[22px] inline-flex items-center";
-                  if (status === 'pass') {
-                    valButtonClass += " text-green-700 border-green-300 bg-green-50 hover:text-green-900 hover:border-green-500";
-                  } else if (status === 'fail') {
-                    valButtonClass += " text-red-700 border-red-300 bg-red-50 hover:text-red-900 hover:border-red-500";
-                  } else {
-                    valButtonClass += " text-gray-600 border-gray-200 bg-white hover:text-gray-900 hover:border-gray-900";
-                  }
 
                   return (
-                    <li key={test.id} className="py-1 grid grid-cols-[auto_1fr] items-center gap-2.5 hover:pl-0.5 transition-all">
-                      {/* Actions */}
-                      <div className="flex gap-1.5">
-                        <Link
-                          href={`/element-detection/${test.id}`}
-                          className="px-3 py-1 text-[0.65rem] text-gray-600 border border-gray-200 bg-white hover:text-gray-900 hover:border-gray-900 transition-all rounded-xl h-[22px] inline-flex items-center"
-                        >
-                          Test
-                        </Link>
-                        <Link
-                          href={`/element-detection/${test.id}/validation`}
-                          className={valButtonClass}
-                        >
-                          Val
-                        </Link>
-                      </div>
-
-                      {/* Test Info */}
-                      <div className="pl-5 flex items-center gap-2 flex-wrap">
+                    <li key={test.id} className="py-1 hover:pl-0.5 transition-all">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <Link
                           href={`/element-detection/${test.id}`}
                           className="text-gray-900 no-underline text-[0.7rem] leading-snug hover:text-gray-600 hover:underline transition-colors"
@@ -139,7 +56,6 @@ export default async function ElementDetectionIndex() {
                           {test.title}
                           <span className="text-gray-500 font-light"> {test.expectedAction}</span>
                         </Link>
-                        {/* Labels - filter out defaults, only show exceptions */}
                         {test.labels
                           .filter((label) => !DEFAULT_LABELS.includes(label))
                           .map((label) => (
