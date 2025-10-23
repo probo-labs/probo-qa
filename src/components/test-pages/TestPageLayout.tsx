@@ -1,10 +1,8 @@
 'use client';
 
-// Reusable layout for test pages with highlighter support
-// Provides standard navigation controls that don't interfere with highlighting
-
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import ScenarioNavigationWrapper from '@/app/element-detection/[scenarioId]/ScenarioNavigationWrapper';
+import type { ScenarioInteraction } from '@/types/scenario';
 
 interface TestPageLayoutProps {
   children: ReactNode;
@@ -23,20 +21,22 @@ export default function TestPageLayout({
   nextTestId = null,
   position,
 }: TestPageLayoutProps) {
+  const [interactions, setInteractions] = useState<ScenarioInteraction[]>([]);
+
   return (
     <>
-      {/* Clean test content */}
       <div className="min-h-screen">
         {children}
       </div>
 
-      {/* Standard navigation wrapper - only in DOM on hover */}
       <ScenarioNavigationWrapper
         scenarioId={testId}
         prevTestId={prevTestId}
         nextTestId={nextTestId}
         position={position || '1/1'}
         instructionHint={title || testId}
+        interactions={interactions}
+        onReset={() => setInteractions([])}
       />
     </>
   );

@@ -19,6 +19,7 @@ interface HighlighterSidebarProps {
       nonInteractiveCount: number;
     };
   } | null;
+  isGenerating?: boolean;
   onClose: () => void;
   onRegenerate: () => void;
 }
@@ -27,11 +28,45 @@ export default function HighlighterSidebar({
   scenarioId,
   isOpen,
   metadata,
+  isGenerating = false,
   onClose,
   onRegenerate
 }: HighlighterSidebarProps) {
   const [expandedView, setExpandedView] = useState<string | null>(null);
   const [isRegenerating, setIsRegenerating] = useState(false);
+
+  // Show loading state when generating and no metadata yet
+  if (isGenerating && !metadata) {
+    return (
+      <div
+        className={`
+          fixed right-0 top-0 h-full w-[480px] bg-white shadow-2xl z-[60]
+          transform transition-transform duration-300 ease-in-out
+          ${isOpen ? 'translate-x-0' : 'translate-x-full'}
+        `}
+      >
+        {/* Header */}
+        <div className="p-3 border-b bg-blue-50">
+          <div className="flex justify-between items-center">
+            <span className="text-blue-600 text-xs font-medium">Generating outputs...</span>
+            <button
+              onClick={onClose}
+              className="text-gray-500 hover:text-gray-700 text-lg leading-none"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+
+        {/* Loading Content */}
+        <div className="flex flex-col items-center justify-center h-[calc(100vh-60px)]">
+          <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-4"></div>
+          <p className="text-sm text-gray-600 mb-2 font-medium">Running highlighter on page...</p>
+          <p className="text-xs text-gray-400">This may take 10-30 seconds</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!metadata) return null;
 
