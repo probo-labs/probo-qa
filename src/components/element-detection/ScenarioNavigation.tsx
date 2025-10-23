@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import type { Scenario, ValidationResult } from '@/types/scenario';
+import type { Scenario, ValidationResult, ScenarioInteraction } from '@/types/scenario';
+import { validateScenario } from '@/lib/validation';
 
 const HighlighterSidebar = dynamic(() => import('./HighlighterSidebar'), { ssr: false });
 const ValidationSidebar = dynamic(() => import('./ValidationSidebar'), { ssr: false });
@@ -18,6 +19,8 @@ interface ScenarioNavigationProps {
   instructionHint?: string;
   scenario?: Scenario;
   validationResult?: ValidationResult;
+  interactions?: ScenarioInteraction[];
+  onReset?: () => void;
 }
 
 interface MetadataType {
@@ -80,7 +83,9 @@ export default function ScenarioNavigation({
   validationPageNav = false,
   instructionHint,
   scenario,
-  validationResult
+  validationResult,
+  interactions = [],
+  onReset
 }: ScenarioNavigationProps) {
   const [isResetting, setIsResetting] = useState(false);
   const [hasOutputs, setHasOutputs] = useState(false);
@@ -90,6 +95,7 @@ export default function ScenarioNavigation({
   const [validationData, setValidationData] = useState<ValidationResult | null>(null);
   const [highlighterAvailable, setHighlighterAvailable] = useState(true);
   const [highlighterError, setHighlighterError] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
     fetch('/api/scenarios/check-highlighter')
@@ -123,47 +129,20 @@ export default function ScenarioNavigation({
   useEffect(() => {
     if (mode !== 'test' || !scenario) return;
 
-    const fetchValidation = async () => {
-      try {
-        const response = await fetch(`/api/tests/${scenarioId}/validate`);
-        if (response.ok) setValidationData(await response.json());
-      } catch (err) {
-        console.debug('Validation not available:', err);
-      }
-    };
+    const result = validateScenario(scenario, interactions);
+    setValidationData(result);
+  }, [interactions, scenario, mode]);
 
-    fetchValidation();
-
-    const handleActionRecorded = (event: Event) => {
-      const customEvent = event as CustomEvent;
-      if (customEvent.detail) {
-        setValidationData(customEvent.detail);
-      } else {
-        fetchValidation();
-      }
-    };
-
-    window.addEventListener('probo:actionRecorded', handleActionRecorded);
-    return () => window.removeEventListener('probo:actionRecorded', handleActionRecorded);
-  }, [scenarioId, mode, scenario]);
-
-  const handleReset = async () => {
-    setIsResetting(true);
-    try {
-      const response = await fetch(`/api/tests/${scenarioId}/reset`, { method: 'POST' });
-      if (!response.ok) throw new Error('Failed to reset test');
-
-      setValidationData(null);
-      const validationResponse = await fetch(`/api/tests/${scenarioId}/validate`);
-      if (validationResponse.ok) setValidationData(await validationResponse.json());
-    } catch (err) {
-      console.error('Failed to reset test:', err);
-    } finally {
-      setIsResetting(false);
+  const handleReset = () => {
+    if (onReset) {
+      setIsResetting(true);
+      onReset();
+      setTimeout(() => setIsResetting(false), 100);
     }
   };
 
   const handleGenerateOrUseCache = async (forceRegenerate = false) => {
+    setIsGenerating(true);
     try {
       const response = await fetch(`/api/scenarios/${scenarioId}/generate-outputs`, {
         method: 'POST',
@@ -179,6 +158,8 @@ export default function ScenarioNavigation({
     } catch (err) {
       console.error('Failed to generate outputs:', err);
       alert('Failed to generate outputs. Check console for details.');
+    } finally {
+      setIsGenerating(false);
     }
   };
 
@@ -203,26 +184,28 @@ export default function ScenarioNavigation({
 
   return (
     <>
-      <div className="flex gap-1 items-center bg-white/95 px-1.5 py-1 rounded shadow-md text-[10px] font-sans">
-        {instructionHint && (
-          <span className={`${BTN_SMALL} text-orange-500 font-bold pr-2 border-r border-gray-300 mr-1`}>
-            {instructionHint}
-          </span>
-        )}
+      <div className="flex gap-1 items-center bg-white/95 px-1.5 py-1 shadow-md text-[10px] font-sans">
+        <Link href="/element-detection" className={`${BASE_BTN} ${BTN_SMALL} text-gray-900 bg-white border border-gray-300 font-medium hover:bg-gray-50 hover:border-gray-400`}>
+          Index
+        </Link>
+
+        <div className="w-px h-3 bg-gray-300 mx-1" />
+
+        <NavLink testId={prevTestId} validationNav={validationPageNav} direction="prev" />
+        {position && <span className={`${BTN_SMALL} text-gray-600 px-1 inline-block text-center font-mono`} style={{ width: '42px' }}>{position}</span>}
+        <NavLink testId={nextTestId} validationNav={validationPageNav} direction="next" />
+
+        <div className="w-px h-3 bg-gray-300 mx-1" />
 
         <span className={`${BTN_SMALL} text-gray-600 font-medium font-mono pr-2 border-r border-gray-300 mr-1`}>
           {scenarioId}
         </span>
 
-        <NavLink testId={prevTestId} validationNav={validationPageNav} direction="prev" />
-        {position && <span className={`${BTN_SMALL} text-gray-600 px-1`}>{position}</span>}
-        <NavLink testId={nextTestId} validationNav={validationPageNav} direction="next" />
-
-        <div className="w-px h-3 bg-gray-300 mx-1" />
-
-        <Link href="/element-detection" className={`${BASE_BTN} ${BTN_SMALL} text-gray-900 bg-white border border-gray-300 font-medium hover:bg-gray-50 hover:border-gray-400`}>
-          Index
-        </Link>
+        {instructionHint && (
+          <span className={`${BTN_SMALL} text-orange-500 font-bold pr-2 border-r border-gray-300 mr-1`}>
+            {instructionHint}
+          </span>
+        )}
 
         {isTestMode && (
           <>
@@ -231,7 +214,13 @@ export default function ScenarioNavigation({
                 {validationData.actionCount} action{validationData.actionCount !== 1 ? 's' : ''}
               </span>
             )}
+          </>
+        )}
 
+        <div className="w-px h-3 bg-gray-300 mx-1" />
+
+        {isTestMode && (
+          <>
             <button onClick={() => window.location.reload()} className={BTN_GRAY}>
               Reload
             </button>
@@ -239,10 +228,10 @@ export default function ScenarioNavigation({
             <button onClick={handleReset} disabled={isResetting} className={`${BTN_GRAY} ${BTN_DISABLED}`}>
               {isResetting ? 'Resetting...' : 'Reset'}
             </button>
+
+            <div className="w-px h-3 bg-gray-300 mx-1" />
           </>
         )}
-
-        <div className="w-px h-3 bg-gray-300 mx-1" />
 
         <button
           onClick={handleValidateClick}
@@ -262,11 +251,12 @@ export default function ScenarioNavigation({
         </button>
       </div>
 
-      {hasOutputs && (
+      {(hasOutputs || isGenerating) && (
         <HighlighterSidebar
           scenarioId={scenarioId}
           isOpen={showSidebar}
           metadata={metadata}
+          isGenerating={isGenerating}
           onClose={() => setShowSidebar(false)}
           onRegenerate={() => handleGenerateOrUseCache(true)}
         />

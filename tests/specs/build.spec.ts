@@ -33,7 +33,6 @@ test.describe('Build Smoke Tests', () => {
         env: {
           ...process.env,
           CI: 'true',
-          DATABASE_URL: process.env.DATABASE_URL || 'file:./test.db',
         },
       });
 

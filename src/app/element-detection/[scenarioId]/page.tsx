@@ -3,8 +3,7 @@
 
 import { getScenario, getNavigationContext } from '@/lib/scenarios';
 import { notFound } from 'next/navigation';
-import ScenarioPageClient from './ScenarioPageClient';
-import ScenarioNavigationWrapper from './ScenarioNavigationWrapper';
+import ScenarioContainer from './ScenarioContainer';
 
 export default async function ScenarioPage({
   params,
@@ -18,10 +17,8 @@ export default async function ScenarioPage({
     notFound();
   }
 
-  // Get prev/next navigation
   const navContext = getNavigationContext(scenarioId);
 
-  // Generate instruction hint text
   const instructionText = (() => {
     const target = scenario.expectedTarget.replace(/-/g, ' ');
     switch (scenario.expectedAction) {
@@ -37,19 +34,13 @@ export default async function ScenarioPage({
   })();
 
   return (
-    <>
-      {/* Scenario Content - Clean page with no navigation */}
-      <ScenarioPageClient scenarioId={scenarioId} />
-
-      {/* Test Controls - Only rendered in DOM on hover */}
-      <ScenarioNavigationWrapper
-        scenarioId={scenarioId}
-        prevTestId={navContext.prevScenarioId}
-        nextTestId={navContext.nextScenarioId}
-        position={navContext.position}
-        instructionHint={instructionText}
-        scenario={scenario}
-      />
-    </>
+    <ScenarioContainer
+      scenarioId={scenarioId}
+      scenario={scenario}
+      prevTestId={navContext.prevScenarioId}
+      nextTestId={navContext.nextScenarioId}
+      position={navContext.position}
+      instructionHint={instructionText}
+    />
   );
 }

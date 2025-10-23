@@ -3,11 +3,46 @@
 
 import type { Scenario } from '@/types/scenario';
 import { scenarios as elementDensityScenarios } from './element-density';
+import { scenarios as labelPositionScenarios } from './label-position';
 
-// Aggregate all scenarios
+// Aggregate all scenarios - ordered by density for sequential index numbering
 export const SCENARIOS: Record<string, Scenario> = {
-  ...elementDensityScenarios,
-  // ...labelPositionScenarios,  // Will add later
+  // Sparse scenarios (indices 1-7)
+  'a3c9': elementDensityScenarios['a3c9'],
+  'd4a1': labelPositionScenarios['d4a1'],
+  'e8b2': labelPositionScenarios['e8b2'],
+  'f3c5': labelPositionScenarios['f3c5'],
+  'a7d4': labelPositionScenarios['a7d4'],
+  'b9e6': labelPositionScenarios['b9e6'],
+  'c2f8': labelPositionScenarios['c2f8'],
+
+  // Moderate scenarios (indices 8-14)
+  '7f2e': elementDensityScenarios['7f2e'],
+  'd5a2': labelPositionScenarios['d5a2'],
+  'e9b3': labelPositionScenarios['e9b3'],
+  'f4c6': labelPositionScenarios['f4c6'],
+  'a8d5': labelPositionScenarios['a8d5'],
+  'bae7': labelPositionScenarios['bae7'],
+  'c3f9': labelPositionScenarios['c3f9'],
+
+  // Dense scenarios (indices 15-21)
+  'b5d1': elementDensityScenarios['b5d1'],
+  'd6a3': labelPositionScenarios['d6a3'],
+  'eab4': labelPositionScenarios['eab4'],
+  'f5c7': labelPositionScenarios['f5c7'],
+  'a9d6': labelPositionScenarios['a9d6'],
+  'bbe8': labelPositionScenarios['bbe8'],
+  'c4fa': labelPositionScenarios['c4fa'],
+
+  // Extreme-dense scenarios (indices 22-28)
+  'c8f3': elementDensityScenarios['c8f3'],
+  'd7a4': labelPositionScenarios['d7a4'],
+  'ecb5': labelPositionScenarios['ecb5'],
+  'f6c8': labelPositionScenarios['f6c8'],
+  'aad7': labelPositionScenarios['aad7'],
+  'bce9': labelPositionScenarios['bce9'],
+  'c5fb': labelPositionScenarios['c5fb'],
+
   // ...widgetScenarios,         // Will add later
 };
 
