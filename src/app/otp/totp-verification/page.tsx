@@ -13,7 +13,7 @@ export default function TotpVerificationPage() {
   const router = useRouter();
 
   // Demo secret - in production, this would be user-specific
-  const DEMO_SECRET = 'JBSWY3DPEHPK3PXP'; // Base32 encoded "Hello!"
+  const DEMO_SECRET = 'JBSWY3DPEHPK3PXP'; // Base32 encoded &quot;Hello!&quot;
 
   // Timer countdown
   useEffect(() => {
@@ -193,7 +193,7 @@ export default function TotpVerificationPage() {
                 <p className="font-mono text-lg font-bold">{currentCode || 'Loading...'}</p>
                 <p className="text-xs mt-1">Use this code to test the verification process</p>
                 <p className="text-xs mt-1 text-yellow-700">
-                  Secret: {DEMO_SECRET} (Base32 encoded "Hello!")
+                  Secret: {DEMO_SECRET} (Base32 encoded &quot;Hello!&quot;)
                 </p>
               </div>
             </div>
