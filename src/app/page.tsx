@@ -21,6 +21,14 @@ export default function Home() {
       icon: "🔍",
       color: "bg-green-100 hover:bg-green-200",
       testCount: elementDetectionTestCount
+    },
+    {
+      path: "/otp",
+      title: "OTP Authentication",
+      description: "Test scenarios for TOTP (Time-based One-Time Password) authentication flows",
+      icon: "🔐",
+      color: "bg-purple-100 hover:bg-purple-200",
+      testCount: 2 // Email login + TOTP verification
     }
   ];
 
@@ -87,6 +95,13 @@ export default function Home() {
               <p className="text-sm text-gray-600">Annotation failure modes, label positions, widget interactions</p>
             </div>
             <div className="text-center">
+              <div className="bg-purple-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <span className="text-purple-600 text-2xl">🔐</span>
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-2">OTP Authentication</h3>
+              <p className="text-sm text-gray-600">TOTP flows, email login, verification steps</p>
+            </div>
+            <div className="text-center">
               <div className="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                 <span className="text-gray-600 text-2xl">🎨</span>
               </div>
@@ -94,8 +109,8 @@ export default function Home() {
               <p className="text-sm text-gray-600">Coming soon - visual and interaction testing</p>
             </div>
             <div className="text-center">
-              <div className="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <span className="text-gray-600 text-2xl">⚡</span>
+              <div className="bg-yellow-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <span className="text-yellow-600 text-2xl">⚡</span>
               </div>
               <h3 className="font-semibold text-gray-900 mb-2">Performance</h3>
               <p className="text-sm text-gray-600">Coming soon - performance and load testing</p>

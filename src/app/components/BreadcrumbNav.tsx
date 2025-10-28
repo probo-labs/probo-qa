@@ -40,6 +40,9 @@ export default function BreadcrumbNav() {
     'cls': 'Layout Shifts (CLS)',
     'iframes': 'Iframes',
     'perf-mix': 'Performance Mix',
+    'otp': 'OTP Authentication',
+    'email-login': 'Email Login',
+    'totp-verification': 'TOTP Verification',
   };
   
   const getBreadcrumbTitle = (segment: string) => {
