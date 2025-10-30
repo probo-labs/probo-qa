@@ -23,7 +23,9 @@ export async function POST(request: NextRequest) {
 
     // Validate the code with a time window (default 1 step = 30 seconds)
     // This allows for slight time differences between client and server
-    const isValid = totp.validate({ token: code, window });
+    // Note: validate() returns a number (0 or positive) for valid tokens, null for invalid
+    const validationResult = totp.validate({ token: code, window });
+    const isValid = validationResult !== null;
 
     // Get current valid code for debugging/demo purposes
     const currentCode = totp.generate();
