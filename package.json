@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "next": "15.5.3",
+    "nodemailer": "^6.9.14",
     "otpauth": "^9.4.1",
     "react": "19.1.0",
     "react-dom": "19.1.0"
@@ -28,6 +29,7 @@
     "@playwright/test": "^1.56.0",
     "@probolabs/highlighter": "^1.0.12",
     "@tailwindcss/postcss": "^4",
+    "@types/nodemailer": "^6.4.14",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

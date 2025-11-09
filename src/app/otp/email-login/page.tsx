@@ -5,18 +5,34 @@ import { useRouter } from 'next/navigation';
 
 export default function EmailLoginPage() {
   const [email, setEmail] = useState('');
+  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Navigate to TOTP verification page
-    router.push('/otp/totp-verification');
+    setError(null);
+
+    try {
+      const response = await fetch('/api/otp/email-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => null);
+        throw new Error(data?.error ?? 'Failed to send login email');
+      }
+
+      router.push(`/otp/email-login/verify?email=${encodeURIComponent(email)}`);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      setError(message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -66,6 +82,12 @@ export default function EmailLoginPage() {
               )}
             </button>
           </form>
+
+          {error && (
+            <div className="mt-4 p-4 bg-red-50 text-sm text-red-700 rounded-lg border border-red-100">
+              {error}
+            </div>
+          )}
 
           {/* Demo Info */}
           <div className="mt-6 p-4 bg-blue-50 rounded-lg">
