@@ -1,22 +1,68 @@
 import { NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
+import { Buffer } from 'node:buffer';
 import { saveOtp } from './store';
 
 const OTP_EXPIRY_MINUTES = Number(process.env.MAILPIT_OTP_MINUTES ?? 10);
 const OTP_TTL_MS = OTP_EXPIRY_MINUTES * 60_000;
 
-const transporter = nodemailer.createTransport({
-  host: process.env.MAILPIT_HOST ?? 'mailpit.probolabs.ai',
-  port: Number(process.env.MAILPIT_PORT ?? 25),
-  secure: false,
-  auth:
-    process.env.MAILPIT_USER && process.env.MAILPIT_PASS
-      ? {
-          user: process.env.MAILPIT_USER,
-          pass: process.env.MAILPIT_PASS,
-        }
-      : undefined,
-});
+const MAILPIT_HTTP_BASE = (() => {
+  const explicit = process.env.MAILPIT_HTTP_BASE ?? process.env.MAILPIT_BASE_URL;
+  if (explicit && explicit.trim()) {
+    return explicit.trim().replace(/\/$/, '');
+  }
+  const host = process.env.MAILPIT_HOST ?? 'mailpit.probolabs.ai';
+  const port = process.env.MAILPIT_PORT ?? '8025';
+  const protocol = host.startsWith('http') ? '' : 'http://';
+  return `${protocol}${host}${host.includes(':') ? '' : `:${port}`}`.replace(/\/$/, '');
+})();
+
+async function sendMailpitEmail({
+  to,
+  subject,
+  text,
+  html,
+}: {
+  to: string;
+  subject: string;
+  text: string;
+  html: string;
+}) {
+  const url = `${MAILPIT_HTTP_BASE}/api/v1/send`;
+  const headers = new Headers({ 'Content-Type': 'application/json' });
+
+  const user = process.env.MAILPIT_USER ?? process.env.MAILPIT_USERNAME;
+  const pass = process.env.MAILPIT_PASS ?? process.env.MAILPIT_PASSWORD;
+  if (user || pass) {
+    const token = Buffer.from(`${user ?? ''}:${pass ?? ''}`).toString('base64');
+    headers.set('Authorization', `Basic ${token}`);
+  }
+
+  const payload = {
+    From: {
+      Email: process.env.MAILPIT_FROM ?? 'login@probo.qa',
+      Name: 'Probo QA',
+    },
+    To: [
+      {
+        Email: to,
+      },
+    ],
+    Subject: subject,
+    Text: text,
+    HTML: html,
+  };
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const body = await response.text().catch(() => '<unable to read body>');
+    throw new Error(`Mailpit HTTP send failed: ${response.status} ${response.statusText} – ${body}`);
+  }
+}
 
 function generateOtp(): string {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -90,8 +136,7 @@ export async function POST(request: Request) {
   const otp = generateOtp();
 
   try {
-    await transporter.sendMail({
-      from: process.env.MAILPIT_FROM ?? 'login@probo.qa',
+    await sendMailpitEmail({
       to: email,
       subject: 'Your Probo QA verification code',
       text: buildText(otp),
