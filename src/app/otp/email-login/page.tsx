@@ -3,10 +3,13 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+const MAILPIT_TEMPLATE = 'user@mailpit.probolabs.ai';
+
 export default function EmailLoginPage() {
   const [email, setEmail] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'error'>('idle');
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -51,6 +54,29 @@ export default function EmailLoginPage() {
 
         {/* Login Form */}
         <div className="bg-white rounded-xl shadow-lg p-8">
+          <div className="mb-4 p-3 bg-purple-50 border border-purple-200 rounded-lg text-sm text-purple-900 flex items-start justify-between gap-3">
+            <div>
+              <strong>Mailpit only:</strong> use an address like <code className="bg-white px-1 py-0.5 rounded border border-purple-200 text-purple-800">user@mailpit.probolabs.ai</code> (replace <code>user</code> with your own alias).
+            </div>
+            <button
+              type="button"
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(MAILPIT_TEMPLATE);
+                  setCopyStatus('copied');
+                  setTimeout(() => setCopyStatus('idle'), 2000);
+                } catch (err) {
+                  console.error('Failed to copy Mailpit template', err);
+                  setCopyStatus('error');
+                  setTimeout(() => setCopyStatus('idle'), 2000);
+                }
+              }}
+              className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-purple-700 bg-purple-100 border border-purple-300 rounded-md hover:bg-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-1"
+              aria-label="Copy Mailpit email template"
+            >
+              {copyStatus === 'copied' ? 'Copied!' : copyStatus === 'error' ? 'Failed' : 'Copy'}
+            </button>
+          </div>
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
@@ -61,7 +87,7 @@ export default function EmailLoginPage() {
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email address"
+                placeholder="demo-user@mailpit.probolabs.ai"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors"
                 required
               />
