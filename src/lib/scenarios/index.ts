@@ -4,6 +4,7 @@
 import type { Scenario } from '@/types/scenario';
 import { scenarios as elementDensityScenarios } from './element-density';
 import { scenarios as labelPositionScenarios } from './label-position';
+import { scenarios as detectionIssueScenarios } from './detection-issues';
 
 // Aggregate all scenarios - ordered by density for sequential index numbering
 export const SCENARIOS: Record<string, Scenario> = {
@@ -42,6 +43,9 @@ export const SCENARIOS: Record<string, Scenario> = {
   'aad7': labelPositionScenarios['aad7'],
   'bce9': labelPositionScenarios['bce9'],
   'c5fb': labelPositionScenarios['c5fb'],
+
+  // Detection issue scenarios
+  'x9a1': detectionIssueScenarios['x9a1'],
 
   // ...widgetScenarios,         // Will add later
 };
