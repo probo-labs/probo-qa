@@ -67,29 +67,18 @@ export default function ScenarioX9a1({ onAction }: ScenarioProps) {
         }
 
         .modal-header {
-          position: relative;
           margin-bottom: 20px;
         }
 
-        .close-button-wrapper {
-          position: absolute;
-          top: -10px;
-          right: -10px;
-          width: 32px;
-          height: 32px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: white;
-          border-radius: 50%;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        }
-
         .close-icon {
+          position: absolute;
+          top: 0;
+          right: 0;
           width: 16px;
           height: 16px;
           cursor: pointer;
-          fill: #666;
+          fill: currentColor;
+          color: inherit;
           transition: fill 0.2s;
         }
 
@@ -129,26 +118,22 @@ export default function ScenarioX9a1({ onAction }: ScenarioProps) {
       <div className="page-container">
         <div className="modal-overlay">
           <div className="modal">
+            <svg
+              className="close-icon"
+              viewBox="0 0 16 16"
+              fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
+              onClick={handleClose}
+              id="modal-close-button"
+              focusable="false"
+            >
+              <path
+                d="M7.99976,5.6572 L13.147456,0.509504 L15.410176,2.772224 L10.26248,7.91992 L15.490176,13.147616 L13.227456,15.410336 L7.99976,10.18264 L2.625808,15.556592 L0.363088,13.293872 L5.73704,7.91992 L0.443088,2.625968 L2.705808,0.363248 L7.99976,5.6572 Z"
+                fill="currentColor"
+              />
+            </svg>
             <div className="modal-header">
               <h1>Important Notice</h1>
-              <div 
-                className="close-button-wrapper"
-                onClick={handleClose}
-                id="modal-close-button"
-              >
-                <svg
-                  className="close-icon"
-                  viewBox="0 0 16 16"
-                  fill="currentColor"
-                  xmlns="http://www.w3.org/2000/svg"
-                  id="close-icon-svg"
-                >
-                  <path
-                    d="M7.99976,5.6572 L13.147456,0.509504 L15.410176,2.772224 L10.26248,7.91992 L15.490176,13.147616 L13.227456,15.410336 L7.99976,10.18264 L2.625808,15.556592 L0.363088,13.293872 L5.73704,7.91992 L0.443088,2.625968 L2.705808,0.363248 L7.99976,5.6572 Z"
-                    fill="currentColor"
-                  />
-                </svg>
-              </div>
             </div>
             <p className="subtitle">
               This modal demonstrates the SVG close button detection issue.
