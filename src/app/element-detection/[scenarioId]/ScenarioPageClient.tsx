@@ -32,6 +32,7 @@ import ScenarioC3f9 from '@/scenarios/c3f9/ScenarioC3f9';
 import ScenarioC4fa from '@/scenarios/c4fa/ScenarioC4fa';
 import ScenarioC5fb from '@/scenarios/c5fb/ScenarioC5fb';
 import ScenarioX9a1 from '@/scenarios/x9a1/ScenarioX9a1';
+import ScenarioX9a2 from '@/scenarios/x9a2/ScenarioX9a2';
 
 interface ScenarioPageClientProps {
   scenarioId: string;
@@ -68,6 +69,7 @@ const scenarioComponents: Record<string, ComponentType<ScenarioProps>> = {
   'c4fa': ScenarioC4fa,
   'c5fb': ScenarioC5fb,
   'x9a1': ScenarioX9a1,
+  'x9a2': ScenarioX9a2,
 };
 
 export default function ScenarioPageClient({ scenarioId, onAction }: ScenarioPageClientProps) {
