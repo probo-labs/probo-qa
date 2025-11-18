@@ -102,7 +102,6 @@ export default function ScenarioX9a2({ onAction }: ScenarioProps) {
           padding: 0 12px;
           flex-shrink: 0;
           color: #666;
-          display: block;
           /* Push to the right, creating non-clickable space */
           margin-left: auto;
         }
@@ -219,7 +218,7 @@ export default function ScenarioX9a2({ onAction }: ScenarioProps) {
               {/* Non-clickable caret SVG - SIBLING of clickable div */}
               {/* Space between "Disabled" and caret is created by flexbox (margin-left: auto on caret) */}
               <svg
-                className="caret-icon"
+                className="caret-icon infinity-icon"
                 viewBox="0 0 16 16"
                 fill="currentColor"
                 width="16"
@@ -227,6 +226,7 @@ export default function ScenarioX9a2({ onAction }: ScenarioProps) {
                 onClick={handleCaretClick}
                 id="caret-non-clickable"
                 focusable="false"
+                xmlns="http://www.w3.org/2000/svg"
                 style={{ transform: 'rotate(90deg)', transformOrigin: 'center' }}
               >
                 <polygon fill="currentColor" points="10 8 6 4 6 12 10 8"></polygon>
