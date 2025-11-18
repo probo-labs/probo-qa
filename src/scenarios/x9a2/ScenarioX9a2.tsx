@@ -62,12 +62,12 @@ export default function ScenarioX9a2({ onAction }: ScenarioProps) {
 
         .dropdown {
           position: relative;
-          display: inline-flex;
+          display: flex;
           align-items: center;
           border: 1px solid #ddd;
           border-radius: 4px;
           background: white;
-          min-width: 200px;
+          width: 280px;
           cursor: default;
         }
 
@@ -77,7 +77,8 @@ export default function ScenarioX9a2({ onAction }: ScenarioProps) {
           gap: 8px;
           padding: 10px 12px;
           cursor: pointer;
-          flex: 1;
+          /* Don't expand - let flexbox create space naturally */
+          flex-shrink: 0;
         }
 
         .divider-text:hover {
@@ -98,9 +99,12 @@ export default function ScenarioX9a2({ onAction }: ScenarioProps) {
         .caret-icon {
           width: 16px;
           height: 16px;
-          padding: 0 8px;
+          padding: 0 12px;
           flex-shrink: 0;
           color: #666;
+          display: block;
+          /* Push to the right, creating non-clickable space */
+          margin-left: auto;
         }
 
         .caret-icon:hover {
@@ -198,6 +202,7 @@ export default function ScenarioX9a2({ onAction }: ScenarioProps) {
                   fill="#7C7C7C"
                   width="16"
                   height="16"
+                  focusable="false"
                 >
                   <path
                     fill="#7C7C7C"
@@ -212,6 +217,7 @@ export default function ScenarioX9a2({ onAction }: ScenarioProps) {
               </div>
 
               {/* Non-clickable caret SVG - SIBLING of clickable div */}
+              {/* Space between "Disabled" and caret is created by flexbox (margin-left: auto on caret) */}
               <svg
                 className="caret-icon"
                 viewBox="0 0 16 16"
@@ -221,6 +227,7 @@ export default function ScenarioX9a2({ onAction }: ScenarioProps) {
                 onClick={handleCaretClick}
                 id="caret-non-clickable"
                 focusable="false"
+                style={{ transform: 'rotate(90deg)', transformOrigin: 'center' }}
               >
                 <polygon fill="currentColor" points="10 8 6 4 6 12 10 8"></polygon>
               </svg>
