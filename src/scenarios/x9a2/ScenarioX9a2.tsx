@@ -230,9 +230,13 @@ export default function ScenarioX9a2({ onAction }: ScenarioProps) {
           {clicked && (
             <div className={`click-feedback ${clicked === 'dropdown-clickable-area' ? 'success' : 'error'}`}>
               {clicked === 'dropdown-clickable-area' ? (
-                <strong>✅ Click registered!</strong> You clicked on the clickable area (icon + "Disabled" text).
+                <>
+                  <strong>✅ Click registered!</strong> You clicked on the clickable area (icon + &quot;Disabled&quot; text).
+                </>
               ) : (
-                <strong>❌ No action triggered!</strong> You clicked on the caret arrow, but it has no onclick handler.
+                <>
+                  <strong>❌ No action triggered!</strong> You clicked on the caret arrow, but it has no onclick handler.
+                </>
               )}
             </div>
           )}
