@@ -17,5 +17,18 @@ export const scenarios: Record<string, Scenario> = {
       'action_complexity=single-action',
     ],
   },
+  'x9a2': {
+    id: 'x9a2',
+    title: 'Dropdown Partial Clickability',
+    description: 'Dropdown with "Disabled" text that is clickable, but the caret arrow to its right is not clickable. The caret SVG is a sibling of the clickable div (not inside it), so clicks on the right side of the dropdown do not trigger any action. Demonstrates partial clickability due to DOM structure.',
+    expectedAction: 'CLICK',
+    expectedTarget: 'dropdown-clickable-area',
+    labels: [
+      'detection_issue=partial-clickability',
+      'detection_issue=dom-structure',
+      'element_density=sparse',
+      'action_complexity=single-action',
+    ],
+  },
 } as const;
 
