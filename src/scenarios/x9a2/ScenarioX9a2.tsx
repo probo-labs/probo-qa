@@ -96,9 +96,8 @@ export default function ScenarioX9a2({ onAction }: ScenarioProps) {
           font-size: 14px;
         }
 
-        .caret-icon {
-          width: 16px;
-          height: 16px;
+        .caret-icon,
+        .caret {
           padding: 0 12px;
           flex-shrink: 0;
           color: #666;
@@ -106,7 +105,8 @@ export default function ScenarioX9a2({ onAction }: ScenarioProps) {
           margin-left: auto;
         }
 
-        .caret-icon:hover {
+        .caret-icon:hover,
+        .caret:hover {
           color: #333;
         }
 
@@ -217,17 +217,22 @@ export default function ScenarioX9a2({ onAction }: ScenarioProps) {
 
               {/* Non-clickable caret SVG - SIBLING of clickable div */}
               {/* Space between "Disabled" and caret is created by flexbox (margin-left: auto on caret) */}
+              {/* EXACT COPY FROM REFERENCE HTML */}
               <svg
-                className="caret-icon infinity-icon"
-                viewBox="0 0 16 16"
-                fill="currentColor"
-                width="16"
-                height="16"
-                onClick={handleCaretClick}
-                id="caret-non-clickable"
+                className="infinity-icon caret icon"
                 focusable="false"
                 xmlns="http://www.w3.org/2000/svg"
-                style={{ transform: 'rotate(90deg)', transformOrigin: 'center' }}
+                fill="currentColor"
+                icon-name="caret down"
+                color="inherit"
+                height="16"
+                width="16"
+                alt=""
+                viewBox="0 0 16 16"
+                transform="rotate(90)"
+                style={{ transform: 'rotate(90deg)' }}
+                onClick={handleCaretClick}
+                id="caret-non-clickable"
               >
                 <polygon fill="currentColor" points="10 8 6 4 6 12 10 8"></polygon>
               </svg>
