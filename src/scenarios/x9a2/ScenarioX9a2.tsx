@@ -267,7 +267,7 @@ export default function ScenarioX9a2({ onAction }: ScenarioProps) {
                   <li>Has <code>onclick</code> handler attached</li>
                   <li>Contains: SVG icon + <code>&lt;span&gt;Disabled&lt;/span&gt;</code></li>
                   <li>CSS: <code>cursor: pointer</code></li>
-                  <li>ARIA: <code>role="alert"</code>, <code>aria-live="polite"</code></li>
+                  <li>ARIA: <code>role=&quot;alert&quot;</code>, <code>aria-live=&quot;polite&quot;</code></li>
                 </ul>
               </li>
               <li style={{ marginTop: '10px' }}><strong>Non-Clickable Element</strong> (<code>svg.caret-icon</code>):
@@ -275,8 +275,8 @@ export default function ScenarioX9a2({ onAction }: ScenarioProps) {
                   <li>Sibling of clickable div (same parent: <code>div.dropdown</code>)</li>
                   <li>No <code>onclick</code> handler</li>
                   <li>No <code>cursor: pointer</code> style</li>
-                  <li><code>focusable="false"</code></li>
-                  <li>Visually appears to the right of "Disabled" but is outside the clickable container</li>
+                  <li><code>focusable=&quot;false&quot;</code></li>
+                  <li>Visually appears to the right of &quot;Disabled&quot; but is outside the clickable container</li>
                 </ul>
               </li>
             </ul>
