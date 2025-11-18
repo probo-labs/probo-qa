@@ -217,20 +217,17 @@ export default function ScenarioX9a2({ onAction }: ScenarioProps) {
 
               {/* Non-clickable caret SVG - SIBLING of clickable div */}
               {/* Space between "Disabled" and caret is created by flexbox (margin-left: auto on caret) */}
-              {/* EXACT COPY FROM REFERENCE HTML */}
+              {/* EXACT COPY FROM REFERENCE HTML (adapted for React) */}
               <svg
                 className="infinity-icon caret icon"
-                focusable="false"
+                focusable={false}
                 xmlns="http://www.w3.org/2000/svg"
                 fill="currentColor"
-                icon-name="caret down"
-                color="inherit"
-                height="16"
-                width="16"
-                alt=""
+                height={16}
+                width={16}
                 viewBox="0 0 16 16"
                 transform="rotate(90)"
-                style={{ transform: 'rotate(90deg)' }}
+                style={{ transform: 'rotate(90deg)', color: 'inherit' }}
                 onClick={handleCaretClick}
                 id="caret-non-clickable"
               >
