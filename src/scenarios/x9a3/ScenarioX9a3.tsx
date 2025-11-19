@@ -523,8 +523,8 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
         
         {/* Table of Contents */}
         <div style={{ 
-          marginBottom: '30px', 
-          padding: '20px', 
+          marginBottom: '20px', 
+          padding: '10px', 
           background: '#f8f9fa', 
           borderRadius: '8px', 
           border: '1px solid #e0e0e0',
@@ -532,8 +532,8 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           top: '20px',
           zIndex: 100
         }}>
-          <h2 style={{ fontSize: '1.1rem', marginBottom: '15px', color: '#333' }}>Table of Contents</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '8px', fontSize: '0.9rem' }}>
+          <h2 style={{ fontSize: '0.9rem', marginBottom: '8px', color: '#333' }}>Table of Contents</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '4px', fontSize: '0.75rem' }}>
             {dropdownConfigs.map(config => (
               <a
                 key={config.id}
@@ -545,8 +545,8 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                 style={{
                   color: '#0066cc',
                   textDecoration: 'none',
-                  padding: '4px 8px',
-                  borderRadius: '4px',
+                  padding: '2px 4px',
+                  borderRadius: '2px',
                   transition: 'background-color 0.2s'
                 }}
                 onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#e8f4f8'}
@@ -564,342 +564,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* DUPLICATE - Exact copy of reference for comparison */}
-        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
-          <svg
-            className="infinity-icon"
-            focusable="false"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            icon-name="api protection"
-            color="inherit"
-            height="16"
-            width="16"
-            alt=""
-            viewBox="0 0 16 16"
-            transform="rotate(0)"
-            style={{ backgroundColor: '#e6e6fa' }}
-          >
-            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
-              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
-              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
-              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
-              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
-              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
-              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
-            </g>
-          </svg>
-          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
-          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
-            <div
-              role="listbox"
-              aria-expanded="false"
-              className="ui selection dropdown cp-select default"
-              tabIndex={0}
-              style={{ backgroundColor: '#f0fff0' }}
-            >
-              <div
-                aria-atomic="true"
-                aria-live="polite"
-                role="alert"
-                className="divider text"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleButtonClick(e, 'duplicate-dropdown-clickable');
-                }}
-                style={{ cursor: 'pointer', backgroundColor: '#fff5ee' }}
-              >
-                <svg
-                  className="infinity-icon"
-                  focusable="false"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="#7C7C7C"
-                  icon-name="inactive practice"
-                  color="#7C7C7C"
-                  height="16"
-                  width="16"
-                  alt=""
-                  viewBox="0 0 16 16"
-                  transform="rotate(0)"
-                  style={{ backgroundColor: '#f5deb3' }}
-                >
-                  <path
-                    fill="#7C7C7C"
-                    d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"
-                  ></path>
-                  <path
-                    fill="#7C7C7C"
-                    d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"
-                  ></path>
-                </svg>
-                <span style={{ backgroundColor: '#ffe4b5' }}>Disabled</span>
-              </div>
-              <svg
-                className="infinity-icon caret icon"
-                focusable="false"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                icon-name="caret down"
-                color="inherit"
-                height="16"
-                width="16"
-                alt=""
-                viewBox="0 0 16 16"
-                transform="rotate(90)"
-                style={{ backgroundColor: '#d3d3d3' }}
-              >
-                <polygon fill="currentColor" points="10 8 6 4 6 12 10 8"></polygon>
-              </svg>
-              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
-            </div>
-          </div>
-          <div
-            className="collapse-indicator"
-            onClick={(e) => {
-              e.preventDefault();
-              handleButtonClick(e, 'duplicate-collapse-indicator');
-            }}
-            style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
-          >
-            <svg
-              className="infinity-icon"
-              focusable="false"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              icon-name="chevron down"
-              color="inherit"
-              height="16"
-              width="16"
-              alt=""
-              viewBox="0 0 9 9"
-              transform="rotate(0)"
-              style={{ backgroundColor: '#e0ffff' }}
-            >
-              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
-            </svg>
-          </div>
-        </div>
-
-        {/* DUPLICATE B - Exact copy of reference for comparison */}
-        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
-          <svg
-            className="infinity-icon"
-            focusable="false"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            icon-name="api protection"
-            color="inherit"
-            height="16"
-            width="16"
-            alt=""
-            viewBox="0 0 16 16"
-            transform="rotate(0)"
-            style={{ backgroundColor: '#e6e6fa' }}
-          >
-            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
-              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
-              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
-              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
-              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
-              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
-              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
-            </g>
-          </svg>
-          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
-          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
-            <div
-              role="listbox"
-              aria-expanded="false"
-              className="ui selection dropdown cp-select default"
-              tabIndex={0}
-              style={{ backgroundColor: '#f0fff0' }}
-            >
-              <div
-                aria-atomic="true"
-                aria-live="polite"
-                role="alert"
-                className="divider text"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleButtonClick(e, 'duplicate-b-dropdown-clickable');
-                }}
-                style={{ cursor: 'pointer', backgroundColor: '#fff5ee' }}
-              >
-                <svg
-                  className="infinity-icon"
-                  focusable="false"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="#7C7C7C"
-                  icon-name="inactive practice"
-                  color="#7C7C7C"
-                  height="16"
-                  width="16"
-                  alt=""
-                  viewBox="0 0 16 16"
-                  transform="rotate(0)"
-                  style={{ backgroundColor: '#f5deb3' }}
-                >
-                  <path
-                    fill="#7C7C7C"
-                    d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"
-                  ></path>
-                  <path
-                    fill="#7C7C7C"
-                    d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"
-                  ></path>
-                </svg>
-                <span style={{ backgroundColor: '#ffe4b5' }}>Disabled</span>
-              </div>
-              <svg
-                className="infinity-icon caret icon"
-                focusable="false"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                icon-name="caret down"
-                color="inherit"
-                height="16"
-                width="16"
-                alt=""
-                viewBox="0 0 16 16"
-                transform="rotate(90)"
-                style={{ backgroundColor: '#d3d3d3' }}
-              >
-                <polygon fill="currentColor" points="10 8 6 4 6 12 10 8"></polygon>
-              </svg>
-              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
-            </div>
-          </div>
-          <div
-            className="collapse-indicator"
-            onClick={(e) => {
-              e.preventDefault();
-              handleButtonClick(e, 'duplicate-b-collapse-indicator');
-            }}
-            style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
-          >
-            <svg
-              className="infinity-icon"
-              focusable="false"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              icon-name="chevron down"
-              color="inherit"
-              height="16"
-              width="16"
-              alt=""
-              viewBox="0 0 9 9"
-              transform="rotate(0)"
-              style={{ backgroundColor: '#e0ffff' }}
-            >
-              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
-            </svg>
-          </div>
-        </div>
-
         {/* VARIANT 1 - Based on Duplicate B with variant-specific changes */}
-        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
-          <svg
-            className="infinity-icon"
-            focusable="false"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            icon-name="api protection"
-            color="inherit"
-            height="16"
-            width="16"
-            alt=""
-            viewBox="0 0 16 16"
-            transform="rotate(0)"
-            style={{ backgroundColor: '#e6e6fa' }}
-          >
-            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
-              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
-              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
-              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
-              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
-              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
-              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
-            </g>
-          </svg>
-          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
-          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
-            <div
-              role="listbox"
-              aria-expanded="false"
-              className="ui selection dropdown cp-select default"
-              tabIndex={0}
-              style={{ backgroundColor: '#f0fff0' }}
-            >
-              {'   '}
-              <div
-                aria-atomic="true"
-                aria-live="polite"
-                role="alert"
-                className="divider text full-width"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleButtonClick(e, 'variant-1-dropdown-clickable');
-                }}
-                style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}
-              >
-                <svg
-                  className="infinity-icon"
-                  focusable="false"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="#7C7C7C"
-                  icon-name="inactive practice"
-                  color="#7C7C7C"
-                  height="16"
-                  width="16"
-                  alt=""
-                  viewBox="0 0 16 16"
-                  transform="rotate(0)"
-                  style={{ backgroundColor: '#f5deb3' }}
-                >
-                  <path
-                    fill="#7C7C7C"
-                    d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"
-                  ></path>
-                  <path
-                    fill="#7C7C7C"
-                    d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"
-                  ></path>
-                </svg>
-                <span style={{ backgroundColor: '#ffe4b5' }}>Full-width</span>
-              </div>
-              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
-            </div>
-          </div>
-          <div
-            className="collapse-indicator"
-            onClick={(e) => {
-              e.preventDefault();
-              handleButtonClick(e, 'variant-1-collapse-indicator');
-            }}
-            style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
-          >
-            <svg
-              className="infinity-icon"
-              focusable="false"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              icon-name="chevron down"
-              color="inherit"
-              height="16"
-              width="16"
-              alt=""
-              viewBox="0 0 9 9"
-              transform="rotate(0)"
-              style={{ backgroundColor: '#e0ffff' }}
-            >
-              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
-            </svg>
-          </div>
-        </div>
-
-        {/* VARIANT 1 V2 - Based on Duplicate B with variant-specific changes */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          1. Full-width (WS) (P) (FW) [V2]
+        <div id="variant-1" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          1. Full-width (WS) (P) (FW) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg
@@ -1001,9 +668,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 2 V2 - Full-width, no whitespace, has padding, no caret */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          2. Full-width (P) (FW) [V2]
+        {/* VARIANT 2 - Full-width, no whitespace, has padding, no caret */}
+        <div id="variant-2" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          2. Full-width (P) (FW) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg
@@ -1104,9 +771,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 3 V2 - Partial-width, has whitespace, has padding, no caret */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          3. Partial-width (WS) (P) [V2]
+        {/* VARIANT 3 - Partial-width, has whitespace, has padding, no caret */}
+        <div id="variant-3" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          3. Partial-width (WS) (P) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg
@@ -1208,9 +875,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 4 V2 - Partial-width, no whitespace, has padding, no caret */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          4. Partial-width (P) [V2]
+        {/* VARIANT 4 - Partial-width, no whitespace, has padding, no caret */}
+        <div id="variant-4" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          4. Partial-width (P) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg
@@ -1311,9 +978,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 5 V2 - Full-width, no whitespace, has padding, no caret (same as variant 2) */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          5. Full-width (P) (FW) [V2]
+        {/* VARIANT 5 - Full-width, no whitespace, has padding, no caret (same as variant 2) */}
+        <div id="variant-5" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          5. Full-width (P) (FW) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg
@@ -1414,9 +1081,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 6 V2 - Full-width, no whitespace, NO padding, no caret */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          6. Full-width (FW) [V2]
+        {/* VARIANT 6 - Full-width, no whitespace, NO padding, no caret */}
+        <div id="variant-6" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          6. Full-width (FW) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg
@@ -1517,9 +1184,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 7 V2 - Partial-width, no whitespace, has padding, no caret */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          7. Partial-width (P) [V2]
+        {/* VARIANT 7 - Partial-width, no whitespace, has padding, no caret */}
+        <div id="variant-7" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          7. Partial-width (P) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg
@@ -1620,9 +1287,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 8 V2 - Partial-width, no whitespace, no padding, no caret */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          8. Partial-width [V2]
+        {/* VARIANT 8 - Partial-width, no whitespace, no padding, no caret */}
+        <div id="variant-8" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          8. Partial-width (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg
@@ -1723,9 +1390,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 9 V2 - WS+P (Full-width), has whitespace, has padding, no caret */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          9. WS+P (FW) [V2]
+        {/* VARIANT 9 - WS+P (Full-width), has whitespace, has padding, no caret */}
+        <div id="variant-9" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          9. WS+P (FW) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg
@@ -1827,9 +1494,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 10 V2 - WS+NP (Full-width), has whitespace, no padding, no caret */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          10. WS+NP (FW) [V2]
+        {/* VARIANT 10 - WS+NP (Full-width), has whitespace, no padding, no caret */}
+        <div id="variant-10" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          10. WS+NP (FW) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg
@@ -1931,9 +1598,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 11 V2 - NWS+P (Full-width), no whitespace, has padding, no caret */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          11. NWS+P (FW) [V2]
+        {/* VARIANT 11 - NWS+P (Full-width), no whitespace, has padding, no caret */}
+        <div id="variant-11" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          11. NWS+P (FW) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg
@@ -2034,9 +1701,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 12 V2 - NWS+NP (Full-width), no whitespace, no padding, no caret */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          12. NWS+NP (FW) [V2]
+        {/* VARIANT 12 - NWS+NP (Full-width), no whitespace, no padding, no caret */}
+        <div id="variant-12" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          12. NWS+NP (FW) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg
@@ -2137,9 +1804,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 13 V2 - Two same handlers, has whitespace, has padding, partial-width, no caret, multipleElements */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          13. Two same handlers (WS) (P) (2x) [V2]
+        {/* VARIANT 13 - Two same handlers, has whitespace, has padding, partial-width, no caret, multipleElements */}
+        <div id="variant-13" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          13. Two same handlers (WS) (P) (2x) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg
@@ -2277,9 +1944,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 14 V2 - Two same handlers, no whitespace, has padding, partial-width, no caret, multipleElements */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          14. Two same handlers (P) (2x) [V2]
+        {/* VARIANT 14 - Two same handlers, no whitespace, has padding, partial-width, no caret, multipleElements */}
+        <div id="variant-14" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          14. Two same handlers (P) (2x) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg
@@ -2416,9 +2083,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 15 V2 - Two different handlers, has whitespace, has padding, partial-width, no caret, multipleElements, differentHandlers */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          15. Two different handlers (WS) (P) (2x) [V2]
+        {/* VARIANT 15 - Two different handlers, has whitespace, has padding, partial-width, no caret, multipleElements, differentHandlers */}
+        <div id="variant-15" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          15. Two different handlers (WS) (P) (2x) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg
@@ -2553,9 +2220,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 16 V2 - Two different handlers, no whitespace, has padding, partial-width, no caret, multipleElements, differentHandlers */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          16. Two different handlers (P) (2x) [V2]
+        {/* VARIANT 16 - Two different handlers, no whitespace, has padding, partial-width, no caret, multipleElements, differentHandlers */}
+        <div id="variant-16" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          16. Two different handlers (P) (2x) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg
@@ -2689,9 +2356,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 17 V2 - React handler, has whitespace, has padding, full-width, has cursor, no caret */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          17. React (WS) (P) (FW) [V2]
+        {/* VARIANT 17 - React handler, has whitespace, has padding, full-width, has cursor, no caret */}
+        <div id="variant-17" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          17. React (WS) (P) (FW) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
@@ -2725,9 +2392,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 18 V2 - Inline handler, has whitespace, has padding, full-width, has cursor, no caret */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          18. Inline (WS) (P) (FW) [V2]
+        {/* VARIANT 18 - Inline handler, has whitespace, has padding, full-width, has cursor, no caret */}
+        <div id="variant-18" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          18. Inline (WS) (P) (FW) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
@@ -2761,9 +2428,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 19 V2 - addEL, has whitespace, has padding, full-width, has cursor, no caret, no onClick (uses addEventListener) */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          19. addEL (WS) (P) (FW) [V2]
+        {/* VARIANT 19 - addEL, has whitespace, has padding, full-width, has cursor, no caret, no onClick (uses addEventListener) */}
+        <div id="variant-19" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          19. addEL (WS) (P) (FW) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
@@ -2797,9 +2464,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 20 V2 - React+EL, has whitespace, has padding, full-width, has cursor, no caret */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          20. React+EL (WS) (P) (FW) [V2]
+        {/* VARIANT 20 - React+EL, has whitespace, has padding, full-width, has cursor, no caret */}
+        <div id="variant-20" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          20. React+EL (WS) (P) (FW) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
@@ -2833,9 +2500,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 21 V2 - No cursor, has whitespace, has padding, full-width, no cursor, has handler, no caret */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          21. No cursor (WS) (P) (FW) [V2]
+        {/* VARIANT 21 - No cursor, has whitespace, has padding, full-width, no cursor, has handler, no caret */}
+        <div id="variant-21" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          21. No cursor (WS) (P) (FW) (non-unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
@@ -2869,9 +2536,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 22 V2 - Cursor only, has whitespace, has padding, full-width, has cursor, no handler, no caret */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          22. Cursor only (WS) (P) (FW) [V2]
+        {/* VARIANT 22 - Cursor only, has whitespace, has padding, full-width, has cursor, no handler, no caret */}
+        <div id="variant-22" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          22. Cursor only (WS) (P) (FW) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
@@ -2905,9 +2572,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 23 V2 - Handler only, has whitespace, has padding, full-width, no cursor, has handler, no caret */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          23. Handler only (WS) (P) (FW) [V2]
+        {/* VARIANT 23 - Handler only, has whitespace, has padding, full-width, no cursor, has handler, no caret */}
+        <div id="variant-23" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          23. Handler only (WS) (P) (FW) (non-unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
@@ -2941,9 +2608,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 24 V2 - Both, has whitespace, has padding, full-width, has cursor, has handler, no caret */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          24. Both (WS) (P) (FW) [V2]
+        {/* VARIANT 24 - Both, has whitespace, has padding, full-width, has cursor, has handler, no caret */}
+        <div id="variant-24" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          24. Both (WS) (P) (FW) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
@@ -2977,9 +2644,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 25 V2 - With caret, has whitespace, has padding, partial-width, has cursor, has handler, has caret */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          25. With caret (WS) (P) (C) [V2]
+        {/* VARIANT 25 - With caret, has whitespace, has padding, partial-width, has cursor, has handler, has caret */}
+        <div id="variant-25" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          25. With caret (WS) (P) (C) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
@@ -3016,9 +2683,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 26 V2 - With caret, no whitespace, has padding, partial-width, has cursor, has handler, has caret */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          26. With caret (P) (C) [V2]
+        {/* VARIANT 26 - With caret, no whitespace, has padding, partial-width, has cursor, has handler, has caret */}
+        <div id="variant-26" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          26. With caret (P) (C) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
@@ -3054,9 +2721,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 27 V2 - No caret, has whitespace, has padding, full-width, has cursor, has handler, no caret */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          27. No caret (WS) (P) (FW) [V2]
+        {/* VARIANT 27 - No caret, has whitespace, has padding, full-width, has cursor, has handler, no caret */}
+        <div id="variant-27" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          27. No caret (WS) (P) (FW) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
@@ -3090,9 +2757,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 28 V2 - No caret, no whitespace, has padding, full-width, has cursor, has handler, no caret */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          28. No caret (P) (FW) [V2]
+        {/* VARIANT 28 - No caret, no whitespace, has padding, full-width, has cursor, has handler, no caret */}
+        <div id="variant-28" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          28. No caret (P) (FW) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
@@ -3125,9 +2792,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 29 V2 - Complex 1, has whitespace, has padding, partial-width, has cursor, has handler, has caret */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          29. Complex 1 (WS) (P) (C) [V2]
+        {/* VARIANT 29 - Complex 1, has whitespace, has padding, partial-width, has cursor, has handler, has caret */}
+        <div id="variant-29" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          29. Complex 1 (WS) (P) (C) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
@@ -3164,9 +2831,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 30 V2 - Complex 2, no whitespace, no padding, full-width, no cursor, has handler, no caret */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          30. Complex 2 (FW) [V2]
+        {/* VARIANT 30 - Complex 2, no whitespace, no padding, full-width, no cursor, has handler, no caret */}
+        <div id="variant-30" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          30. Complex 2 (FW) (non-unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
@@ -3199,9 +2866,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 31 V2 - Complex 3, has whitespace, no padding, full-width, has cursor, inline handler, no caret */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          31. Complex 3 (WS) (FW) [V2]
+        {/* VARIANT 31 - Complex 3, has whitespace, no padding, full-width, has cursor, inline handler, no caret */}
+        <div id="variant-31" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          31. Complex 3 (WS) (FW) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
@@ -3235,9 +2902,9 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* VARIANT 32 V2 - Complex 4, no whitespace, has padding, partial-width, has cursor, has handler, has addEventListener, has caret */}
-        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          32. Complex 4 (P) (C) [V2]
+        {/* VARIANT 32 - Complex 4, no whitespace, has padding, partial-width, has cursor, has handler, has addEventListener, has caret */}
+        <div id="variant-32" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          32. Complex 4 (P) (C) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
