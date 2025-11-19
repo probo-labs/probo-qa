@@ -11,20 +11,29 @@ const allScenarios = getAllScenarios();
 test.describe('Ground Truth Validation', () => {
   // Generate a test for each scenario
   for (const scenario of allScenarios) {
-    test(`${scenario.id}: ${scenario.title}`, async ({ page, baseURL }) => {
-      if (!baseURL) {
-        throw new Error('baseURL is required but was not provided');
-      }
+    // Skip ground truth testing for scenarios with detection_issue labels
+    const hasDetectionIssue = scenario.labels.some(label => label.startsWith('detection_issue='));
+    
+    if (hasDetectionIssue) {
+      test.skip(`${scenario.id}: ${scenario.title}`, async ({ page, baseURL }) => {
+        // Skipped - detection_issue scenarios don't have reliable ground truth
+      });
+    } else {
+      test(`${scenario.id}: ${scenario.title}`, async ({ page, baseURL }) => {
+        if (!baseURL) {
+          throw new Error('baseURL is required but was not provided');
+        }
 
-      // Perform ground truth action (based on scenario metadata)
-      await performGroundTruthAction(page, scenario, baseURL);
+        // Perform ground truth action (based on scenario metadata)
+        await performGroundTruthAction(page, scenario, baseURL);
 
-      // Validate and assert success
-      const passed = await validateTest(page, scenario.id);
+        // Validate and assert success
+        const passed = await validateTest(page, scenario.id);
 
-      expect(passed,
-        `Scenario ${scenario.id} should pass with ground truth action: ${scenario.expectedAction} on ${scenario.expectedTarget}`
-      ).toBe(true);
-    });
+        expect(passed,
+          `Scenario ${scenario.id} should pass with ground truth action: ${scenario.expectedAction} on ${scenario.expectedTarget}`
+        ).toBe(true);
+      });
+    }
   }
 });

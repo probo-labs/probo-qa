@@ -4,18 +4,12 @@ import type { ScenarioProps } from '../shared/types';
 
 export default function ScenarioX9a2({ onAction }: ScenarioProps) {
   const { handleButtonClick } = useInteractionHandlers(onAction);
-  const [clicked, setClicked] = useState<string | null>(null);
+  const [clicked, setClicked] = useState<Record<string, boolean>>({});
 
-  const handleDropdownClick = (e: React.MouseEvent) => {
+  const handleClick = (e: React.MouseEvent, id: string) => {
     e.preventDefault();
-    setClicked('dropdown-clickable-area');
-    handleButtonClick(e, 'dropdown-clickable-area');
-  };
-
-  const handleCaretClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setClicked('caret-non-clickable');
-    // This won't trigger navigation because there's no onclick handler
+    setClicked(prev => ({ ...prev, [id]: true }));
+    handleButtonClick(e, id);
   };
 
   return (
@@ -27,10 +21,8 @@ export default function ScenarioX9a2({ onAction }: ScenarioProps) {
           display: flex;
           align-items: center;
           justify-content: center;
-        }
-
-        .control {
-          /* Structural wrapper, no styling needed */
+          gap: 30px;
+          padding: 20px;
         }
 
         .ui.selection.dropdown.cp-select.default {
@@ -78,7 +70,7 @@ export default function ScenarioX9a2({ onAction }: ScenarioProps) {
           flex-shrink: 0;
           width: 16px !important;
           height: 16px !important;
-          display: block !important;
+          display: inline-block !important;
           visibility: visible !important;
           opacity: 1 !important;
           color: #666 !important;
@@ -100,7 +92,7 @@ export default function ScenarioX9a2({ onAction }: ScenarioProps) {
       `}</style>
 
       <div className="practice">
-        {/* First dropdown - WITH non-clickable whitespace (matches reference) */}
+        {/* First dropdown: non-clickable whitespace between text and caret */}
         <div className="control">
           <div
             role="listbox"
@@ -113,9 +105,8 @@ export default function ScenarioX9a2({ onAction }: ScenarioProps) {
               aria-live="polite"
               role="alert"
               className="divider text"
-              onClick={handleDropdownClick}
-              style={{ cursor: 'pointer' }}
-              id="dropdown-clickable-area"
+              onClick={(e) => handleClick(e, 'dropdown-clickable-area-1')}
+              id="dropdown-clickable-area-1"
             >
               <svg
                 className="infinity-icon"
@@ -147,9 +138,7 @@ export default function ScenarioX9a2({ onAction }: ScenarioProps) {
               height="16"
               width="16"
               viewBox="0 0 16 16"
-              style={{ transform: 'rotate(90deg)', display: 'block', color: '#666' }}
-              onClick={handleCaretClick}
-              id="caret-non-clickable"
+              style={{ transform: 'rotate(90deg)', display: 'inline-block', color: '#666', marginLeft: 'auto' }}
             >
               <polygon fill="currentColor" points="10 8 6 4 6 12 10 8"></polygon>
             </svg>
@@ -157,51 +146,55 @@ export default function ScenarioX9a2({ onAction }: ScenarioProps) {
           </div>
         </div>
 
-        {/* Second dropdown - WITHOUT non-clickable whitespace (label expands to full width for uniquify testing) */}
-        <div
-          role="listbox"
-          aria-expanded="false"
-          className="ui selection dropdown cp-select default"
-          tabIndex={0}
-          id="dropdown-2-container"
-        >
-          {'   '}
-          {/* Whitespace-only text node - makes parent.innerText.trim() === '' */}
+        {/* Second dropdown: full-width clickable label (no caret) */}
+        <div className="control">
           <div
-            aria-atomic="true"
-            aria-live="polite"
-            role="alert"
-            className="divider text full-width"
-            onClick={handleDropdownClick}
-            style={{ cursor: 'pointer' }}
-            id="dropdown-clickable-area-2"
+            role="listbox"
+            aria-expanded="false"
+            className="ui selection dropdown cp-select default"
+            tabIndex={0}
           >
-            <svg
-              className="infinity-icon"
-              viewBox="0 0 16 16"
-              fill="#7C7C7C"
-              color="#7C7C7C"
-              height="16"
-              width="16"
-              focusable="false"
-              xmlns="http://www.w3.org/2000/svg"
+            {'   '}
+            <div
+              aria-atomic="true"
+              aria-live="polite"
+              role="alert"
+              className="divider text full-width"
+              onClick={(e) => handleClick(e, 'dropdown-clickable-area-2')}
+              id="dropdown-clickable-area-2"
             >
-              <path
+              <svg
+                className="infinity-icon"
+                viewBox="0 0 16 16"
                 fill="#7C7C7C"
-                d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"
-              ></path>
-              <path
-                fill="#7C7C7C"
-                d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"
-              ></path>
-            </svg>
-            <span>Enabled</span>
+                color="#7C7C7C"
+                height="16"
+                width="16"
+                focusable="false"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill="#7C7C7C"
+                  d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"
+                ></path>
+                <path
+                  fill="#7C7C7C"
+                  d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"
+                ></path>
+              </svg>
+              <span>Full-width clickable</span>
+            </div>
+            <div className="menu transition sf-hidden"></div>
           </div>
-          {/* NO caret icon - label expands to fill the space */}
-          <div className="menu transition sf-hidden"></div>
         </div>
+
+        {clicked['dropdown-clickable-area-1'] && (
+          <div style={{ color: 'green' }}>First dropdown clicked!</div>
+        )}
+        {clicked['dropdown-clickable-area-2'] && (
+          <div style={{ color: 'green' }}>Second dropdown clicked!</div>
+        )}
       </div>
     </>
   );
 }
-

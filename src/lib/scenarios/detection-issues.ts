@@ -12,7 +12,6 @@ export const scenarios: Record<string, Scenario> = {
     expectedTarget: 'modal-close-button',
     labels: [
       'detection_issue=svg-cursor-pointer',
-      'detection_issue=highlighter-recorder-mismatch',
       'element_density=sparse',
       'action_complexity=single-action',
     ],
@@ -22,11 +21,22 @@ export const scenarios: Record<string, Scenario> = {
     title: 'Dropdown Partial Clickability',
     description: 'Dropdown with "Disabled" text that is clickable, but the caret arrow to its right is not clickable. The caret SVG is a sibling of the clickable div (not inside it), so clicks on the right side of the dropdown do not trigger any action. Demonstrates partial clickability due to DOM structure.',
     expectedAction: 'CLICK',
-    expectedTarget: 'dropdown-clickable-area',
+    expectedTarget: 'dropdown-clickable-area-1',
     labels: [
       'detection_issue=partial-clickability',
-      'detection_issue=dom-structure',
       'element_density=sparse',
+      'action_complexity=single-action',
+    ],
+  },
+  'x9a3': {
+    id: 'x9a3',
+    title: 'Uniquify Test Variations',
+    description: 'Comprehensive table of 32 dropdown variations testing uniquify logic with different combinations of whitespace, padding, handlers, cursor styles, and multiple children. Tests how uniquify handles parent-child relationships, whitespace-only parents, and nested elements.',
+    expectedAction: 'CLICK',
+    expectedTarget: 'dropdown-1-clickable',
+    labels: [
+      'detection_issue=uniquify-testing',
+      'element_density=dense',
       'action_complexity=single-action',
     ],
   },
