@@ -773,7 +773,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
 
         {/* VARIANT 3 - Partial-width, has whitespace, has padding, no caret */}
         <div id="variant-3" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          3. Partial-width (WS) (P) (unifiable)
+          3. Partial-width (WS) (P) (non-unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg
@@ -877,7 +877,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
 
         {/* VARIANT 4 - Partial-width, no whitespace, has padding, no caret */}
         <div id="variant-4" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          4. Partial-width (P) (unifiable)
+          4. Partial-width (P) (non-unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg
@@ -1186,7 +1186,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
 
         {/* VARIANT 7 - Partial-width, no whitespace, has padding, no caret */}
         <div id="variant-7" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          7. Partial-width (P) (unifiable)
+          7. Partial-width (P) (non-unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg
@@ -1289,7 +1289,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
 
         {/* VARIANT 8 - Partial-width, no whitespace, no padding, no caret */}
         <div id="variant-8" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          8. Partial-width (unifiable)
+          8. Partial-width (non-unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg
@@ -1806,7 +1806,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
 
         {/* VARIANT 13 - Two same handlers, has whitespace, has padding, partial-width, no caret, multipleElements */}
         <div id="variant-13" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          13. Two same handlers (WS) (P) (2x) (unifiable)
+          13. Two same handlers (WS) (P) (2x) (non-unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg
@@ -1946,7 +1946,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
 
         {/* VARIANT 14 - Two same handlers, no whitespace, has padding, partial-width, no caret, multipleElements */}
         <div id="variant-14" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          14. Two same handlers (P) (2x) (unifiable)
+          14. Two same handlers (P) (2x) (non-unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg
@@ -2085,7 +2085,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
 
         {/* VARIANT 15 - Two different handlers, has whitespace, has padding, partial-width, no caret, multipleElements, differentHandlers */}
         <div id="variant-15" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          15. Two different handlers (WS) (P) (2x) (unifiable)
+          15. Two different handlers (WS) (P) (2x) (non-unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg
@@ -2222,7 +2222,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
 
         {/* VARIANT 16 - Two different handlers, no whitespace, has padding, partial-width, no caret, multipleElements, differentHandlers */}
         <div id="variant-16" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          16. Two different handlers (P) (2x) (unifiable)
+          16. Two different handlers (P) (2x) (non-unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg
@@ -2646,7 +2646,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
 
         {/* VARIANT 25 - With caret, has whitespace, has padding, partial-width, has cursor, has handler, has caret */}
         <div id="variant-25" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          25. With caret (WS) (P) (C) (unifiable)
+          25. With caret (WS) (P) (C) (non-unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
@@ -2685,7 +2685,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
 
         {/* VARIANT 26 - With caret, no whitespace, has padding, partial-width, has cursor, has handler, has caret */}
         <div id="variant-26" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          26. With caret (P) (C) (unifiable)
+          26. With caret (P) (C) (non-unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
@@ -2794,7 +2794,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
 
         {/* VARIANT 29 - Complex 1, has whitespace, has padding, partial-width, has cursor, has handler, has caret */}
         <div id="variant-29" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          29. Complex 1 (WS) (P) (C) (unifiable)
+          29. Complex 1 (WS) (P) (C) (non-unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
@@ -2904,7 +2904,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
 
         {/* VARIANT 32 - Complex 4, no whitespace, has padding, partial-width, has cursor, has handler, has addEventListener, has caret */}
         <div id="variant-32" style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
-          32. Complex 4 (P) (C) (unifiable)
+          32. Complex 4 (P) (C) (non-unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
           <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
