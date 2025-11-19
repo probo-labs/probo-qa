@@ -12,7 +12,6 @@ export const scenarios: Record<string, Scenario> = {
     expectedTarget: 'modal-close-button',
     labels: [
       'detection_issue=svg-cursor-pointer',
-      'detection_issue=highlighter-recorder-mismatch',
       'element_density=sparse',
       'action_complexity=single-action',
     ],
@@ -22,10 +21,9 @@ export const scenarios: Record<string, Scenario> = {
     title: 'Dropdown Partial Clickability',
     description: 'Dropdown with "Disabled" text that is clickable, but the caret arrow to its right is not clickable. The caret SVG is a sibling of the clickable div (not inside it), so clicks on the right side of the dropdown do not trigger any action. Demonstrates partial clickability due to DOM structure.',
     expectedAction: 'CLICK',
-    expectedTarget: 'dropdown-clickable-area',
+    expectedTarget: 'dropdown-clickable-area-1',
     labels: [
       'detection_issue=partial-clickability',
-      'detection_issue=dom-structure',
       'element_density=sparse',
       'action_complexity=single-action',
     ],
@@ -38,7 +36,6 @@ export const scenarios: Record<string, Scenario> = {
     expectedTarget: 'dropdown-1-clickable',
     labels: [
       'detection_issue=uniquify-testing',
-      'detection_issue=parent-child-relationships',
       'element_density=dense',
       'action_complexity=single-action',
     ],
