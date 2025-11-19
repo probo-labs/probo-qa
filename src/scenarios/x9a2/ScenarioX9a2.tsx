@@ -19,7 +19,6 @@ export default function ScenarioX9a2({ onAction }: ScenarioProps) {
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
           min-height: 100vh;
           display: flex;
-          flex-direction: column;
           align-items: center;
           justify-content: center;
           gap: 30px;
