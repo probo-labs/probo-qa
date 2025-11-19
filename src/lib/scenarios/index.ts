@@ -47,6 +47,7 @@ export const SCENARIOS: Record<string, Scenario> = {
   // Detection issue scenarios
   'x9a1': detectionIssueScenarios['x9a1'],
   'x9a2': detectionIssueScenarios['x9a2'],
+  'x9a3': detectionIssueScenarios['x9a3'],
 
   // ...widgetScenarios,         // Will add later
 };

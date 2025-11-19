@@ -30,5 +30,18 @@ export const scenarios: Record<string, Scenario> = {
       'action_complexity=single-action',
     ],
   },
+  'x9a3': {
+    id: 'x9a3',
+    title: 'Uniquify Test Variations',
+    description: 'Comprehensive table of 32 dropdown variations testing uniquify logic with different combinations of whitespace, padding, handlers, cursor styles, and multiple children. Tests how uniquify handles parent-child relationships, whitespace-only parents, and nested elements.',
+    expectedAction: 'CLICK',
+    expectedTarget: 'dropdown-1-clickable',
+    labels: [
+      'detection_issue=uniquify-testing',
+      'detection_issue=parent-child-relationships',
+      'element_density=dense',
+      'action_complexity=single-action',
+    ],
+  },
 } as const;
 
