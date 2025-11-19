@@ -20,9 +20,10 @@ interface DropdownConfig {
 interface DropdownCellProps {
   config: DropdownConfig;
   onAction: (action: 'CLICK' | 'FILL' | 'SELECT', element: string) => void;
+  containerStyle?: React.CSSProperties;
 }
 
-function DropdownCell({ config, onAction }: DropdownCellProps) {
+function DropdownCell({ config, onAction, containerStyle }: DropdownCellProps) {
   const { handleButtonClick } = useInteractionHandlers(onAction);
   const containerRef = useRef<HTMLDivElement>(null);
   const secondElementRef = useRef<HTMLDivElement>(null);
@@ -78,25 +79,28 @@ function DropdownCell({ config, onAction }: DropdownCellProps) {
     }
   }, [differentHandlers, hasAddEventListener, clickableId, handleButtonClick]);
 
-  const paddingStyle = hasPadding ? { padding: '10px 12px' } : {};
+  const reactHandler = hasReactHandler ? (e: React.MouseEvent) => handleClick(e, clickableId) : undefined;
   const cursorStyle = hasCursor ? { cursor: 'pointer' } : {};
-  // For multiple elements, always use flex: 1 so they sum to parent exactly
+  const paddingStyle = hasPadding ? { padding: '10px 12px' } : {};
+  
+  // Flex style: when caret present, don't expand. When no caret and fullWidth, expand.
   const flexStyle = multipleElements 
     ? { flex: 1 } 
-    : (fullWidth ? { flex: 1 } : { flexShrink: 0 });
+    : (hasCaret ? {} : (fullWidth ? { flex: 1 } : {}));
 
-  const reactHandler = hasReactHandler ? (e: React.MouseEvent) => handleClick(e, clickableId) : undefined;
-
+  // Icon SVG - matches reference exactly
   const iconSvg = (
     <svg
       className="infinity-icon"
-      viewBox="0 0 16 16"
-      fill="#7C7C7C"
-      height="16"
-      width="16"
       focusable="false"
       xmlns="http://www.w3.org/2000/svg"
-      style={{ display: 'inline-block', verticalAlign: 'middle' }}
+      fill="#7C7C7C"
+      color="#7C7C7C"
+      height="16"
+      width="16"
+      viewBox="0 0 16 16"
+      transform="rotate(0)"
+      style={{ backgroundColor: '#f5deb3' }}
     >
       <path
         fill="#7C7C7C"
@@ -109,71 +113,141 @@ function DropdownCell({ config, onAction }: DropdownCellProps) {
     </svg>
   );
 
-  return (
-    <div
-      ref={containerRef}
-      role="listbox"
-      aria-expanded="false"
-      className={`ui selection dropdown cp-select default ${multipleElements ? 'has-multiple-children' : ''}`}
-      tabIndex={0}
-      id={containerId}
+  // Caret SVG - matches reference exactly
+  const caretSvg = hasCaret ? (
+    <svg
+      className="infinity-icon caret icon"
+      focusable="false"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="currentColor"
+      icon-name="caret down"
+      color="inherit"
+      height="16"
+      width="16"
+      viewBox="0 0 16 16"
+      transform="rotate(90)"
+      style={{ backgroundColor: '#d3d3d3' }}
     >
-      {hasWhitespace && '   '}
-      {multipleElements ? (
-        <>
-          <div
-            className={`divider text ${fullWidth ? 'full-width' : ''}`}
-            onClick={reactHandler}
-            style={{ ...cursorStyle, ...paddingStyle, ...flexStyle }}
-            id={clickableId}
-          >
-            {iconSvg}
-            <span>{label} 1</span>
-          </div>
-          <div
-            ref={secondElementRef}
-            className={`divider text ${fullWidth ? 'full-width' : ''}`}
-            onClick={differentHandlers ? undefined : reactHandler}
-            style={{ ...cursorStyle, ...paddingStyle, ...flexStyle }}
-            id={`${clickableId}-2`}
-          >
-            {iconSvg}
-            <span>{label} 2</span>
-          </div>
-        </>
-      ) : (
+      <polygon fill="currentColor" points="10 8 6 4 6 12 10 8"></polygon>
+    </svg>
+  ) : null;
+
+  // EXACT structure from reference - reuse full outer structure, variations only in listbox
+  return (
+    <div className="header clickable" style={containerStyle || {}}>
+      <svg
+        className="infinity-icon"
+        focusable="false"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="currentColor"
+        icon-name="api protection"
+        color="inherit"
+        height="16"
+        width="16"
+        alt=""
+        viewBox="0 0 16 16"
+        transform="rotate(0)"
+        style={{ backgroundColor: '#e6e6fa' }}
+      >
+        <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+          <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+          <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+          <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+          <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+          <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+          <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+        </g>
+      </svg>
+      <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+      <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+        {/* VARIATIONS HAPPEN ONLY INSIDE THIS div role="listbox" */}
         <div
-          className={`divider text ${fullWidth ? 'full-width' : ''}`}
-          onClick={reactHandler}
-          style={{ ...cursorStyle, ...paddingStyle, ...flexStyle }}
-          id={clickableId}
+          ref={containerRef}
+          role="listbox"
+          aria-expanded="false"
+          className={`ui selection dropdown cp-select default ${multipleElements ? 'has-multiple-children' : ''}`}
+          tabIndex={0}
+          id={containerId}
+          style={{ backgroundColor: '#f0fff0' }}
         >
-          {iconSvg}
-          <span>{label}</span>
+          {hasWhitespace && '   '}
+          {multipleElements ? (
+            <>
+              <div
+                aria-atomic="true"
+                aria-live="polite"
+                role="alert"
+                className={`divider text ${fullWidth && !hasCaret ? 'full-width' : ''}`}
+                onClick={reactHandler}
+                style={{ ...cursorStyle, ...paddingStyle, ...flexStyle, backgroundColor: '#fff5ee' }}
+                id={clickableId}
+              >
+                {iconSvg}
+                <span style={{ backgroundColor: '#ffe4b5' }}>{label} 1</span>
+              </div>
+              <div
+                ref={secondElementRef}
+                aria-atomic="true"
+                aria-live="polite"
+                role="alert"
+                className={`divider text ${fullWidth && !hasCaret ? 'full-width' : ''}`}
+                onClick={differentHandlers ? undefined : reactHandler}
+                style={{ ...cursorStyle, ...paddingStyle, ...flexStyle, backgroundColor: '#f5f5dc' }}
+                id={`${clickableId}-2`}
+              >
+                {iconSvg}
+                <span style={{ backgroundColor: '#ffe4b5' }}>{label} 2</span>
+              </div>
+            </>
+          ) : (
+            <div
+              aria-atomic="true"
+              aria-live="polite"
+              role="alert"
+              className={`divider text ${fullWidth && !hasCaret ? 'full-width' : ''}`}
+              onClick={reactHandler}
+              style={{ ...cursorStyle, ...paddingStyle, ...flexStyle, backgroundColor: '#fff5ee' }}
+              id={clickableId}
+            >
+              {iconSvg}
+              <span style={{ backgroundColor: '#ffe4b5' }}>{label}</span>
+            </div>
+          )}
+          {caretSvg}
+          <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
         </div>
-      )}
-      {hasCaret && (
+      </div>
+      <div
+        className="collapse-indicator"
+        onClick={(e) => {
+          e.preventDefault();
+          handleButtonClick(e, `collapse-indicator-${id}`);
+        }}
+        style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
+      >
         <svg
-          className="infinity-icon caret icon"
-          focusable={false}
+          className="infinity-icon"
+          focusable="false"
           xmlns="http://www.w3.org/2000/svg"
           fill="currentColor"
-          color="#666"
+          icon-name="chevron down"
+          color="inherit"
           height="16"
           width="16"
-          viewBox="0 0 16 16"
-          style={{ transform: 'rotate(90deg)', display: 'inline-block', color: '#666', marginLeft: 'auto', flexShrink: 0 }}
-          id={`caret-${id}`}
+          alt=""
+          viewBox="0 0 9 9"
+          transform="rotate(0)"
+          style={{ backgroundColor: '#e0ffff' }}
         >
-          <polygon fill="currentColor" points="10 8 6 4 6 12 10 8"></polygon>
+          <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
         </svg>
-      )}
-      <div className="menu transition sf-hidden"></div>
+      </div>
     </div>
   );
 }
 
 export default function ScenarioX9a3({ onAction }: ScenarioProps) {
+  const { handleButtonClick } = useInteractionHandlers(onAction);
   const [clicked, setClicked] = useState<Record<string, boolean>>({});
 
   // Define all dropdown configurations
@@ -237,43 +311,37 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           background: #f5f5f5;
         }
 
-        .table-container {
-          max-width: 1400px;
-          margin: 0 auto;
-          background: white;
-          border-radius: 8px;
-          padding: 20px;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .variations-table {
+        /* CSS for reference structure */
+        .header.clickable {
+          display: flex;
+          align-items: center;
+          gap: 12px;
           width: 100%;
-          border-collapse: collapse;
+          min-width: 0;
         }
 
-        .variations-table td {
-          padding: 15px;
-          border: 1px solid #e0e0e0;
-          vertical-align: top;
-        }
-
-        .variations-table th {
-          padding: 10px;
-          background: #f8f9fa;
-          border: 1px solid #e0e0e0;
-          text-align: left;
-          font-size: 0.75rem;
+        .header.clickable h2 {
+          margin: 0;
+          font-size: 1.2rem;
           font-weight: 600;
-          color: #666;
+          flex-shrink: 0;
         }
 
-        .cell-label {
-          font-size: 0.7rem;
-          color: #999;
-          margin-bottom: 8px;
-          font-weight: 500;
+        .header.clickable .control {
+          margin-left: auto;
+          flex: 1;
+          min-width: 0;
         }
 
+        /* Base styles for infinity-icon SVGs */
+        .infinity-icon {
+          width: 16px;
+          height: 16px;
+          display: inline-block;
+          vertical-align: middle;
+        }
+
+        /* EXACT CSS from reference - parent flex container */
         .ui.selection.dropdown.cp-select.default {
           position: relative;
           display: flex;
@@ -284,8 +352,11 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           background: white;
           cursor: default;
           min-width: 180px;
+          width: 100%;
+          max-width: 100%;
         }
 
+        /* EXACT CSS from reference - clickable div */
         .divider.text {
           display: flex;
           align-items: center;
@@ -299,7 +370,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           flex: 1;
         }
 
-        /* Multiple children should sum to parent exactly - add visual separator */
+        /* Multiple children should sum to parent exactly */
         .ui.selection.dropdown.cp-select.default.has-multiple-children > .divider.text:first-of-type {
           border-right: 1px solid #e0e0e0;
         }
@@ -311,37 +382,19 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
         .divider.text svg {
           width: 16px;
           height: 16px;
-          flex-shrink: 0;
-          display: inline-block;
-          vertical-align: middle;
+          cursor: inherit;
         }
 
         .divider.text span {
           color: #7c7c7c;
           font-size: 14px;
-          display: inline-block;
-          vertical-align: middle;
         }
 
+        /* EXACT CSS from reference - caret (sibling, not child) */
         .ui.selection.dropdown.cp-select.default svg.infinity-icon.caret.icon {
           padding: 0 12px;
-          flex-shrink: 0;
-          width: 16px !important;
-          height: 16px !important;
-          display: inline-block !important;
-          visibility: visible !important;
-          opacity: 1 !important;
-          color: #666 !important;
-          overflow: visible !important;
           margin-left: auto;
-        }
-        
-        .ui.selection.dropdown.cp-select.default svg.infinity-icon.caret.icon polygon {
-          fill: currentColor !important;
-        }
-
-        .ui.selection.dropdown.cp-select.default svg.infinity-icon.caret.icon:hover {
-          color: #333 !important;
+          flex-shrink: 0;
         }
 
         .menu.transition.sf-hidden {
@@ -350,91 +403,2918 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
       `}</style>
 
       <div className="practice">
-        <div className="table-container">
-          <h1 style={{ marginBottom: '20px', fontSize: '1.5rem' }}>Uniquify Test Variations</h1>
-          <table className="variations-table">
-            <thead>
-              <tr>
-                <th>Col 1</th>
-                <th>Col 2</th>
-                <th>Col 3</th>
-                <th>Col 4</th>
-              </tr>
-            </thead>
-            <tbody>
-              {[0, 1, 2, 3, 4, 5, 6, 7].map(row => (
-                <tr key={row}>
-                  {[0, 1, 2, 3].map(col => {
-                    const configIndex = row * 4 + col;
-                    const config = dropdownConfigs[configIndex];
-                    if (!config) return <td key={col}></td>;
-                    return (
-                      <td key={col}>
-                        <div className="cell-label">
-                          {config.id}. {config.label}
-                          {config.hasWhitespace && ' (WS)'}
-                          {config.hasPadding && ' (P)'}
-                          {config.fullWidth && ' (FW)'}
-                          {!config.hasCursor && ' (NC)'}
-                          {config.hasCaret && ' (C)'}
-                          {config.multipleElements && ' (2x)'}
-                        </div>
-                        <DropdownCell config={config} onAction={onAction} />
-                        {clicked[config.id] && <div style={{ color: 'green', fontSize: '0.8em', marginTop: '5px' }}>Clicked!</div>}
-                        {clicked[`caret-${config.id}`] && <div style={{ color: 'blue', fontSize: '0.8em', marginTop: '5px' }}>Caret Clicked!</div>}
-                        {clicked[`clickable-child-${config.id}-1`] && <div style={{ color: 'purple', fontSize: '0.8em', marginTop: '5px' }}>Child 1 Clicked!</div>}
-                        {clicked[`clickable-child-${config.id}-2`] && <div style={{ color: 'orange', fontSize: '0.8em', marginTop: '5px' }}>Child 2 Clicked!</div>}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        {/* EXACT COPY OF REFERENCE */}
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg
+            className="infinity-icon"
+            focusable="false"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            icon-name="api protection"
+            color="inherit"
+            height="16"
+            width="16"
+            alt=""
+            viewBox="0 0 16 16"
+            transform="rotate(0)"
+            style={{ backgroundColor: '#e6e6fa' }}
+          >
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div
+              role="listbox"
+              aria-expanded="false"
+              className="ui selection dropdown cp-select default"
+              tabIndex={0}
+              style={{ backgroundColor: '#f0fff0' }}
+            >
+              <div
+                aria-atomic="true"
+                aria-live="polite"
+                role="alert"
+                className="divider text"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleButtonClick(e, 'reference-dropdown-clickable');
+                }}
+                style={{ cursor: 'pointer', backgroundColor: '#fff5ee' }}
+              >
+                <svg
+                  className="infinity-icon"
+                  focusable="false"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#7C7C7C"
+                  icon-name="inactive practice"
+                  color="#7C7C7C"
+                  height="16"
+                  width="16"
+                  alt=""
+                  viewBox="0 0 16 16"
+                  transform="rotate(0)"
+                  style={{ backgroundColor: '#f5deb3' }}
+                >
+                  <path
+                    fill="#7C7C7C"
+                    d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"
+                  ></path>
+                  <path
+                    fill="#7C7C7C"
+                    d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"
+                  ></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>Disabled</span>
+              </div>
+              <svg
+                className="infinity-icon caret icon"
+                focusable="false"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                icon-name="caret down"
+                color="inherit"
+                height="16"
+                width="16"
+                alt=""
+                viewBox="0 0 16 16"
+                transform="rotate(90)"
+                style={{ backgroundColor: '#d3d3d3' }}
+              >
+                <polygon fill="currentColor" points="10 8 6 4 6 12 10 8"></polygon>
+              </svg>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div
+            className="collapse-indicator"
+            onClick={(e) => {
+              e.preventDefault();
+              handleButtonClick(e, 'reference-collapse-indicator');
+            }}
+            style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
+          >
+            <svg
+              className="infinity-icon"
+              focusable="false"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              icon-name="chevron down"
+              color="inherit"
+              height="16"
+              width="16"
+              alt=""
+              viewBox="0 0 9 9"
+              transform="rotate(0)"
+              style={{ backgroundColor: '#e0ffff' }}
+            >
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
 
-          {/* Legend */}
-          <div style={{ marginTop: '30px', padding: '20px', background: '#f8f9fa', borderRadius: '8px', border: '1px solid #e0e0e0' }}>
-            <h2 style={{ fontSize: '1.1rem', marginBottom: '15px', color: '#333' }}>Legend</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', fontSize: '0.9rem' }}>
-              <div>
-                <strong style={{ color: '#666' }}>Abbreviations:</strong>
-                <ul style={{ marginTop: '8px', marginLeft: '20px', lineHeight: '1.8' }}>
-                  <li><strong>WS</strong> = With Whitespace (parent has whitespace-only text node)</li>
-                  <li><strong>P</strong> = With Padding (element has padding: 10px 12px)</li>
-                  <li><strong>FW</strong> = Full Width (element uses flex: 1, expands to fill space)</li>
-                  <li><strong>NC</strong> = No Cursor (no cursor: pointer style)</li>
-                  <li><strong>C</strong> = With Caret (has caret SVG icon)</li>
-                  <li><strong>2x</strong> = Multiple Elements (two clickable children)</li>
-                  <li><strong>Two same handlers</strong> = Both elements use React onClick handler</li>
-                  <li><strong>Two different handlers</strong> = First element uses React onClick, second uses addEventListener</li>
-                </ul>
+        <h1 style={{ marginBottom: '20px', fontSize: '1.5rem', marginTop: '40px' }}>Uniquify Test Variations</h1>
+        
+        {/* Table of Contents */}
+        <div style={{ 
+          marginBottom: '30px', 
+          padding: '20px', 
+          background: '#f8f9fa', 
+          borderRadius: '8px', 
+          border: '1px solid #e0e0e0',
+          position: 'sticky',
+          top: '20px',
+          zIndex: 100
+        }}>
+          <h2 style={{ fontSize: '1.1rem', marginBottom: '15px', color: '#333' }}>Table of Contents</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '8px', fontSize: '0.9rem' }}>
+            {dropdownConfigs.map(config => (
+              <a
+                key={config.id}
+                href={`#variant-${config.id}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById(`variant-${config.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }}
+                style={{
+                  color: '#0066cc',
+                  textDecoration: 'none',
+                  padding: '4px 8px',
+                  borderRadius: '4px',
+                  transition: 'background-color 0.2s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#e8f4f8'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+              >
+                {config.id}. {config.label}
+                {config.hasWhitespace && ' (WS)'}
+                {config.hasPadding && ' (P)'}
+                {config.fullWidth && ' (FW)'}
+                {!config.hasCursor && ' (NC)'}
+                {config.hasCaret && ' (C)'}
+                {config.multipleElements && ' (2x)'}
+              </a>
+            ))}
+          </div>
+        </div>
+
+        {/* DUPLICATE - Exact copy of reference for comparison */}
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg
+            className="infinity-icon"
+            focusable="false"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            icon-name="api protection"
+            color="inherit"
+            height="16"
+            width="16"
+            alt=""
+            viewBox="0 0 16 16"
+            transform="rotate(0)"
+            style={{ backgroundColor: '#e6e6fa' }}
+          >
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div
+              role="listbox"
+              aria-expanded="false"
+              className="ui selection dropdown cp-select default"
+              tabIndex={0}
+              style={{ backgroundColor: '#f0fff0' }}
+            >
+              <div
+                aria-atomic="true"
+                aria-live="polite"
+                role="alert"
+                className="divider text"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleButtonClick(e, 'duplicate-dropdown-clickable');
+                }}
+                style={{ cursor: 'pointer', backgroundColor: '#fff5ee' }}
+              >
+                <svg
+                  className="infinity-icon"
+                  focusable="false"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#7C7C7C"
+                  icon-name="inactive practice"
+                  color="#7C7C7C"
+                  height="16"
+                  width="16"
+                  alt=""
+                  viewBox="0 0 16 16"
+                  transform="rotate(0)"
+                  style={{ backgroundColor: '#f5deb3' }}
+                >
+                  <path
+                    fill="#7C7C7C"
+                    d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"
+                  ></path>
+                  <path
+                    fill="#7C7C7C"
+                    d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"
+                  ></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>Disabled</span>
               </div>
-              <div>
-                <strong style={{ color: '#666' }}>Handler Types:</strong>
-                <ul style={{ marginTop: '8px', marginLeft: '20px', lineHeight: '1.8' }}>
-                  <li><strong>React Handler</strong> = onClick via React (detectable via __reactFiber?.memoizedProps?.onClick)</li>
-                  <li><strong>Inline Handler</strong> = onclick attribute in HTML</li>
-                  <li><strong>addEventListener</strong> = Programmatically attached via addEventListener</li>
-                  <li><strong>No Handler</strong> = No event handlers attached</li>
-                </ul>
+              <svg
+                className="infinity-icon caret icon"
+                focusable="false"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                icon-name="caret down"
+                color="inherit"
+                height="16"
+                width="16"
+                alt=""
+                viewBox="0 0 16 16"
+                transform="rotate(90)"
+                style={{ backgroundColor: '#d3d3d3' }}
+              >
+                <polygon fill="currentColor" points="10 8 6 4 6 12 10 8"></polygon>
+              </svg>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div
+            className="collapse-indicator"
+            onClick={(e) => {
+              e.preventDefault();
+              handleButtonClick(e, 'duplicate-collapse-indicator');
+            }}
+            style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
+          >
+            <svg
+              className="infinity-icon"
+              focusable="false"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              icon-name="chevron down"
+              color="inherit"
+              height="16"
+              width="16"
+              alt=""
+              viewBox="0 0 9 9"
+              transform="rotate(0)"
+              style={{ backgroundColor: '#e0ffff' }}
+            >
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* DUPLICATE B - Exact copy of reference for comparison */}
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg
+            className="infinity-icon"
+            focusable="false"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            icon-name="api protection"
+            color="inherit"
+            height="16"
+            width="16"
+            alt=""
+            viewBox="0 0 16 16"
+            transform="rotate(0)"
+            style={{ backgroundColor: '#e6e6fa' }}
+          >
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div
+              role="listbox"
+              aria-expanded="false"
+              className="ui selection dropdown cp-select default"
+              tabIndex={0}
+              style={{ backgroundColor: '#f0fff0' }}
+            >
+              <div
+                aria-atomic="true"
+                aria-live="polite"
+                role="alert"
+                className="divider text"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleButtonClick(e, 'duplicate-b-dropdown-clickable');
+                }}
+                style={{ cursor: 'pointer', backgroundColor: '#fff5ee' }}
+              >
+                <svg
+                  className="infinity-icon"
+                  focusable="false"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#7C7C7C"
+                  icon-name="inactive practice"
+                  color="#7C7C7C"
+                  height="16"
+                  width="16"
+                  alt=""
+                  viewBox="0 0 16 16"
+                  transform="rotate(0)"
+                  style={{ backgroundColor: '#f5deb3' }}
+                >
+                  <path
+                    fill="#7C7C7C"
+                    d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"
+                  ></path>
+                  <path
+                    fill="#7C7C7C"
+                    d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"
+                  ></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>Disabled</span>
               </div>
-              <div>
-                <strong style={{ color: '#666' }}>Coverage Types:</strong>
-                <ul style={{ marginTop: '8px', marginLeft: '20px', lineHeight: '1.8' }}>
-                  <li><strong>Full-width</strong> = Clickable area expands to fill entire parent (flex: 1)</li>
-                  <li><strong>Partial-width</strong> = Clickable area only covers content (flex-shrink: 0)</li>
-                  <li><strong>With caret</strong> = Non-clickable whitespace between text and caret arrow</li>
-                </ul>
+              <svg
+                className="infinity-icon caret icon"
+                focusable="false"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                icon-name="caret down"
+                color="inherit"
+                height="16"
+                width="16"
+                alt=""
+                viewBox="0 0 16 16"
+                transform="rotate(90)"
+                style={{ backgroundColor: '#d3d3d3' }}
+              >
+                <polygon fill="currentColor" points="10 8 6 4 6 12 10 8"></polygon>
+              </svg>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div
+            className="collapse-indicator"
+            onClick={(e) => {
+              e.preventDefault();
+              handleButtonClick(e, 'duplicate-b-collapse-indicator');
+            }}
+            style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
+          >
+            <svg
+              className="infinity-icon"
+              focusable="false"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              icon-name="chevron down"
+              color="inherit"
+              height="16"
+              width="16"
+              alt=""
+              viewBox="0 0 9 9"
+              transform="rotate(0)"
+              style={{ backgroundColor: '#e0ffff' }}
+            >
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 1 - Based on Duplicate B with variant-specific changes */}
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg
+            className="infinity-icon"
+            focusable="false"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            icon-name="api protection"
+            color="inherit"
+            height="16"
+            width="16"
+            alt=""
+            viewBox="0 0 16 16"
+            transform="rotate(0)"
+            style={{ backgroundColor: '#e6e6fa' }}
+          >
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div
+              role="listbox"
+              aria-expanded="false"
+              className="ui selection dropdown cp-select default"
+              tabIndex={0}
+              style={{ backgroundColor: '#f0fff0' }}
+            >
+              {'   '}
+              <div
+                aria-atomic="true"
+                aria-live="polite"
+                role="alert"
+                className="divider text full-width"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleButtonClick(e, 'variant-1-dropdown-clickable');
+                }}
+                style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}
+              >
+                <svg
+                  className="infinity-icon"
+                  focusable="false"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#7C7C7C"
+                  icon-name="inactive practice"
+                  color="#7C7C7C"
+                  height="16"
+                  width="16"
+                  alt=""
+                  viewBox="0 0 16 16"
+                  transform="rotate(0)"
+                  style={{ backgroundColor: '#f5deb3' }}
+                >
+                  <path
+                    fill="#7C7C7C"
+                    d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"
+                  ></path>
+                  <path
+                    fill="#7C7C7C"
+                    d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"
+                  ></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>Full-width</span>
               </div>
-              <div>
-                <strong style={{ color: '#666' }}>Uniquify Testing:</strong>
-                <ul style={{ marginTop: '8px', marginLeft: '20px', lineHeight: '1.8' }}>
-                  <li>Tests how uniquify handles parent-child relationships</li>
-                  <li>Whitespace-only parents should be filtered as framework containers</li>
-                  <li>Nested elements evaluated by shouldKeepNestedElement logic</li>
-                  <li>cursor: pointer marks clickability for detection</li>
-                </ul>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div
+            className="collapse-indicator"
+            onClick={(e) => {
+              e.preventDefault();
+              handleButtonClick(e, 'variant-1-collapse-indicator');
+            }}
+            style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
+          >
+            <svg
+              className="infinity-icon"
+              focusable="false"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              icon-name="chevron down"
+              color="inherit"
+              height="16"
+              width="16"
+              alt=""
+              viewBox="0 0 9 9"
+              transform="rotate(0)"
+              style={{ backgroundColor: '#e0ffff' }}
+            >
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 1 V2 - Based on Duplicate B with variant-specific changes */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          1. Full-width (WS) (P) (FW) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg
+            className="infinity-icon"
+            focusable="false"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            icon-name="api protection"
+            color="inherit"
+            height="16"
+            width="16"
+            alt=""
+            viewBox="0 0 16 16"
+            transform="rotate(0)"
+            style={{ backgroundColor: '#e6e6fa' }}
+          >
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div
+              role="listbox"
+              aria-expanded="false"
+              className="ui selection dropdown cp-select default"
+              tabIndex={0}
+              style={{ backgroundColor: '#f0fff0' }}
+            >
+              {'   '}
+              <div
+                aria-atomic="true"
+                aria-live="polite"
+                role="alert"
+                className="divider text full-width"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleButtonClick(e, 'variant-1-v2-dropdown-clickable');
+                }}
+                style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}
+              >
+                <svg
+                  className="infinity-icon"
+                  focusable="false"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#7C7C7C"
+                  icon-name="inactive practice"
+                  color="#7C7C7C"
+                  height="16"
+                  width="16"
+                  alt=""
+                  viewBox="0 0 16 16"
+                  transform="rotate(0)"
+                  style={{ backgroundColor: '#f5deb3' }}
+                >
+                  <path
+                    fill="#7C7C7C"
+                    d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"
+                  ></path>
+                  <path
+                    fill="#7C7C7C"
+                    d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"
+                  ></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>Full-width</span>
               </div>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div
+            className="collapse-indicator"
+            onClick={(e) => {
+              e.preventDefault();
+              handleButtonClick(e, 'variant-1-v2-collapse-indicator');
+            }}
+            style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
+          >
+            <svg
+              className="infinity-icon"
+              focusable="false"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              icon-name="chevron down"
+              color="inherit"
+              height="16"
+              width="16"
+              alt=""
+              viewBox="0 0 9 9"
+              transform="rotate(0)"
+              style={{ backgroundColor: '#e0ffff' }}
+            >
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 2 V2 - Full-width, no whitespace, has padding, no caret */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          2. Full-width (P) (FW) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg
+            className="infinity-icon"
+            focusable="false"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            icon-name="api protection"
+            color="inherit"
+            height="16"
+            width="16"
+            alt=""
+            viewBox="0 0 16 16"
+            transform="rotate(0)"
+            style={{ backgroundColor: '#e6e6fa' }}
+          >
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div
+              role="listbox"
+              aria-expanded="false"
+              className="ui selection dropdown cp-select default"
+              tabIndex={0}
+              style={{ backgroundColor: '#f0fff0' }}
+            >
+              <div
+                aria-atomic="true"
+                aria-live="polite"
+                role="alert"
+                className="divider text full-width"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleButtonClick(e, 'variant-2-v2-dropdown-clickable');
+                }}
+                style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}
+              >
+                <svg
+                  className="infinity-icon"
+                  focusable="false"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#7C7C7C"
+                  icon-name="inactive practice"
+                  color="#7C7C7C"
+                  height="16"
+                  width="16"
+                  alt=""
+                  viewBox="0 0 16 16"
+                  transform="rotate(0)"
+                  style={{ backgroundColor: '#f5deb3' }}
+                >
+                  <path
+                    fill="#7C7C7C"
+                    d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"
+                  ></path>
+                  <path
+                    fill="#7C7C7C"
+                    d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"
+                  ></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>Full-width</span>
+              </div>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div
+            className="collapse-indicator"
+            onClick={(e) => {
+              e.preventDefault();
+              handleButtonClick(e, 'variant-2-v2-collapse-indicator');
+            }}
+            style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
+          >
+            <svg
+              className="infinity-icon"
+              focusable="false"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              icon-name="chevron down"
+              color="inherit"
+              height="16"
+              width="16"
+              alt=""
+              viewBox="0 0 9 9"
+              transform="rotate(0)"
+              style={{ backgroundColor: '#e0ffff' }}
+            >
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 3 V2 - Partial-width, has whitespace, has padding, no caret */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          3. Partial-width (WS) (P) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg
+            className="infinity-icon"
+            focusable="false"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            icon-name="api protection"
+            color="inherit"
+            height="16"
+            width="16"
+            alt=""
+            viewBox="0 0 16 16"
+            transform="rotate(0)"
+            style={{ backgroundColor: '#e6e6fa' }}
+          >
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div
+              role="listbox"
+              aria-expanded="false"
+              className="ui selection dropdown cp-select default"
+              tabIndex={0}
+              style={{ backgroundColor: '#f0fff0' }}
+            >
+              {'   '}
+              <div
+                aria-atomic="true"
+                aria-live="polite"
+                role="alert"
+                className="divider text"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleButtonClick(e, 'variant-3-v2-dropdown-clickable');
+                }}
+                style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}
+              >
+                <svg
+                  className="infinity-icon"
+                  focusable="false"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#7C7C7C"
+                  icon-name="inactive practice"
+                  color="#7C7C7C"
+                  height="16"
+                  width="16"
+                  alt=""
+                  viewBox="0 0 16 16"
+                  transform="rotate(0)"
+                  style={{ backgroundColor: '#f5deb3' }}
+                >
+                  <path
+                    fill="#7C7C7C"
+                    d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"
+                  ></path>
+                  <path
+                    fill="#7C7C7C"
+                    d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"
+                  ></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>Partial-width</span>
+              </div>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div
+            className="collapse-indicator"
+            onClick={(e) => {
+              e.preventDefault();
+              handleButtonClick(e, 'variant-3-v2-collapse-indicator');
+            }}
+            style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
+          >
+            <svg
+              className="infinity-icon"
+              focusable="false"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              icon-name="chevron down"
+              color="inherit"
+              height="16"
+              width="16"
+              alt=""
+              viewBox="0 0 9 9"
+              transform="rotate(0)"
+              style={{ backgroundColor: '#e0ffff' }}
+            >
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 4 V2 - Partial-width, no whitespace, has padding, no caret */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          4. Partial-width (P) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg
+            className="infinity-icon"
+            focusable="false"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            icon-name="api protection"
+            color="inherit"
+            height="16"
+            width="16"
+            alt=""
+            viewBox="0 0 16 16"
+            transform="rotate(0)"
+            style={{ backgroundColor: '#e6e6fa' }}
+          >
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div
+              role="listbox"
+              aria-expanded="false"
+              className="ui selection dropdown cp-select default"
+              tabIndex={0}
+              style={{ backgroundColor: '#f0fff0' }}
+            >
+              <div
+                aria-atomic="true"
+                aria-live="polite"
+                role="alert"
+                className="divider text"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleButtonClick(e, 'variant-4-v2-dropdown-clickable');
+                }}
+                style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}
+              >
+                <svg
+                  className="infinity-icon"
+                  focusable="false"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#7C7C7C"
+                  icon-name="inactive practice"
+                  color="#7C7C7C"
+                  height="16"
+                  width="16"
+                  alt=""
+                  viewBox="0 0 16 16"
+                  transform="rotate(0)"
+                  style={{ backgroundColor: '#f5deb3' }}
+                >
+                  <path
+                    fill="#7C7C7C"
+                    d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"
+                  ></path>
+                  <path
+                    fill="#7C7C7C"
+                    d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"
+                  ></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>Partial-width</span>
+              </div>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div
+            className="collapse-indicator"
+            onClick={(e) => {
+              e.preventDefault();
+              handleButtonClick(e, 'variant-4-v2-collapse-indicator');
+            }}
+            style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
+          >
+            <svg
+              className="infinity-icon"
+              focusable="false"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              icon-name="chevron down"
+              color="inherit"
+              height="16"
+              width="16"
+              alt=""
+              viewBox="0 0 9 9"
+              transform="rotate(0)"
+              style={{ backgroundColor: '#e0ffff' }}
+            >
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 5 V2 - Full-width, no whitespace, has padding, no caret (same as variant 2) */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          5. Full-width (P) (FW) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg
+            className="infinity-icon"
+            focusable="false"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            icon-name="api protection"
+            color="inherit"
+            height="16"
+            width="16"
+            alt=""
+            viewBox="0 0 16 16"
+            transform="rotate(0)"
+            style={{ backgroundColor: '#e6e6fa' }}
+          >
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div
+              role="listbox"
+              aria-expanded="false"
+              className="ui selection dropdown cp-select default"
+              tabIndex={0}
+              style={{ backgroundColor: '#f0fff0' }}
+            >
+              <div
+                aria-atomic="true"
+                aria-live="polite"
+                role="alert"
+                className="divider text full-width"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleButtonClick(e, 'variant-5-v2-dropdown-clickable');
+                }}
+                style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}
+              >
+                <svg
+                  className="infinity-icon"
+                  focusable="false"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#7C7C7C"
+                  icon-name="inactive practice"
+                  color="#7C7C7C"
+                  height="16"
+                  width="16"
+                  alt=""
+                  viewBox="0 0 16 16"
+                  transform="rotate(0)"
+                  style={{ backgroundColor: '#f5deb3' }}
+                >
+                  <path
+                    fill="#7C7C7C"
+                    d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"
+                  ></path>
+                  <path
+                    fill="#7C7C7C"
+                    d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"
+                  ></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>Full-width</span>
+              </div>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div
+            className="collapse-indicator"
+            onClick={(e) => {
+              e.preventDefault();
+              handleButtonClick(e, 'variant-5-v2-collapse-indicator');
+            }}
+            style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
+          >
+            <svg
+              className="infinity-icon"
+              focusable="false"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              icon-name="chevron down"
+              color="inherit"
+              height="16"
+              width="16"
+              alt=""
+              viewBox="0 0 9 9"
+              transform="rotate(0)"
+              style={{ backgroundColor: '#e0ffff' }}
+            >
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 6 V2 - Full-width, no whitespace, NO padding, no caret */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          6. Full-width (FW) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg
+            className="infinity-icon"
+            focusable="false"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            icon-name="api protection"
+            color="inherit"
+            height="16"
+            width="16"
+            alt=""
+            viewBox="0 0 16 16"
+            transform="rotate(0)"
+            style={{ backgroundColor: '#e6e6fa' }}
+          >
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div
+              role="listbox"
+              aria-expanded="false"
+              className="ui selection dropdown cp-select default"
+              tabIndex={0}
+              style={{ backgroundColor: '#f0fff0' }}
+            >
+              <div
+                aria-atomic="true"
+                aria-live="polite"
+                role="alert"
+                className="divider text full-width"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleButtonClick(e, 'variant-6-v2-dropdown-clickable');
+                }}
+                style={{ cursor: 'pointer', backgroundColor: '#fff5ee' }}
+              >
+                <svg
+                  className="infinity-icon"
+                  focusable="false"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#7C7C7C"
+                  icon-name="inactive practice"
+                  color="#7C7C7C"
+                  height="16"
+                  width="16"
+                  alt=""
+                  viewBox="0 0 16 16"
+                  transform="rotate(0)"
+                  style={{ backgroundColor: '#f5deb3' }}
+                >
+                  <path
+                    fill="#7C7C7C"
+                    d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"
+                  ></path>
+                  <path
+                    fill="#7C7C7C"
+                    d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"
+                  ></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>Full-width</span>
+              </div>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div
+            className="collapse-indicator"
+            onClick={(e) => {
+              e.preventDefault();
+              handleButtonClick(e, 'variant-6-v2-collapse-indicator');
+            }}
+            style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
+          >
+            <svg
+              className="infinity-icon"
+              focusable="false"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              icon-name="chevron down"
+              color="inherit"
+              height="16"
+              width="16"
+              alt=""
+              viewBox="0 0 9 9"
+              transform="rotate(0)"
+              style={{ backgroundColor: '#e0ffff' }}
+            >
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 7 V2 - Partial-width, no whitespace, has padding, no caret */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          7. Partial-width (P) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg
+            className="infinity-icon"
+            focusable="false"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            icon-name="api protection"
+            color="inherit"
+            height="16"
+            width="16"
+            alt=""
+            viewBox="0 0 16 16"
+            transform="rotate(0)"
+            style={{ backgroundColor: '#e6e6fa' }}
+          >
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div
+              role="listbox"
+              aria-expanded="false"
+              className="ui selection dropdown cp-select default"
+              tabIndex={0}
+              style={{ backgroundColor: '#f0fff0' }}
+            >
+              <div
+                aria-atomic="true"
+                aria-live="polite"
+                role="alert"
+                className="divider text"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleButtonClick(e, 'variant-7-v2-dropdown-clickable');
+                }}
+                style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}
+              >
+                <svg
+                  className="infinity-icon"
+                  focusable="false"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#7C7C7C"
+                  icon-name="inactive practice"
+                  color="#7C7C7C"
+                  height="16"
+                  width="16"
+                  alt=""
+                  viewBox="0 0 16 16"
+                  transform="rotate(0)"
+                  style={{ backgroundColor: '#f5deb3' }}
+                >
+                  <path
+                    fill="#7C7C7C"
+                    d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"
+                  ></path>
+                  <path
+                    fill="#7C7C7C"
+                    d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"
+                  ></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>Partial-width</span>
+              </div>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div
+            className="collapse-indicator"
+            onClick={(e) => {
+              e.preventDefault();
+              handleButtonClick(e, 'variant-7-v2-collapse-indicator');
+            }}
+            style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
+          >
+            <svg
+              className="infinity-icon"
+              focusable="false"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              icon-name="chevron down"
+              color="inherit"
+              height="16"
+              width="16"
+              alt=""
+              viewBox="0 0 9 9"
+              transform="rotate(0)"
+              style={{ backgroundColor: '#e0ffff' }}
+            >
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 8 V2 - Partial-width, no whitespace, no padding, no caret */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          8. Partial-width [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg
+            className="infinity-icon"
+            focusable="false"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            icon-name="api protection"
+            color="inherit"
+            height="16"
+            width="16"
+            alt=""
+            viewBox="0 0 16 16"
+            transform="rotate(0)"
+            style={{ backgroundColor: '#e6e6fa' }}
+          >
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div
+              role="listbox"
+              aria-expanded="false"
+              className="ui selection dropdown cp-select default"
+              tabIndex={0}
+              style={{ backgroundColor: '#f0fff0' }}
+            >
+              <div
+                aria-atomic="true"
+                aria-live="polite"
+                role="alert"
+                className="divider text"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleButtonClick(e, 'variant-8-v2-dropdown-clickable');
+                }}
+                style={{ cursor: 'pointer', backgroundColor: '#fff5ee' }}
+              >
+                <svg
+                  className="infinity-icon"
+                  focusable="false"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#7C7C7C"
+                  icon-name="inactive practice"
+                  color="#7C7C7C"
+                  height="16"
+                  width="16"
+                  alt=""
+                  viewBox="0 0 16 16"
+                  transform="rotate(0)"
+                  style={{ backgroundColor: '#f5deb3' }}
+                >
+                  <path
+                    fill="#7C7C7C"
+                    d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"
+                  ></path>
+                  <path
+                    fill="#7C7C7C"
+                    d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"
+                  ></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>Partial-width</span>
+              </div>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div
+            className="collapse-indicator"
+            onClick={(e) => {
+              e.preventDefault();
+              handleButtonClick(e, 'variant-8-v2-collapse-indicator');
+            }}
+            style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
+          >
+            <svg
+              className="infinity-icon"
+              focusable="false"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              icon-name="chevron down"
+              color="inherit"
+              height="16"
+              width="16"
+              alt=""
+              viewBox="0 0 9 9"
+              transform="rotate(0)"
+              style={{ backgroundColor: '#e0ffff' }}
+            >
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 9 V2 - WS+P (Full-width), has whitespace, has padding, no caret */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          9. WS+P (FW) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg
+            className="infinity-icon"
+            focusable="false"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            icon-name="api protection"
+            color="inherit"
+            height="16"
+            width="16"
+            alt=""
+            viewBox="0 0 16 16"
+            transform="rotate(0)"
+            style={{ backgroundColor: '#e6e6fa' }}
+          >
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div
+              role="listbox"
+              aria-expanded="false"
+              className="ui selection dropdown cp-select default"
+              tabIndex={0}
+              style={{ backgroundColor: '#f0fff0' }}
+            >
+              {'   '}
+              <div
+                aria-atomic="true"
+                aria-live="polite"
+                role="alert"
+                className="divider text full-width"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleButtonClick(e, 'variant-9-v2-dropdown-clickable');
+                }}
+                style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}
+              >
+                <svg
+                  className="infinity-icon"
+                  focusable="false"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#7C7C7C"
+                  icon-name="inactive practice"
+                  color="#7C7C7C"
+                  height="16"
+                  width="16"
+                  alt=""
+                  viewBox="0 0 16 16"
+                  transform="rotate(0)"
+                  style={{ backgroundColor: '#f5deb3' }}
+                >
+                  <path
+                    fill="#7C7C7C"
+                    d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"
+                  ></path>
+                  <path
+                    fill="#7C7C7C"
+                    d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"
+                  ></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>WS+P</span>
+              </div>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div
+            className="collapse-indicator"
+            onClick={(e) => {
+              e.preventDefault();
+              handleButtonClick(e, 'variant-9-v2-collapse-indicator');
+            }}
+            style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
+          >
+            <svg
+              className="infinity-icon"
+              focusable="false"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              icon-name="chevron down"
+              color="inherit"
+              height="16"
+              width="16"
+              alt=""
+              viewBox="0 0 9 9"
+              transform="rotate(0)"
+              style={{ backgroundColor: '#e0ffff' }}
+            >
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 10 V2 - WS+NP (Full-width), has whitespace, no padding, no caret */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          10. WS+NP (FW) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg
+            className="infinity-icon"
+            focusable="false"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            icon-name="api protection"
+            color="inherit"
+            height="16"
+            width="16"
+            alt=""
+            viewBox="0 0 16 16"
+            transform="rotate(0)"
+            style={{ backgroundColor: '#e6e6fa' }}
+          >
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div
+              role="listbox"
+              aria-expanded="false"
+              className="ui selection dropdown cp-select default"
+              tabIndex={0}
+              style={{ backgroundColor: '#f0fff0' }}
+            >
+              {'   '}
+              <div
+                aria-atomic="true"
+                aria-live="polite"
+                role="alert"
+                className="divider text full-width"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleButtonClick(e, 'variant-10-v2-dropdown-clickable');
+                }}
+                style={{ cursor: 'pointer', backgroundColor: '#fff5ee' }}
+              >
+                <svg
+                  className="infinity-icon"
+                  focusable="false"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#7C7C7C"
+                  icon-name="inactive practice"
+                  color="#7C7C7C"
+                  height="16"
+                  width="16"
+                  alt=""
+                  viewBox="0 0 16 16"
+                  transform="rotate(0)"
+                  style={{ backgroundColor: '#f5deb3' }}
+                >
+                  <path
+                    fill="#7C7C7C"
+                    d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"
+                  ></path>
+                  <path
+                    fill="#7C7C7C"
+                    d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"
+                  ></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>WS+NP</span>
+              </div>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div
+            className="collapse-indicator"
+            onClick={(e) => {
+              e.preventDefault();
+              handleButtonClick(e, 'variant-10-v2-collapse-indicator');
+            }}
+            style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
+          >
+            <svg
+              className="infinity-icon"
+              focusable="false"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              icon-name="chevron down"
+              color="inherit"
+              height="16"
+              width="16"
+              alt=""
+              viewBox="0 0 9 9"
+              transform="rotate(0)"
+              style={{ backgroundColor: '#e0ffff' }}
+            >
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 11 V2 - NWS+P (Full-width), no whitespace, has padding, no caret */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          11. NWS+P (FW) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg
+            className="infinity-icon"
+            focusable="false"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            icon-name="api protection"
+            color="inherit"
+            height="16"
+            width="16"
+            alt=""
+            viewBox="0 0 16 16"
+            transform="rotate(0)"
+            style={{ backgroundColor: '#e6e6fa' }}
+          >
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div
+              role="listbox"
+              aria-expanded="false"
+              className="ui selection dropdown cp-select default"
+              tabIndex={0}
+              style={{ backgroundColor: '#f0fff0' }}
+            >
+              <div
+                aria-atomic="true"
+                aria-live="polite"
+                role="alert"
+                className="divider text full-width"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleButtonClick(e, 'variant-11-v2-dropdown-clickable');
+                }}
+                style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}
+              >
+                <svg
+                  className="infinity-icon"
+                  focusable="false"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#7C7C7C"
+                  icon-name="inactive practice"
+                  color="#7C7C7C"
+                  height="16"
+                  width="16"
+                  alt=""
+                  viewBox="0 0 16 16"
+                  transform="rotate(0)"
+                  style={{ backgroundColor: '#f5deb3' }}
+                >
+                  <path
+                    fill="#7C7C7C"
+                    d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"
+                  ></path>
+                  <path
+                    fill="#7C7C7C"
+                    d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"
+                  ></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>NWS+P</span>
+              </div>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div
+            className="collapse-indicator"
+            onClick={(e) => {
+              e.preventDefault();
+              handleButtonClick(e, 'variant-11-v2-collapse-indicator');
+            }}
+            style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
+          >
+            <svg
+              className="infinity-icon"
+              focusable="false"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              icon-name="chevron down"
+              color="inherit"
+              height="16"
+              width="16"
+              alt=""
+              viewBox="0 0 9 9"
+              transform="rotate(0)"
+              style={{ backgroundColor: '#e0ffff' }}
+            >
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 12 V2 - NWS+NP (Full-width), no whitespace, no padding, no caret */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          12. NWS+NP (FW) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg
+            className="infinity-icon"
+            focusable="false"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            icon-name="api protection"
+            color="inherit"
+            height="16"
+            width="16"
+            alt=""
+            viewBox="0 0 16 16"
+            transform="rotate(0)"
+            style={{ backgroundColor: '#e6e6fa' }}
+          >
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div
+              role="listbox"
+              aria-expanded="false"
+              className="ui selection dropdown cp-select default"
+              tabIndex={0}
+              style={{ backgroundColor: '#f0fff0' }}
+            >
+              <div
+                aria-atomic="true"
+                aria-live="polite"
+                role="alert"
+                className="divider text full-width"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleButtonClick(e, 'variant-12-v2-dropdown-clickable');
+                }}
+                style={{ cursor: 'pointer', backgroundColor: '#fff5ee' }}
+              >
+                <svg
+                  className="infinity-icon"
+                  focusable="false"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#7C7C7C"
+                  icon-name="inactive practice"
+                  color="#7C7C7C"
+                  height="16"
+                  width="16"
+                  alt=""
+                  viewBox="0 0 16 16"
+                  transform="rotate(0)"
+                  style={{ backgroundColor: '#f5deb3' }}
+                >
+                  <path
+                    fill="#7C7C7C"
+                    d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"
+                  ></path>
+                  <path
+                    fill="#7C7C7C"
+                    d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"
+                  ></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>NWS+NP</span>
+              </div>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div
+            className="collapse-indicator"
+            onClick={(e) => {
+              e.preventDefault();
+              handleButtonClick(e, 'variant-12-v2-collapse-indicator');
+            }}
+            style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
+          >
+            <svg
+              className="infinity-icon"
+              focusable="false"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              icon-name="chevron down"
+              color="inherit"
+              height="16"
+              width="16"
+              alt=""
+              viewBox="0 0 9 9"
+              transform="rotate(0)"
+              style={{ backgroundColor: '#e0ffff' }}
+            >
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 13 V2 - Two same handlers, has whitespace, has padding, partial-width, no caret, multipleElements */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          13. Two same handlers (WS) (P) (2x) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg
+            className="infinity-icon"
+            focusable="false"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            icon-name="api protection"
+            color="inherit"
+            height="16"
+            width="16"
+            alt=""
+            viewBox="0 0 16 16"
+            transform="rotate(0)"
+            style={{ backgroundColor: '#e6e6fa' }}
+          >
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div
+              role="listbox"
+              aria-expanded="false"
+              className="ui selection dropdown cp-select default"
+              tabIndex={0}
+              style={{ backgroundColor: '#f0fff0' }}
+            >
+              {'   '}
+              <div
+                aria-atomic="true"
+                aria-live="polite"
+                role="alert"
+                className="divider text"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleButtonClick(e, 'variant-13-v2-dropdown-clickable');
+                }}
+                style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}
+              >
+                <svg
+                  className="infinity-icon"
+                  focusable="false"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#7C7C7C"
+                  icon-name="inactive practice"
+                  color="#7C7C7C"
+                  height="16"
+                  width="16"
+                  alt=""
+                  viewBox="0 0 16 16"
+                  transform="rotate(0)"
+                  style={{ backgroundColor: '#f5deb3' }}
+                >
+                  <path
+                    fill="#7C7C7C"
+                    d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"
+                  ></path>
+                  <path
+                    fill="#7C7C7C"
+                    d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"
+                  ></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>Two same handlers 1</span>
+              </div>
+              <div
+                aria-atomic="true"
+                aria-live="polite"
+                role="alert"
+                className="divider text"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleButtonClick(e, 'variant-13-v2-dropdown-clickable-2');
+                }}
+                style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#f5f5dc' }}
+              >
+                <svg
+                  className="infinity-icon"
+                  focusable="false"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#7C7C7C"
+                  icon-name="inactive practice"
+                  color="#7C7C7C"
+                  height="16"
+                  width="16"
+                  alt=""
+                  viewBox="0 0 16 16"
+                  transform="rotate(0)"
+                  style={{ backgroundColor: '#f5deb3' }}
+                >
+                  <path
+                    fill="#7C7C7C"
+                    d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"
+                  ></path>
+                  <path
+                    fill="#7C7C7C"
+                    d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"
+                  ></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>Two same handlers 2</span>
+              </div>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div
+            className="collapse-indicator"
+            onClick={(e) => {
+              e.preventDefault();
+              handleButtonClick(e, 'variant-13-v2-collapse-indicator');
+            }}
+            style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
+          >
+            <svg
+              className="infinity-icon"
+              focusable="false"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              icon-name="chevron down"
+              color="inherit"
+              height="16"
+              width="16"
+              alt=""
+              viewBox="0 0 9 9"
+              transform="rotate(0)"
+              style={{ backgroundColor: '#e0ffff' }}
+            >
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 14 V2 - Two same handlers, no whitespace, has padding, partial-width, no caret, multipleElements */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          14. Two same handlers (P) (2x) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg
+            className="infinity-icon"
+            focusable="false"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            icon-name="api protection"
+            color="inherit"
+            height="16"
+            width="16"
+            alt=""
+            viewBox="0 0 16 16"
+            transform="rotate(0)"
+            style={{ backgroundColor: '#e6e6fa' }}
+          >
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div
+              role="listbox"
+              aria-expanded="false"
+              className="ui selection dropdown cp-select default"
+              tabIndex={0}
+              style={{ backgroundColor: '#f0fff0' }}
+            >
+              <div
+                aria-atomic="true"
+                aria-live="polite"
+                role="alert"
+                className="divider text"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleButtonClick(e, 'variant-14-v2-dropdown-clickable');
+                }}
+                style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}
+              >
+                <svg
+                  className="infinity-icon"
+                  focusable="false"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#7C7C7C"
+                  icon-name="inactive practice"
+                  color="#7C7C7C"
+                  height="16"
+                  width="16"
+                  alt=""
+                  viewBox="0 0 16 16"
+                  transform="rotate(0)"
+                  style={{ backgroundColor: '#f5deb3' }}
+                >
+                  <path
+                    fill="#7C7C7C"
+                    d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"
+                  ></path>
+                  <path
+                    fill="#7C7C7C"
+                    d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"
+                  ></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>Two same handlers 1</span>
+              </div>
+              <div
+                aria-atomic="true"
+                aria-live="polite"
+                role="alert"
+                className="divider text"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleButtonClick(e, 'variant-14-v2-dropdown-clickable-2');
+                }}
+                style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#f5f5dc' }}
+              >
+                <svg
+                  className="infinity-icon"
+                  focusable="false"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#7C7C7C"
+                  icon-name="inactive practice"
+                  color="#7C7C7C"
+                  height="16"
+                  width="16"
+                  alt=""
+                  viewBox="0 0 16 16"
+                  transform="rotate(0)"
+                  style={{ backgroundColor: '#f5deb3' }}
+                >
+                  <path
+                    fill="#7C7C7C"
+                    d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"
+                  ></path>
+                  <path
+                    fill="#7C7C7C"
+                    d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"
+                  ></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>Two same handlers 2</span>
+              </div>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div
+            className="collapse-indicator"
+            onClick={(e) => {
+              e.preventDefault();
+              handleButtonClick(e, 'variant-14-v2-collapse-indicator');
+            }}
+            style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
+          >
+            <svg
+              className="infinity-icon"
+              focusable="false"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              icon-name="chevron down"
+              color="inherit"
+              height="16"
+              width="16"
+              alt=""
+              viewBox="0 0 9 9"
+              transform="rotate(0)"
+              style={{ backgroundColor: '#e0ffff' }}
+            >
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 15 V2 - Two different handlers, has whitespace, has padding, partial-width, no caret, multipleElements, differentHandlers */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          15. Two different handlers (WS) (P) (2x) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg
+            className="infinity-icon"
+            focusable="false"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            icon-name="api protection"
+            color="inherit"
+            height="16"
+            width="16"
+            alt=""
+            viewBox="0 0 16 16"
+            transform="rotate(0)"
+            style={{ backgroundColor: '#e6e6fa' }}
+          >
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div
+              role="listbox"
+              aria-expanded="false"
+              className="ui selection dropdown cp-select default"
+              tabIndex={0}
+              style={{ backgroundColor: '#f0fff0' }}
+            >
+              {'   '}
+              <div
+                aria-atomic="true"
+                aria-live="polite"
+                role="alert"
+                className="divider text"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleButtonClick(e, 'variant-15-v2-dropdown-clickable');
+                }}
+                style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}
+              >
+                <svg
+                  className="infinity-icon"
+                  focusable="false"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#7C7C7C"
+                  icon-name="inactive practice"
+                  color="#7C7C7C"
+                  height="16"
+                  width="16"
+                  alt=""
+                  viewBox="0 0 16 16"
+                  transform="rotate(0)"
+                  style={{ backgroundColor: '#f5deb3' }}
+                >
+                  <path
+                    fill="#7C7C7C"
+                    d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"
+                  ></path>
+                  <path
+                    fill="#7C7C7C"
+                    d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"
+                  ></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>Two different handlers 1</span>
+              </div>
+              <div
+                aria-atomic="true"
+                aria-live="polite"
+                role="alert"
+                className="divider text"
+                style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#f5f5dc' }}
+                id="variant-15-v2-dropdown-clickable-2"
+              >
+                <svg
+                  className="infinity-icon"
+                  focusable="false"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#7C7C7C"
+                  icon-name="inactive practice"
+                  color="#7C7C7C"
+                  height="16"
+                  width="16"
+                  alt=""
+                  viewBox="0 0 16 16"
+                  transform="rotate(0)"
+                  style={{ backgroundColor: '#f5deb3' }}
+                >
+                  <path
+                    fill="#7C7C7C"
+                    d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"
+                  ></path>
+                  <path
+                    fill="#7C7C7C"
+                    d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"
+                  ></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>Two different handlers 2</span>
+              </div>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div
+            className="collapse-indicator"
+            onClick={(e) => {
+              e.preventDefault();
+              handleButtonClick(e, 'variant-15-v2-collapse-indicator');
+            }}
+            style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
+          >
+            <svg
+              className="infinity-icon"
+              focusable="false"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              icon-name="chevron down"
+              color="inherit"
+              height="16"
+              width="16"
+              alt=""
+              viewBox="0 0 9 9"
+              transform="rotate(0)"
+              style={{ backgroundColor: '#e0ffff' }}
+            >
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 16 V2 - Two different handlers, no whitespace, has padding, partial-width, no caret, multipleElements, differentHandlers */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          16. Two different handlers (P) (2x) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg
+            className="infinity-icon"
+            focusable="false"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            icon-name="api protection"
+            color="inherit"
+            height="16"
+            width="16"
+            alt=""
+            viewBox="0 0 16 16"
+            transform="rotate(0)"
+            style={{ backgroundColor: '#e6e6fa' }}
+          >
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div
+              role="listbox"
+              aria-expanded="false"
+              className="ui selection dropdown cp-select default"
+              tabIndex={0}
+              style={{ backgroundColor: '#f0fff0' }}
+            >
+              <div
+                aria-atomic="true"
+                aria-live="polite"
+                role="alert"
+                className="divider text"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleButtonClick(e, 'variant-16-v2-dropdown-clickable');
+                }}
+                style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}
+              >
+                <svg
+                  className="infinity-icon"
+                  focusable="false"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#7C7C7C"
+                  icon-name="inactive practice"
+                  color="#7C7C7C"
+                  height="16"
+                  width="16"
+                  alt=""
+                  viewBox="0 0 16 16"
+                  transform="rotate(0)"
+                  style={{ backgroundColor: '#f5deb3' }}
+                >
+                  <path
+                    fill="#7C7C7C"
+                    d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"
+                  ></path>
+                  <path
+                    fill="#7C7C7C"
+                    d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"
+                  ></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>Two different handlers 1</span>
+              </div>
+              <div
+                aria-atomic="true"
+                aria-live="polite"
+                role="alert"
+                className="divider text"
+                style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#f5f5dc' }}
+                id="variant-16-v2-dropdown-clickable-2"
+              >
+                <svg
+                  className="infinity-icon"
+                  focusable="false"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="#7C7C7C"
+                  icon-name="inactive practice"
+                  color="#7C7C7C"
+                  height="16"
+                  width="16"
+                  alt=""
+                  viewBox="0 0 16 16"
+                  transform="rotate(0)"
+                  style={{ backgroundColor: '#f5deb3' }}
+                >
+                  <path
+                    fill="#7C7C7C"
+                    d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"
+                  ></path>
+                  <path
+                    fill="#7C7C7C"
+                    d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"
+                  ></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>Two different handlers 2</span>
+              </div>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div
+            className="collapse-indicator"
+            onClick={(e) => {
+              e.preventDefault();
+              handleButtonClick(e, 'variant-16-v2-collapse-indicator');
+            }}
+            style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
+          >
+            <svg
+              className="infinity-icon"
+              focusable="false"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              icon-name="chevron down"
+              color="inherit"
+              height="16"
+              width="16"
+              alt=""
+              viewBox="0 0 9 9"
+              transform="rotate(0)"
+              style={{ backgroundColor: '#e0ffff' }}
+            >
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 17 V2 - React handler, has whitespace, has padding, full-width, has cursor, no caret */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          17. React (WS) (P) (FW) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
+              {'   '}
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-17-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                  <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
+                  <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>React</span>
+              </div>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-17-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 18 V2 - Inline handler, has whitespace, has padding, full-width, has cursor, no caret */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          18. Inline (WS) (P) (FW) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
+              {'   '}
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-18-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                  <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
+                  <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>Inline</span>
+              </div>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-18-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 19 V2 - addEL, has whitespace, has padding, full-width, has cursor, no caret, no onClick (uses addEventListener) */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          19. addEL (WS) (P) (FW) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }} id="variant-19-v2-dropdown-container">
+              {'   '}
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }} id="variant-19-v2-dropdown-clickable">
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                  <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
+                  <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>addEL</span>
+              </div>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-19-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 20 V2 - React+EL, has whitespace, has padding, full-width, has cursor, no caret */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          20. React+EL (WS) (P) (FW) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }} id="variant-20-v2-dropdown-container">
+              {'   '}
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-20-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }} id="variant-20-v2-dropdown-clickable">
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                  <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
+                  <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>React+EL</span>
+              </div>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-20-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 21 V2 - No cursor, has whitespace, has padding, full-width, no cursor, has handler, no caret */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          21. No cursor (WS) (P) (FW) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
+              {'   '}
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-21-v2-dropdown-clickable'); }} style={{ padding: '10px 12px', backgroundColor: '#fff5ee' }}>
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                  <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
+                  <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>No cursor</span>
+              </div>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-21-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 22 V2 - Cursor only, has whitespace, has padding, full-width, has cursor, no handler, no caret */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          22. Cursor only (WS) (P) (FW) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
+              {'   '}
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                  <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
+                  <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>Cursor only</span>
+              </div>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-22-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 23 V2 - Handler only, has whitespace, has padding, full-width, no cursor, has handler, no caret */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          23. Handler only (WS) (P) (FW) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
+              {'   '}
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-23-v2-dropdown-clickable'); }} style={{ padding: '10px 12px', backgroundColor: '#fff5ee' }}>
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                  <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
+                  <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>Handler only</span>
+              </div>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-23-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 24 V2 - Both, has whitespace, has padding, full-width, has cursor, has handler, no caret */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          24. Both (WS) (P) (FW) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
+              {'   '}
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-24-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                  <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
+                  <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>Both</span>
+              </div>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-24-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 25 V2 - With caret, has whitespace, has padding, partial-width, has cursor, has handler, has caret */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          25. With caret (WS) (P) (C) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
+              {'   '}
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-25-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                  <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
+                  <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>With caret</span>
+              </div>
+              <svg className="infinity-icon caret icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="caret down" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(90)" style={{ backgroundColor: '#d3d3d3' }}>
+                <polygon fill="currentColor" points="10 8 6 4 6 12 10 8"></polygon>
+              </svg>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-25-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 26 V2 - With caret, no whitespace, has padding, partial-width, has cursor, has handler, has caret */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          26. With caret (P) (C) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-26-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                  <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
+                  <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>With caret</span>
+              </div>
+              <svg className="infinity-icon caret icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="caret down" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(90)" style={{ backgroundColor: '#d3d3d3' }}>
+                <polygon fill="currentColor" points="10 8 6 4 6 12 10 8"></polygon>
+              </svg>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-26-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 27 V2 - No caret, has whitespace, has padding, full-width, has cursor, has handler, no caret */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          27. No caret (WS) (P) (FW) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
+              {'   '}
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-27-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                  <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
+                  <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>No caret</span>
+              </div>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-27-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 28 V2 - No caret, no whitespace, has padding, full-width, has cursor, has handler, no caret */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          28. No caret (P) (FW) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-28-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                  <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
+                  <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>No caret</span>
+              </div>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-28-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 29 V2 - Complex 1, has whitespace, has padding, partial-width, has cursor, has handler, has caret */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          29. Complex 1 (WS) (P) (C) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
+              {'   '}
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-29-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                  <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
+                  <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>Complex 1</span>
+              </div>
+              <svg className="infinity-icon caret icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="caret down" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(90)" style={{ backgroundColor: '#d3d3d3' }}>
+                <polygon fill="currentColor" points="10 8 6 4 6 12 10 8"></polygon>
+              </svg>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-29-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 30 V2 - Complex 2, no whitespace, no padding, full-width, no cursor, has handler, no caret */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          30. Complex 2 (FW) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-30-v2-dropdown-clickable'); }} style={{ backgroundColor: '#fff5ee' }}>
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                  <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
+                  <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>Complex 2</span>
+              </div>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-30-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 31 V2 - Complex 3, has whitespace, no padding, full-width, has cursor, inline handler, no caret */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          31. Complex 3 (WS) (FW) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
+              {'   '}
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-31-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', backgroundColor: '#fff5ee' }}>
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                  <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
+                  <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>Complex 3</span>
+              </div>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-31-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* VARIANT 32 V2 - Complex 4, no whitespace, has padding, partial-width, has cursor, has handler, has addEventListener, has caret */}
+        <div style={{ marginBottom: '10px', fontSize: '0.9rem', fontWeight: '600', color: '#666' }}>
+          32. Complex 4 (P) (C) [V2]
+        </div>
+        <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+            <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
+              <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="13.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <ellipse cx="3.5" cy="4" rx="1.5" ry="1"></ellipse>
+              <polygon points="8,16 1,14 1,5 8,7 "></polygon>
+              <polygon points="9,16 16,14 16,5 9,7 "></polygon>
+            </g>
+          </svg>
+          <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
+          <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
+            <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }} id="variant-32-v2-dropdown-container">
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-32-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }} id="variant-32-v2-dropdown-clickable">
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                  <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
+                  <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
+                </svg>
+                <span style={{ backgroundColor: '#ffe4b5' }}>Complex 4</span>
+              </div>
+              <svg className="infinity-icon caret icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="caret down" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(90)" style={{ backgroundColor: '#d3d3d3' }}>
+                <polygon fill="currentColor" points="10 8 6 4 6 12 10 8"></polygon>
+              </svg>
+              <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
+            </div>
+          </div>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-32-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+              <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* Legend */}
+        <div style={{ marginTop: '30px', padding: '20px', background: '#f8f9fa', borderRadius: '8px', border: '1px solid #e0e0e0' }}>
+          <h2 style={{ fontSize: '1.1rem', marginBottom: '15px', color: '#333' }}>Legend</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', fontSize: '0.9rem' }}>
+            <div>
+              <strong style={{ color: '#666' }}>Abbreviations:</strong>
+              <ul style={{ marginTop: '8px', marginLeft: '20px', lineHeight: '1.8' }}>
+                <li><strong>WS</strong> = With Whitespace (parent has whitespace-only text node)</li>
+                <li><strong>P</strong> = With Padding (element has padding: 10px 12px)</li>
+                <li><strong>FW</strong> = Full Width (element uses flex: 1, expands to fill space)</li>
+                <li><strong>NC</strong> = No Cursor (no cursor: pointer style)</li>
+                <li><strong>C</strong> = With Caret (has caret SVG icon)</li>
+                <li><strong>2x</strong> = Multiple Elements (two clickable children)</li>
+                <li><strong>Two same handlers</strong> = Both elements use React onClick handler</li>
+                <li><strong>Two different handlers</strong> = First element uses React onClick, second uses addEventListener</li>
+              </ul>
+            </div>
+            <div>
+              <strong style={{ color: '#666' }}>Handler Types:</strong>
+              <ul style={{ marginTop: '8px', marginLeft: '20px', lineHeight: '1.8' }}>
+                <li><strong>React Handler</strong> = onClick via React (detectable via __reactFiber?.memoizedProps?.onClick)</li>
+                <li><strong>Inline Handler</strong> = onclick attribute in HTML</li>
+                <li><strong>addEventListener</strong> = Programmatically attached via addEventListener</li>
+                <li><strong>No Handler</strong> = No event handlers attached</li>
+              </ul>
+            </div>
+            <div>
+              <strong style={{ color: '#666' }}>Coverage Types:</strong>
+              <ul style={{ marginTop: '8px', marginLeft: '20px', lineHeight: '1.8' }}>
+                <li><strong>Full-width</strong> = Clickable area expands to fill entire parent (flex: 1)</li>
+                <li><strong>Partial-width</strong> = Clickable area only covers content (flex-shrink: 0)</li>
+                <li><strong>With caret</strong> = Non-clickable whitespace between text and caret arrow</li>
+              </ul>
+            </div>
+            <div>
+              <strong style={{ color: '#666' }}>Uniquify Testing:</strong>
+              <ul style={{ marginTop: '8px', marginLeft: '20px', lineHeight: '1.8' }}>
+                <li>Tests how uniquify handles parent-child relationships</li>
+                <li>Whitespace-only parents should be filtered as framework containers</li>
+                <li>Nested elements evaluated by shouldKeepNestedElement logic</li>
+                <li>cursor: pointer marks clickability for detection</li>
+              </ul>
             </div>
           </div>
         </div>
@@ -442,4 +3322,3 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
     </>
   );
 }
-
