@@ -144,7 +144,7 @@ function DropdownCell({ config, onAction, containerStyle }: DropdownCellProps) {
         color="inherit"
         height="16"
         width="16"
-        alt=""
+
         viewBox="0 0 16 16"
         transform="rotate(0)"
         style={{ backgroundColor: '#e6e6fa' }}
@@ -234,7 +234,7 @@ function DropdownCell({ config, onAction, containerStyle }: DropdownCellProps) {
           color="inherit"
           height="16"
           width="16"
-          alt=""
+
           viewBox="0 0 9 9"
           transform="rotate(0)"
           style={{ backgroundColor: '#e0ffff' }}
@@ -414,7 +414,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             color="inherit"
             height="16"
             width="16"
-            alt=""
+
             viewBox="0 0 16 16"
             transform="rotate(0)"
             style={{ backgroundColor: '#e6e6fa' }}
@@ -457,7 +457,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                   color="#7C7C7C"
                   height="16"
                   width="16"
-                  alt=""
+
                   viewBox="0 0 16 16"
                   transform="rotate(0)"
                   style={{ backgroundColor: '#f5deb3' }}
@@ -482,7 +482,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                 color="inherit"
                 height="16"
                 width="16"
-                alt=""
+
                 viewBox="0 0 16 16"
                 transform="rotate(90)"
                 style={{ backgroundColor: '#d3d3d3' }}
@@ -509,7 +509,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               color="inherit"
               height="16"
               width="16"
-              alt=""
+
               viewBox="0 0 9 9"
               transform="rotate(0)"
               style={{ backgroundColor: '#e0ffff' }}
@@ -578,7 +578,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             color="inherit"
             height="16"
             width="16"
-            alt=""
+
             viewBox="0 0 16 16"
             transform="rotate(0)"
             style={{ backgroundColor: '#e6e6fa' }}
@@ -622,7 +622,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                   color="#7C7C7C"
                   height="16"
                   width="16"
-                  alt=""
+
                   viewBox="0 0 16 16"
                   transform="rotate(0)"
                   style={{ backgroundColor: '#f5deb3' }}
@@ -658,7 +658,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               color="inherit"
               height="16"
               width="16"
-              alt=""
+
               viewBox="0 0 9 9"
               transform="rotate(0)"
               style={{ backgroundColor: '#e0ffff' }}
@@ -682,7 +682,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             color="inherit"
             height="16"
             width="16"
-            alt=""
+
             viewBox="0 0 16 16"
             transform="rotate(0)"
             style={{ backgroundColor: '#e6e6fa' }}
@@ -725,7 +725,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                   color="#7C7C7C"
                   height="16"
                   width="16"
-                  alt=""
+
                   viewBox="0 0 16 16"
                   transform="rotate(0)"
                   style={{ backgroundColor: '#f5deb3' }}
@@ -761,7 +761,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               color="inherit"
               height="16"
               width="16"
-              alt=""
+
               viewBox="0 0 9 9"
               transform="rotate(0)"
               style={{ backgroundColor: '#e0ffff' }}
@@ -785,7 +785,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             color="inherit"
             height="16"
             width="16"
-            alt=""
+
             viewBox="0 0 16 16"
             transform="rotate(0)"
             style={{ backgroundColor: '#e6e6fa' }}
@@ -829,7 +829,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                   color="#7C7C7C"
                   height="16"
                   width="16"
-                  alt=""
+
                   viewBox="0 0 16 16"
                   transform="rotate(0)"
                   style={{ backgroundColor: '#f5deb3' }}
@@ -865,7 +865,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               color="inherit"
               height="16"
               width="16"
-              alt=""
+
               viewBox="0 0 9 9"
               transform="rotate(0)"
               style={{ backgroundColor: '#e0ffff' }}
@@ -889,7 +889,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             color="inherit"
             height="16"
             width="16"
-            alt=""
+
             viewBox="0 0 16 16"
             transform="rotate(0)"
             style={{ backgroundColor: '#e6e6fa' }}
@@ -932,7 +932,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                   color="#7C7C7C"
                   height="16"
                   width="16"
-                  alt=""
+
                   viewBox="0 0 16 16"
                   transform="rotate(0)"
                   style={{ backgroundColor: '#f5deb3' }}
@@ -968,7 +968,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               color="inherit"
               height="16"
               width="16"
-              alt=""
+
               viewBox="0 0 9 9"
               transform="rotate(0)"
               style={{ backgroundColor: '#e0ffff' }}
@@ -992,7 +992,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             color="inherit"
             height="16"
             width="16"
-            alt=""
+
             viewBox="0 0 16 16"
             transform="rotate(0)"
             style={{ backgroundColor: '#e6e6fa' }}
@@ -1035,7 +1035,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                   color="#7C7C7C"
                   height="16"
                   width="16"
-                  alt=""
+
                   viewBox="0 0 16 16"
                   transform="rotate(0)"
                   style={{ backgroundColor: '#f5deb3' }}
@@ -1071,7 +1071,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               color="inherit"
               height="16"
               width="16"
-              alt=""
+
               viewBox="0 0 9 9"
               transform="rotate(0)"
               style={{ backgroundColor: '#e0ffff' }}
@@ -1095,7 +1095,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             color="inherit"
             height="16"
             width="16"
-            alt=""
+
             viewBox="0 0 16 16"
             transform="rotate(0)"
             style={{ backgroundColor: '#e6e6fa' }}
@@ -1138,7 +1138,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                   color="#7C7C7C"
                   height="16"
                   width="16"
-                  alt=""
+
                   viewBox="0 0 16 16"
                   transform="rotate(0)"
                   style={{ backgroundColor: '#f5deb3' }}
@@ -1174,7 +1174,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               color="inherit"
               height="16"
               width="16"
-              alt=""
+
               viewBox="0 0 9 9"
               transform="rotate(0)"
               style={{ backgroundColor: '#e0ffff' }}
@@ -1198,7 +1198,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             color="inherit"
             height="16"
             width="16"
-            alt=""
+
             viewBox="0 0 16 16"
             transform="rotate(0)"
             style={{ backgroundColor: '#e6e6fa' }}
@@ -1241,7 +1241,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                   color="#7C7C7C"
                   height="16"
                   width="16"
-                  alt=""
+
                   viewBox="0 0 16 16"
                   transform="rotate(0)"
                   style={{ backgroundColor: '#f5deb3' }}
@@ -1277,7 +1277,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               color="inherit"
               height="16"
               width="16"
-              alt=""
+
               viewBox="0 0 9 9"
               transform="rotate(0)"
               style={{ backgroundColor: '#e0ffff' }}
@@ -1301,7 +1301,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             color="inherit"
             height="16"
             width="16"
-            alt=""
+
             viewBox="0 0 16 16"
             transform="rotate(0)"
             style={{ backgroundColor: '#e6e6fa' }}
@@ -1344,7 +1344,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                   color="#7C7C7C"
                   height="16"
                   width="16"
-                  alt=""
+
                   viewBox="0 0 16 16"
                   transform="rotate(0)"
                   style={{ backgroundColor: '#f5deb3' }}
@@ -1380,7 +1380,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               color="inherit"
               height="16"
               width="16"
-              alt=""
+
               viewBox="0 0 9 9"
               transform="rotate(0)"
               style={{ backgroundColor: '#e0ffff' }}
@@ -1404,7 +1404,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             color="inherit"
             height="16"
             width="16"
-            alt=""
+
             viewBox="0 0 16 16"
             transform="rotate(0)"
             style={{ backgroundColor: '#e6e6fa' }}
@@ -1448,7 +1448,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                   color="#7C7C7C"
                   height="16"
                   width="16"
-                  alt=""
+
                   viewBox="0 0 16 16"
                   transform="rotate(0)"
                   style={{ backgroundColor: '#f5deb3' }}
@@ -1484,7 +1484,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               color="inherit"
               height="16"
               width="16"
-              alt=""
+
               viewBox="0 0 9 9"
               transform="rotate(0)"
               style={{ backgroundColor: '#e0ffff' }}
@@ -1508,7 +1508,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             color="inherit"
             height="16"
             width="16"
-            alt=""
+
             viewBox="0 0 16 16"
             transform="rotate(0)"
             style={{ backgroundColor: '#e6e6fa' }}
@@ -1552,7 +1552,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                   color="#7C7C7C"
                   height="16"
                   width="16"
-                  alt=""
+
                   viewBox="0 0 16 16"
                   transform="rotate(0)"
                   style={{ backgroundColor: '#f5deb3' }}
@@ -1588,7 +1588,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               color="inherit"
               height="16"
               width="16"
-              alt=""
+
               viewBox="0 0 9 9"
               transform="rotate(0)"
               style={{ backgroundColor: '#e0ffff' }}
@@ -1612,7 +1612,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             color="inherit"
             height="16"
             width="16"
-            alt=""
+
             viewBox="0 0 16 16"
             transform="rotate(0)"
             style={{ backgroundColor: '#e6e6fa' }}
@@ -1655,7 +1655,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                   color="#7C7C7C"
                   height="16"
                   width="16"
-                  alt=""
+
                   viewBox="0 0 16 16"
                   transform="rotate(0)"
                   style={{ backgroundColor: '#f5deb3' }}
@@ -1691,7 +1691,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               color="inherit"
               height="16"
               width="16"
-              alt=""
+
               viewBox="0 0 9 9"
               transform="rotate(0)"
               style={{ backgroundColor: '#e0ffff' }}
@@ -1715,7 +1715,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             color="inherit"
             height="16"
             width="16"
-            alt=""
+
             viewBox="0 0 16 16"
             transform="rotate(0)"
             style={{ backgroundColor: '#e6e6fa' }}
@@ -1758,7 +1758,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                   color="#7C7C7C"
                   height="16"
                   width="16"
-                  alt=""
+
                   viewBox="0 0 16 16"
                   transform="rotate(0)"
                   style={{ backgroundColor: '#f5deb3' }}
@@ -1794,7 +1794,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               color="inherit"
               height="16"
               width="16"
-              alt=""
+
               viewBox="0 0 9 9"
               transform="rotate(0)"
               style={{ backgroundColor: '#e0ffff' }}
@@ -1818,7 +1818,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             color="inherit"
             height="16"
             width="16"
-            alt=""
+
             viewBox="0 0 16 16"
             transform="rotate(0)"
             style={{ backgroundColor: '#e6e6fa' }}
@@ -1862,7 +1862,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                   color="#7C7C7C"
                   height="16"
                   width="16"
-                  alt=""
+
                   viewBox="0 0 16 16"
                   transform="rotate(0)"
                   style={{ backgroundColor: '#f5deb3' }}
@@ -1898,7 +1898,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                   color="#7C7C7C"
                   height="16"
                   width="16"
-                  alt=""
+
                   viewBox="0 0 16 16"
                   transform="rotate(0)"
                   style={{ backgroundColor: '#f5deb3' }}
@@ -1934,7 +1934,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               color="inherit"
               height="16"
               width="16"
-              alt=""
+
               viewBox="0 0 9 9"
               transform="rotate(0)"
               style={{ backgroundColor: '#e0ffff' }}
@@ -1958,7 +1958,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             color="inherit"
             height="16"
             width="16"
-            alt=""
+
             viewBox="0 0 16 16"
             transform="rotate(0)"
             style={{ backgroundColor: '#e6e6fa' }}
@@ -2001,7 +2001,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                   color="#7C7C7C"
                   height="16"
                   width="16"
-                  alt=""
+
                   viewBox="0 0 16 16"
                   transform="rotate(0)"
                   style={{ backgroundColor: '#f5deb3' }}
@@ -2037,7 +2037,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                   color="#7C7C7C"
                   height="16"
                   width="16"
-                  alt=""
+
                   viewBox="0 0 16 16"
                   transform="rotate(0)"
                   style={{ backgroundColor: '#f5deb3' }}
@@ -2073,7 +2073,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               color="inherit"
               height="16"
               width="16"
-              alt=""
+
               viewBox="0 0 9 9"
               transform="rotate(0)"
               style={{ backgroundColor: '#e0ffff' }}
@@ -2097,7 +2097,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             color="inherit"
             height="16"
             width="16"
-            alt=""
+
             viewBox="0 0 16 16"
             transform="rotate(0)"
             style={{ backgroundColor: '#e6e6fa' }}
@@ -2141,7 +2141,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                   color="#7C7C7C"
                   height="16"
                   width="16"
-                  alt=""
+
                   viewBox="0 0 16 16"
                   transform="rotate(0)"
                   style={{ backgroundColor: '#f5deb3' }}
@@ -2174,7 +2174,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                   color="#7C7C7C"
                   height="16"
                   width="16"
-                  alt=""
+
                   viewBox="0 0 16 16"
                   transform="rotate(0)"
                   style={{ backgroundColor: '#f5deb3' }}
@@ -2210,7 +2210,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               color="inherit"
               height="16"
               width="16"
-              alt=""
+
               viewBox="0 0 9 9"
               transform="rotate(0)"
               style={{ backgroundColor: '#e0ffff' }}
@@ -2234,7 +2234,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             color="inherit"
             height="16"
             width="16"
-            alt=""
+
             viewBox="0 0 16 16"
             transform="rotate(0)"
             style={{ backgroundColor: '#e6e6fa' }}
@@ -2277,7 +2277,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                   color="#7C7C7C"
                   height="16"
                   width="16"
-                  alt=""
+
                   viewBox="0 0 16 16"
                   transform="rotate(0)"
                   style={{ backgroundColor: '#f5deb3' }}
@@ -2310,7 +2310,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                   color="#7C7C7C"
                   height="16"
                   width="16"
-                  alt=""
+
                   viewBox="0 0 16 16"
                   transform="rotate(0)"
                   style={{ backgroundColor: '#f5deb3' }}
@@ -2346,7 +2346,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               color="inherit"
               height="16"
               width="16"
-              alt=""
+
               viewBox="0 0 9 9"
               transform="rotate(0)"
               style={{ backgroundColor: '#e0ffff' }}
@@ -2361,7 +2361,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           17. React (WS) (P) (FW) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
-          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
             <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
               <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
               <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
@@ -2376,7 +2376,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
               {'   '}
               <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-17-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
-                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
                 </svg>
@@ -2386,7 +2386,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             </div>
           </div>
           <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-17-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
-            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
           </div>
@@ -2397,7 +2397,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           18. Inline (WS) (P) (FW) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
-          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
             <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
               <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
               <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
@@ -2412,7 +2412,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
               {'   '}
               <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-18-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
-                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
                 </svg>
@@ -2422,7 +2422,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             </div>
           </div>
           <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-18-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
-            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
           </div>
@@ -2433,7 +2433,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           19. addEL (WS) (P) (FW) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
-          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
             <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
               <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
               <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
@@ -2448,7 +2448,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }} id="variant-19-v2-dropdown-container">
               {'   '}
               <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }} id="variant-19-v2-dropdown-clickable">
-                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
                 </svg>
@@ -2458,7 +2458,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             </div>
           </div>
           <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-19-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
-            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
           </div>
@@ -2469,7 +2469,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           20. React+EL (WS) (P) (FW) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
-          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
             <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
               <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
               <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
@@ -2484,7 +2484,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }} id="variant-20-v2-dropdown-container">
               {'   '}
               <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-20-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }} id="variant-20-v2-dropdown-clickable">
-                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
                 </svg>
@@ -2494,7 +2494,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             </div>
           </div>
           <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-20-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
-            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
           </div>
@@ -2505,7 +2505,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           21. No cursor (WS) (P) (FW) (non-unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
-          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
             <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
               <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
               <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
@@ -2520,7 +2520,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
               {'   '}
               <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-21-v2-dropdown-clickable'); }} style={{ padding: '10px 12px', backgroundColor: '#fff5ee' }}>
-                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
                 </svg>
@@ -2530,7 +2530,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             </div>
           </div>
           <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-21-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
-            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
           </div>
@@ -2541,7 +2541,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           22. Cursor only (WS) (P) (FW) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
-          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
             <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
               <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
               <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
@@ -2556,7 +2556,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
               {'   '}
               <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
-                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
                 </svg>
@@ -2566,7 +2566,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             </div>
           </div>
           <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-22-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
-            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
           </div>
@@ -2577,7 +2577,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           23. Handler only (WS) (P) (FW) (non-unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
-          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
             <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
               <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
               <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
@@ -2592,7 +2592,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
               {'   '}
               <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-23-v2-dropdown-clickable'); }} style={{ padding: '10px 12px', backgroundColor: '#fff5ee' }}>
-                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
                 </svg>
@@ -2602,7 +2602,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             </div>
           </div>
           <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-23-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
-            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
           </div>
@@ -2613,7 +2613,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           24. Both (WS) (P) (FW) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
-          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
             <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
               <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
               <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
@@ -2628,7 +2628,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
               {'   '}
               <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-24-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
-                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
                 </svg>
@@ -2638,7 +2638,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             </div>
           </div>
           <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-24-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
-            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
           </div>
@@ -2649,7 +2649,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           25. With caret (WS) (P) (C) (non-unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
-          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
             <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
               <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
               <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
@@ -2664,20 +2664,20 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
               {'   '}
               <div aria-atomic="true" aria-live="polite" role="alert" className="divider text" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-25-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
-                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
                 </svg>
                 <span style={{ backgroundColor: '#ffe4b5' }}>With caret</span>
               </div>
-              <svg className="infinity-icon caret icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="caret down" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(90)" style={{ backgroundColor: '#d3d3d3' }}>
+              <svg className="infinity-icon caret icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="caret down" color="inherit" height="16" width="16" viewBox="0 0 16 16" transform="rotate(90)" style={{ backgroundColor: '#d3d3d3' }}>
                 <polygon fill="currentColor" points="10 8 6 4 6 12 10 8"></polygon>
               </svg>
               <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
             </div>
           </div>
           <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-25-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
-            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
           </div>
@@ -2688,7 +2688,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           26. With caret (P) (C) (non-unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
-          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
             <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
               <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
               <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
@@ -2702,20 +2702,20 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
               <div aria-atomic="true" aria-live="polite" role="alert" className="divider text" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-26-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
-                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
                 </svg>
                 <span style={{ backgroundColor: '#ffe4b5' }}>With caret</span>
               </div>
-              <svg className="infinity-icon caret icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="caret down" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(90)" style={{ backgroundColor: '#d3d3d3' }}>
+              <svg className="infinity-icon caret icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="caret down" color="inherit" height="16" width="16" viewBox="0 0 16 16" transform="rotate(90)" style={{ backgroundColor: '#d3d3d3' }}>
                 <polygon fill="currentColor" points="10 8 6 4 6 12 10 8"></polygon>
               </svg>
               <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
             </div>
           </div>
           <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-26-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
-            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
           </div>
@@ -2726,7 +2726,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           27. No caret (WS) (P) (FW) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
-          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
             <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
               <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
               <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
@@ -2741,7 +2741,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
               {'   '}
               <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-27-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
-                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
                 </svg>
@@ -2751,7 +2751,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             </div>
           </div>
           <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-27-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
-            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
           </div>
@@ -2762,7 +2762,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           28. No caret (P) (FW) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
-          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
             <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
               <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
               <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
@@ -2776,7 +2776,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
               <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-28-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
-                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
                 </svg>
@@ -2786,7 +2786,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             </div>
           </div>
           <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-28-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
-            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
           </div>
@@ -2797,7 +2797,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           29. Complex 1 (WS) (P) (C) (non-unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
-          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
             <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
               <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
               <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
@@ -2812,20 +2812,20 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
               {'   '}
               <div aria-atomic="true" aria-live="polite" role="alert" className="divider text" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-29-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
-                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
                 </svg>
                 <span style={{ backgroundColor: '#ffe4b5' }}>Complex 1</span>
               </div>
-              <svg className="infinity-icon caret icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="caret down" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(90)" style={{ backgroundColor: '#d3d3d3' }}>
+              <svg className="infinity-icon caret icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="caret down" color="inherit" height="16" width="16" viewBox="0 0 16 16" transform="rotate(90)" style={{ backgroundColor: '#d3d3d3' }}>
                 <polygon fill="currentColor" points="10 8 6 4 6 12 10 8"></polygon>
               </svg>
               <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
             </div>
           </div>
           <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-29-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
-            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
           </div>
@@ -2836,7 +2836,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           30. Complex 2 (FW) (non-unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
-          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
             <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
               <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
               <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
@@ -2850,7 +2850,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
               <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-30-v2-dropdown-clickable'); }} style={{ backgroundColor: '#fff5ee' }}>
-                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
                 </svg>
@@ -2860,7 +2860,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             </div>
           </div>
           <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-30-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
-            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
           </div>
@@ -2871,7 +2871,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           31. Complex 3 (WS) (FW) (unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
-          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
             <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
               <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
               <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
@@ -2886,7 +2886,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
               {'   '}
               <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-31-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', backgroundColor: '#fff5ee' }}>
-                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
                 </svg>
@@ -2896,7 +2896,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             </div>
           </div>
           <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-31-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
-            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
           </div>
@@ -2907,7 +2907,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           32. Complex 4 (P) (C) (non-unifiable)
         </div>
         <div className="header clickable" style={{ marginBottom: '40px', padding: '20px', background: '#ffe4e1', border: '1px solid #ddd', borderRadius: '8px' }}>
-          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
+          <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="api protection" color="inherit" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#e6e6fa' }}>
             <g fill="currentColor" style={{ backgroundColor: '#dda0dd' }}>
               <ellipse cx="8.5" cy="2" rx="1.5" ry="1"></ellipse>
               <ellipse cx="8.5" cy="5" rx="1.5" ry="1"></ellipse>
@@ -2921,20 +2921,20 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }} id="variant-32-v2-dropdown-container">
               <div aria-atomic="true" aria-live="polite" role="alert" className="divider text" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-32-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }} id="variant-32-v2-dropdown-clickable">
-                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
+                <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
                 </svg>
                 <span style={{ backgroundColor: '#ffe4b5' }}>Complex 4</span>
               </div>
-              <svg className="infinity-icon caret icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="caret down" color="inherit" height="16" width="16" alt="" viewBox="0 0 16 16" transform="rotate(90)" style={{ backgroundColor: '#d3d3d3' }}>
+              <svg className="infinity-icon caret icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="caret down" color="inherit" height="16" width="16" viewBox="0 0 16 16" transform="rotate(90)" style={{ backgroundColor: '#d3d3d3' }}>
                 <polygon fill="currentColor" points="10 8 6 4 6 12 10 8"></polygon>
               </svg>
               <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
             </div>
           </div>
           <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-32-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
-            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" alt="" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
+            <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
           </div>
