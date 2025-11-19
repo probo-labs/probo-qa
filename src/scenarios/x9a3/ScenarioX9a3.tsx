@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useInteractionHandlers } from '../shared/handlers';
 import type { ScenarioProps } from '../shared/types';
 
@@ -249,6 +249,100 @@ function DropdownCell({ config, onAction, containerStyle }: DropdownCellProps) {
 export default function ScenarioX9a3({ onAction }: ScenarioProps) {
   const { handleButtonClick } = useInteractionHandlers(onAction);
   const [clicked, setClicked] = useState<Record<string, boolean>>({});
+  
+  // Track clicks per handler instance (by handler instance ID like "react1", "addEL1", etc.)
+  const [handlerInstanceCounts, setHandlerInstanceCounts] = useState<Record<string, number>>({});
+  const initializedRef = useRef(false);
+
+  // Helper to get handler type from element ID and config
+  const getHandlerType = (elementId: string, config: DropdownConfig): string => {
+    // Check if it's the addEventListener tracking (has -el suffix)
+    if (elementId.includes('-el')) {
+      return 'addEL';
+    }
+    
+    // Check if it's the second element in a multi-element variant
+    if (elementId.includes('-2') || elementId.includes('-clickable-2')) {
+      if (config.differentHandlers && config.hasAddEventListener) {
+        return 'addEL';
+      }
+      return 'react'; // Same handler type, so React
+    }
+    
+    // First element or single element
+    if (config.hasInlineHandler) return 'inline';
+    if (config.hasAddEventListener && !config.hasReactHandler) return 'addEL';
+    if (config.hasReactHandler) return 'react';
+    return 'none';
+  };
+  
+  // Map element IDs to handler instance IDs (reusing instances across variants)
+  const getHandlerInstanceId = (elementId: string, config: DropdownConfig, elementToHandlerInstanceMap: Record<string, string>): string | null => {
+    const handlerType = getHandlerType(elementId, config);
+    if (handlerType === 'none') return null;
+    
+    // Use the pre-computed map
+    return elementToHandlerInstanceMap[elementId] || null;
+  };
+  
+  // Enhanced click handler that tracks each instance
+  const handleClickWithTracking = (e: React.MouseEvent, elementId: string, variantId: string, elementToHandlerInstanceMap: Record<string, string>) => {
+    e.preventDefault();
+    handleButtonClick(e, elementId);
+    
+    const config = dropdownConfigs.find(c => c.id === variantId);
+    if (config) {
+      const instanceId = getHandlerInstanceId(elementId, config, elementToHandlerInstanceMap);
+      if (instanceId) {
+        setHandlerInstanceCounts(prev => ({
+          ...prev,
+          [instanceId]: (prev[instanceId] || 0) + 1
+        }));
+      }
+    }
+  };
+  
+  // Get handler instances for display
+  const getHandlerInstances = () => {
+    const instances: Array<{ label: string; count: number; type: string }> = [];
+    
+    // Get all unique instance IDs from the map
+    const allInstanceIds = new Set<string>();
+    Object.values(elementToHandlerInstanceMap).forEach(instanceId => {
+      allInstanceIds.add(instanceId);
+    });
+    
+    // Sort instance IDs to get consistent ordering (react1, react2, addEL1, etc.)
+    const sortedInstanceIds = Array.from(allInstanceIds).sort((a, b) => {
+      // Extract type and number
+      const aMatch = a.match(/^(react|addEL|inline)(\d+)$/);
+      const bMatch = b.match(/^(react|addEL|inline)(\d+)$/);
+      if (!aMatch || !bMatch) return a.localeCompare(b);
+      
+      const aType = aMatch[1];
+      const bType = bMatch[1];
+      const aNum = parseInt(aMatch[2]);
+      const bNum = parseInt(bMatch[2]);
+      
+      // Sort by type first, then by number
+      if (aType !== bType) {
+        const typeOrder: Record<string, number> = { react: 0, addEL: 1, inline: 2 };
+        return (typeOrder[aType] || 99) - (typeOrder[bType] || 99);
+      }
+      return aNum - bNum;
+    });
+    
+    sortedInstanceIds.forEach(instanceId => {
+      const count = handlerInstanceCounts[instanceId] || 0;
+      const match = instanceId.match(/^(react|addEL|inline)(\d+)$/);
+      if (match) {
+        const type = match[1];
+        instances.push({ label: instanceId, count, type });
+      }
+    });
+    
+    return instances;
+  };
 
   // Define all dropdown configurations
   const dropdownConfigs: DropdownConfig[] = [
@@ -300,6 +394,194 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
     { id: '31', label: 'Complex 3', hasWhitespace: true, hasPadding: false, fullWidth: true, hasCursor: true, hasReactHandler: false, hasInlineHandler: true, hasAddEventListener: false, hasCaret: false },
     { id: '32', label: 'Complex 4', hasWhitespace: false, hasPadding: true, fullWidth: false, hasCursor: true, hasReactHandler: true, hasInlineHandler: false, hasAddEventListener: true, hasCaret: true },
   ];
+
+  // Build a memoized map of element IDs to handler instance IDs
+  // This reuses handler instances across variants when they have the same handler type
+  const elementToHandlerInstanceMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    const typeCounters: Record<string, number> = { react: 0, addEL: 0, inline: 0 };
+    const assignedInstances: Record<string, string> = {}; // signature -> instanceId
+    
+    // Process each variant in order
+    for (const config of dropdownConfigs) {
+      const variantId = config.id;
+      
+      // Get all handlers needed for this variant
+      const handlers: Array<{ elementId: string; type: string; signature: string }> = [];
+      
+      // First/single handler
+      let firstHandlerType = '';
+      if (config.hasInlineHandler) {
+        firstHandlerType = 'inline';
+      } else if (config.hasAddEventListener && !config.hasReactHandler) {
+        firstHandlerType = 'addEL';
+      } else if (config.hasReactHandler) {
+        firstHandlerType = 'react';
+      }
+      
+      if (firstHandlerType) {
+        const elementId = `variant-${variantId}-v2-dropdown-clickable`;
+        const signature = `${firstHandlerType}-first`;
+        handlers.push({ elementId, type: firstHandlerType, signature });
+      }
+      
+      // Second element (for multi-element variants)
+      if (config.multipleElements) {
+        if (config.differentHandlers && config.hasAddEventListener) {
+          // Different handler type (addEL)
+          const elementId = `variant-${variantId}-v2-dropdown-clickable-2`;
+          const signature = 'addEL-second';
+          handlers.push({ elementId, type: 'addEL', signature });
+        } else {
+          // Same handler type - reuse the first handler instance
+          const elementId = `variant-${variantId}-v2-dropdown-clickable-2`;
+          if (firstHandlerType) {
+            // Reuse the same signature as the first element
+            const signature = `${firstHandlerType}-first`;
+            handlers.push({ elementId, type: firstHandlerType, signature });
+          }
+        }
+      }
+      
+      // addEventListener handler (for variants with both React and addEL)
+      if (config.hasReactHandler && config.hasAddEventListener) {
+        const elementId = `variant-${variantId}-v2-dropdown-clickable-el`;
+        const signature = 'addEL-second';
+        handlers.push({ elementId, type: 'addEL', signature });
+      }
+      
+      // Assign handler instances, reusing when signature matches
+      for (const handler of handlers) {
+        if (!assignedInstances[handler.signature]) {
+          typeCounters[handler.type]++;
+          assignedInstances[handler.signature] = `${handler.type}${typeCounters[handler.type]}`;
+        }
+        map[handler.elementId] = assignedInstances[handler.signature];
+      }
+    }
+    
+    return map;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // dropdownConfigs is a constant, so we can use empty deps
+
+  // Initialize handler instance counts with all instances set to 0 (only once)
+  useEffect(() => {
+    if (initializedRef.current) return;
+    
+    const allInstanceIds = new Set<string>();
+    Object.values(elementToHandlerInstanceMap).forEach(instanceId => {
+      allInstanceIds.add(instanceId);
+    });
+    
+    const initialCounts: Record<string, number> = {};
+    allInstanceIds.forEach(instanceId => {
+      initialCounts[instanceId] = 0;
+    });
+    
+    setHandlerInstanceCounts(initialCounts);
+    initializedRef.current = true;
+  }, [elementToHandlerInstanceMap]);
+
+  // Track addEventListener clicks for variants that use it
+  useEffect(() => {
+    // Variant 15 - second element uses addEventListener
+    const el15 = document.getElementById('variant-15-v2-dropdown-clickable-2');
+    if (el15) {
+      const instanceId = elementToHandlerInstanceMap['variant-15-v2-dropdown-clickable-2'];
+      if (instanceId) {
+        const handler = (e: Event) => {
+          e.preventDefault();
+          setHandlerInstanceCounts(prev => ({
+            ...prev,
+            [instanceId]: (prev[instanceId] || 0) + 1
+          }));
+          handleButtonClick(e as unknown as React.MouseEvent, 'variant-15-v2-dropdown-clickable-2');
+        };
+        el15.addEventListener('click', handler);
+        return () => el15.removeEventListener('click', handler);
+      }
+    }
+  }, [handleButtonClick, elementToHandlerInstanceMap]);
+
+  useEffect(() => {
+    // Variant 16 - second element uses addEventListener
+    const el16 = document.getElementById('variant-16-v2-dropdown-clickable-2');
+    if (el16) {
+      const instanceId = elementToHandlerInstanceMap['variant-16-v2-dropdown-clickable-2'];
+      if (instanceId) {
+        const handler = (e: Event) => {
+          e.preventDefault();
+          setHandlerInstanceCounts(prev => ({
+            ...prev,
+            [instanceId]: (prev[instanceId] || 0) + 1
+          }));
+          handleButtonClick(e as unknown as React.MouseEvent, 'variant-16-v2-dropdown-clickable-2');
+        };
+        el16.addEventListener('click', handler);
+        return () => el16.removeEventListener('click', handler);
+      }
+    }
+  }, [handleButtonClick, elementToHandlerInstanceMap]);
+
+  useEffect(() => {
+    // Variant 19 - single element uses addEventListener
+    const el19 = document.getElementById('variant-19-v2-dropdown-clickable');
+    if (el19) {
+      const instanceId = elementToHandlerInstanceMap['variant-19-v2-dropdown-clickable'];
+      if (instanceId) {
+        const handler = (e: Event) => {
+          e.preventDefault();
+          setHandlerInstanceCounts(prev => ({
+            ...prev,
+            [instanceId]: (prev[instanceId] || 0) + 1
+          }));
+          handleButtonClick(e as unknown as React.MouseEvent, 'variant-19-v2-dropdown-clickable');
+        };
+        el19.addEventListener('click', handler);
+        return () => el19.removeEventListener('click', handler);
+      }
+    }
+  }, [handleButtonClick, elementToHandlerInstanceMap]);
+
+  useEffect(() => {
+    // Variant 20 - single element uses both React and addEventListener (track addEventListener separately)
+    const el20 = document.getElementById('variant-20-v2-dropdown-clickable');
+    if (el20) {
+      const instanceId = elementToHandlerInstanceMap['variant-20-v2-dropdown-clickable-el'];
+      if (instanceId) {
+        const handler = (e: Event) => {
+          e.preventDefault();
+          setHandlerInstanceCounts(prev => ({
+            ...prev,
+            [instanceId]: (prev[instanceId] || 0) + 1
+          }));
+          handleButtonClick(e as unknown as React.MouseEvent, 'variant-20-v2-dropdown-clickable');
+        };
+        el20.addEventListener('click', handler);
+        return () => el20.removeEventListener('click', handler);
+      }
+    }
+  }, [handleButtonClick, elementToHandlerInstanceMap]);
+
+  useEffect(() => {
+    // Variant 32 - single element uses both React and addEventListener (track addEventListener separately)
+    const el32 = document.getElementById('variant-32-v2-dropdown-clickable');
+    if (el32) {
+      const instanceId = elementToHandlerInstanceMap['variant-32-v2-dropdown-clickable-el'];
+      if (instanceId) {
+        const handler = (e: Event) => {
+          e.preventDefault();
+          setHandlerInstanceCounts(prev => ({
+            ...prev,
+            [instanceId]: (prev[instanceId] || 0) + 1
+          }));
+          handleButtonClick(e as unknown as React.MouseEvent, 'variant-32-v2-dropdown-clickable');
+        };
+        el32.addEventListener('click', handler);
+        return () => el32.removeEventListener('click', handler);
+      }
+    }
+  }, [handleButtonClick, elementToHandlerInstanceMap]);
 
   return (
     <>
@@ -562,6 +844,49 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               </a>
             ))}
           </div>
+          
+          {/* Handler Counter Section - shows each instance as React1, React2, etc. */}
+          {(() => {
+            const handlerInstances = getHandlerInstances();
+            
+            return (
+              <div style={{
+                marginTop: '12px',
+                paddingTop: '12px',
+                borderTop: '1px solid #e0e0e0',
+                display: 'flex',
+                gap: '8px',
+                fontSize: '0.7rem',
+                flexWrap: 'wrap',
+                justifyContent: 'center'
+              }}>
+                {handlerInstances.map((instance, idx) => {
+                  const color = 
+                    instance.type === 'react' ? '#2196f3' :
+                    instance.type === 'addEL' ? '#ff9800' :
+                    '#9c27b0'; // inline
+                  
+                  return (
+                    <div
+                      key={idx}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                        padding: '4px 8px',
+                        backgroundColor: color,
+                        color: 'white',
+                        borderRadius: '4px'
+                      }}
+                    >
+                      <span>{instance.label}:</span>
+                      <span style={{ fontWeight: 'bold', fontFamily: 'monospace' }}>{instance.count}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })()}
         </div>
 
         {/* VARIANT 1 - Based on Duplicate B with variant-specific changes */}
@@ -609,7 +934,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                 className="divider text full-width"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleButtonClick(e, 'variant-1-v2-dropdown-clickable');
+                  handleClickWithTracking(e, 'variant-1-v2-dropdown-clickable', '1', elementToHandlerInstanceMap);
                 }}
                 style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}
               >
@@ -645,7 +970,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             className="collapse-indicator"
             onClick={(e) => {
               e.preventDefault();
-              handleButtonClick(e, 'variant-1-v2-collapse-indicator');
+              handleClickWithTracking(e, 'variant-1-v2-collapse-indicator', '1', elementToHandlerInstanceMap);
             }}
             style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
           >
@@ -712,7 +1037,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                 className="divider text full-width"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleButtonClick(e, 'variant-2-v2-dropdown-clickable');
+                  handleClickWithTracking(e, 'variant-2-v2-dropdown-clickable', '2', elementToHandlerInstanceMap);
                 }}
                 style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}
               >
@@ -748,7 +1073,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             className="collapse-indicator"
             onClick={(e) => {
               e.preventDefault();
-              handleButtonClick(e, 'variant-2-v2-collapse-indicator');
+              handleClickWithTracking(e, 'variant-2-v2-collapse-indicator', '2', elementToHandlerInstanceMap);
             }}
             style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
           >
@@ -816,7 +1141,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                 className="divider text"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleButtonClick(e, 'variant-3-v2-dropdown-clickable');
+                  handleClickWithTracking(e, 'variant-3-v2-dropdown-clickable', '3', elementToHandlerInstanceMap);
                 }}
                 style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}
               >
@@ -852,7 +1177,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             className="collapse-indicator"
             onClick={(e) => {
               e.preventDefault();
-              handleButtonClick(e, 'variant-3-v2-collapse-indicator');
+              handleClickWithTracking(e, 'variant-3-v2-collapse-indicator', '3', elementToHandlerInstanceMap);
             }}
             style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
           >
@@ -919,7 +1244,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                 className="divider text"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleButtonClick(e, 'variant-4-v2-dropdown-clickable');
+                  handleClickWithTracking(e, 'variant-4-v2-dropdown-clickable', '4', elementToHandlerInstanceMap);
                 }}
                 style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}
               >
@@ -955,7 +1280,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             className="collapse-indicator"
             onClick={(e) => {
               e.preventDefault();
-              handleButtonClick(e, 'variant-4-v2-collapse-indicator');
+              handleClickWithTracking(e, 'variant-4-v2-collapse-indicator', '4', elementToHandlerInstanceMap);
             }}
             style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
           >
@@ -1022,7 +1347,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                 className="divider text full-width"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleButtonClick(e, 'variant-5-v2-dropdown-clickable');
+                  handleClickWithTracking(e, 'variant-5-v2-dropdown-clickable', '5', elementToHandlerInstanceMap);
                 }}
                 style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}
               >
@@ -1058,7 +1383,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             className="collapse-indicator"
             onClick={(e) => {
               e.preventDefault();
-              handleButtonClick(e, 'variant-5-v2-collapse-indicator');
+              handleClickWithTracking(e, 'variant-5-v2-collapse-indicator', '5', elementToHandlerInstanceMap);
             }}
             style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
           >
@@ -1125,7 +1450,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                 className="divider text full-width"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleButtonClick(e, 'variant-6-v2-dropdown-clickable');
+                  handleClickWithTracking(e, 'variant-6-v2-dropdown-clickable', '6', elementToHandlerInstanceMap);
                 }}
                 style={{ cursor: 'pointer', backgroundColor: '#fff5ee' }}
               >
@@ -1161,7 +1486,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             className="collapse-indicator"
             onClick={(e) => {
               e.preventDefault();
-              handleButtonClick(e, 'variant-6-v2-collapse-indicator');
+              handleClickWithTracking(e, 'variant-6-v2-collapse-indicator', '6', elementToHandlerInstanceMap);
             }}
             style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
           >
@@ -1228,7 +1553,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                 className="divider text"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleButtonClick(e, 'variant-7-v2-dropdown-clickable');
+                  handleClickWithTracking(e, 'variant-7-v2-dropdown-clickable', '7', elementToHandlerInstanceMap);
                 }}
                 style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}
               >
@@ -1264,7 +1589,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             className="collapse-indicator"
             onClick={(e) => {
               e.preventDefault();
-              handleButtonClick(e, 'variant-7-v2-collapse-indicator');
+              handleClickWithTracking(e, 'variant-7-v2-collapse-indicator', '7', elementToHandlerInstanceMap);
             }}
             style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
           >
@@ -1331,7 +1656,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                 className="divider text"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleButtonClick(e, 'variant-8-v2-dropdown-clickable');
+                  handleClickWithTracking(e, 'variant-8-v2-dropdown-clickable', '8', elementToHandlerInstanceMap);
                 }}
                 style={{ cursor: 'pointer', backgroundColor: '#fff5ee' }}
               >
@@ -1367,7 +1692,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             className="collapse-indicator"
             onClick={(e) => {
               e.preventDefault();
-              handleButtonClick(e, 'variant-8-v2-collapse-indicator');
+              handleClickWithTracking(e, 'variant-8-v2-collapse-indicator', '8', elementToHandlerInstanceMap);
             }}
             style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
           >
@@ -1435,7 +1760,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                 className="divider text full-width"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleButtonClick(e, 'variant-9-v2-dropdown-clickable');
+                  handleClickWithTracking(e, 'variant-9-v2-dropdown-clickable', '9', elementToHandlerInstanceMap);
                 }}
                 style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}
               >
@@ -1471,7 +1796,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             className="collapse-indicator"
             onClick={(e) => {
               e.preventDefault();
-              handleButtonClick(e, 'variant-9-v2-collapse-indicator');
+              handleClickWithTracking(e, 'variant-9-v2-collapse-indicator', '9', elementToHandlerInstanceMap);
             }}
             style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
           >
@@ -1539,7 +1864,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                 className="divider text full-width"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleButtonClick(e, 'variant-10-v2-dropdown-clickable');
+                  handleClickWithTracking(e, 'variant-10-v2-dropdown-clickable', '10', elementToHandlerInstanceMap);
                 }}
                 style={{ cursor: 'pointer', backgroundColor: '#fff5ee' }}
               >
@@ -1575,7 +1900,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             className="collapse-indicator"
             onClick={(e) => {
               e.preventDefault();
-              handleButtonClick(e, 'variant-10-v2-collapse-indicator');
+              handleClickWithTracking(e, 'variant-10-v2-collapse-indicator', '10', elementToHandlerInstanceMap);
             }}
             style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
           >
@@ -1642,7 +1967,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                 className="divider text full-width"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleButtonClick(e, 'variant-11-v2-dropdown-clickable');
+                  handleClickWithTracking(e, 'variant-11-v2-dropdown-clickable', '11', elementToHandlerInstanceMap);
                 }}
                 style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}
               >
@@ -1678,7 +2003,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             className="collapse-indicator"
             onClick={(e) => {
               e.preventDefault();
-              handleButtonClick(e, 'variant-11-v2-collapse-indicator');
+              handleClickWithTracking(e, 'variant-11-v2-collapse-indicator', '11', elementToHandlerInstanceMap);
             }}
             style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
           >
@@ -1745,7 +2070,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                 className="divider text full-width"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleButtonClick(e, 'variant-12-v2-dropdown-clickable');
+                  handleClickWithTracking(e, 'variant-12-v2-dropdown-clickable', '12', elementToHandlerInstanceMap);
                 }}
                 style={{ cursor: 'pointer', backgroundColor: '#fff5ee' }}
               >
@@ -1781,7 +2106,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             className="collapse-indicator"
             onClick={(e) => {
               e.preventDefault();
-              handleButtonClick(e, 'variant-12-v2-collapse-indicator');
+              handleClickWithTracking(e, 'variant-12-v2-collapse-indicator', '12', elementToHandlerInstanceMap);
             }}
             style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
           >
@@ -1849,7 +2174,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                 className="divider text"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleButtonClick(e, 'variant-13-v2-dropdown-clickable');
+                  handleClickWithTracking(e, 'variant-13-v2-dropdown-clickable', '13', elementToHandlerInstanceMap);
                 }}
                 style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}
               >
@@ -1885,7 +2210,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                 className="divider text"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleButtonClick(e, 'variant-13-v2-dropdown-clickable-2');
+                  handleClickWithTracking(e, 'variant-13-v2-dropdown-clickable-2', '13', elementToHandlerInstanceMap);
                 }}
                 style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#f5f5dc' }}
               >
@@ -1921,7 +2246,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             className="collapse-indicator"
             onClick={(e) => {
               e.preventDefault();
-              handleButtonClick(e, 'variant-13-v2-collapse-indicator');
+              handleClickWithTracking(e, 'variant-13-v2-collapse-indicator', '13', elementToHandlerInstanceMap);
             }}
             style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
           >
@@ -1988,7 +2313,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                 className="divider text"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleButtonClick(e, 'variant-14-v2-dropdown-clickable');
+                  handleClickWithTracking(e, 'variant-14-v2-dropdown-clickable', '14', elementToHandlerInstanceMap);
                 }}
                 style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}
               >
@@ -2024,7 +2349,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                 className="divider text"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleButtonClick(e, 'variant-14-v2-dropdown-clickable-2');
+                  handleClickWithTracking(e, 'variant-14-v2-dropdown-clickable-2', '14', elementToHandlerInstanceMap);
                 }}
                 style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#f5f5dc' }}
               >
@@ -2060,7 +2385,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             className="collapse-indicator"
             onClick={(e) => {
               e.preventDefault();
-              handleButtonClick(e, 'variant-14-v2-collapse-indicator');
+              handleClickWithTracking(e, 'variant-14-v2-collapse-indicator', '14', elementToHandlerInstanceMap);
             }}
             style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
           >
@@ -2128,7 +2453,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                 className="divider text"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleButtonClick(e, 'variant-15-v2-dropdown-clickable');
+                  handleClickWithTracking(e, 'variant-15-v2-dropdown-clickable', '15', elementToHandlerInstanceMap);
                 }}
                 style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}
               >
@@ -2197,7 +2522,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             className="collapse-indicator"
             onClick={(e) => {
               e.preventDefault();
-              handleButtonClick(e, 'variant-15-v2-collapse-indicator');
+              handleClickWithTracking(e, 'variant-15-v2-collapse-indicator', '15', elementToHandlerInstanceMap);
             }}
             style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
           >
@@ -2264,7 +2589,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
                 className="divider text"
                 onClick={(e) => {
                   e.preventDefault();
-                  handleButtonClick(e, 'variant-16-v2-dropdown-clickable');
+                  handleClickWithTracking(e, 'variant-16-v2-dropdown-clickable', '16', elementToHandlerInstanceMap);
                 }}
                 style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}
               >
@@ -2333,7 +2658,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
             className="collapse-indicator"
             onClick={(e) => {
               e.preventDefault();
-              handleButtonClick(e, 'variant-16-v2-collapse-indicator');
+              handleClickWithTracking(e, 'variant-16-v2-collapse-indicator', '16', elementToHandlerInstanceMap);
             }}
             style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}
           >
@@ -2375,7 +2700,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
               {'   '}
-              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-17-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-17-v2-dropdown-clickable', '17', elementToHandlerInstanceMap); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
                 <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
@@ -2385,7 +2710,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
             </div>
           </div>
-          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-17-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-17-v2-collapse-indicator', '17', elementToHandlerInstanceMap); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
             <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
@@ -2411,7 +2736,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
               {'   '}
-              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-18-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-18-v2-dropdown-clickable', '18', elementToHandlerInstanceMap); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
                 <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
@@ -2421,7 +2746,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
             </div>
           </div>
-          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-18-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-18-v2-collapse-indicator', '18', elementToHandlerInstanceMap); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
             <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
@@ -2457,7 +2782,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
             </div>
           </div>
-          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-19-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-19-v2-collapse-indicator', '19', elementToHandlerInstanceMap); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
             <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
@@ -2483,7 +2808,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }} id="variant-20-v2-dropdown-container">
               {'   '}
-              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-20-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }} id="variant-20-v2-dropdown-clickable">
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-20-v2-dropdown-clickable', '20', elementToHandlerInstanceMap); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }} id="variant-20-v2-dropdown-clickable">
                 <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
@@ -2493,7 +2818,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
             </div>
           </div>
-          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-20-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-20-v2-collapse-indicator', '20', elementToHandlerInstanceMap); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
             <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
@@ -2519,7 +2844,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
               {'   '}
-              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-21-v2-dropdown-clickable'); }} style={{ padding: '10px 12px', backgroundColor: '#fff5ee' }}>
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-21-v2-dropdown-clickable', '21', elementToHandlerInstanceMap); }} style={{ padding: '10px 12px', backgroundColor: '#fff5ee' }}>
                 <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
@@ -2529,7 +2854,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
             </div>
           </div>
-          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-21-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-21-v2-collapse-indicator', '21', elementToHandlerInstanceMap); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
             <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
@@ -2565,7 +2890,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
             </div>
           </div>
-          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-22-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-22-v2-collapse-indicator', '22', elementToHandlerInstanceMap); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
             <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
@@ -2591,7 +2916,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
               {'   '}
-              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-23-v2-dropdown-clickable'); }} style={{ padding: '10px 12px', backgroundColor: '#fff5ee' }}>
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-23-v2-dropdown-clickable', '23', elementToHandlerInstanceMap); }} style={{ padding: '10px 12px', backgroundColor: '#fff5ee' }}>
                 <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
@@ -2601,7 +2926,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
             </div>
           </div>
-          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-23-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-23-v2-collapse-indicator', '23', elementToHandlerInstanceMap); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
             <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
@@ -2627,7 +2952,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
               {'   '}
-              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-24-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-24-v2-dropdown-clickable', '24', elementToHandlerInstanceMap); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
                 <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
@@ -2637,7 +2962,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
             </div>
           </div>
-          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-24-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-24-v2-collapse-indicator', '24', elementToHandlerInstanceMap); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
             <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
@@ -2663,7 +2988,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
               {'   '}
-              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-25-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-25-v2-dropdown-clickable', '25', elementToHandlerInstanceMap); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
                 <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
@@ -2676,7 +3001,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
             </div>
           </div>
-          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-25-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-25-v2-collapse-indicator', '25', elementToHandlerInstanceMap); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
             <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
@@ -2701,7 +3026,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
           <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
-              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-26-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-26-v2-dropdown-clickable', '26', elementToHandlerInstanceMap); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
                 <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
@@ -2714,7 +3039,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
             </div>
           </div>
-          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-26-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-26-v2-collapse-indicator', '26', elementToHandlerInstanceMap); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
             <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
@@ -2740,7 +3065,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
               {'   '}
-              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-27-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-27-v2-dropdown-clickable', '27', elementToHandlerInstanceMap); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
                 <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
@@ -2750,7 +3075,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
             </div>
           </div>
-          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-27-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-27-v2-collapse-indicator', '27', elementToHandlerInstanceMap); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
             <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
@@ -2775,7 +3100,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
           <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
-              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-28-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-28-v2-dropdown-clickable', '28', elementToHandlerInstanceMap); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
                 <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
@@ -2785,7 +3110,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
             </div>
           </div>
-          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-28-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-28-v2-collapse-indicator', '28', elementToHandlerInstanceMap); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
             <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
@@ -2811,7 +3136,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
               {'   '}
-              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-29-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-29-v2-dropdown-clickable', '29', elementToHandlerInstanceMap); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }}>
                 <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
@@ -2824,7 +3149,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
             </div>
           </div>
-          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-29-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-29-v2-collapse-indicator', '29', elementToHandlerInstanceMap); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
             <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
@@ -2849,7 +3174,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
           <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
-              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-30-v2-dropdown-clickable'); }} style={{ backgroundColor: '#fff5ee' }}>
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-30-v2-dropdown-clickable', '30', elementToHandlerInstanceMap); }} style={{ backgroundColor: '#fff5ee' }}>
                 <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
@@ -2859,7 +3184,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
             </div>
           </div>
-          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-30-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-30-v2-collapse-indicator', '30', elementToHandlerInstanceMap); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
             <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
@@ -2885,7 +3210,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }}>
               {'   '}
-              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-31-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', backgroundColor: '#fff5ee' }}>
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text full-width" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-31-v2-dropdown-clickable', '31', elementToHandlerInstanceMap); }} style={{ cursor: 'pointer', backgroundColor: '#fff5ee' }}>
                 <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
@@ -2895,7 +3220,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
             </div>
           </div>
-          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-31-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-31-v2-collapse-indicator', '31', elementToHandlerInstanceMap); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
             <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
@@ -2920,7 +3245,7 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
           <h2 style={{ backgroundColor: '#f0e68c' }}>API Protection Practice</h2>
           <div className="control" style={{ backgroundColor: '#e0f0ff' }}>
             <div role="listbox" aria-expanded="false" className="ui selection dropdown cp-select default" tabIndex={0} style={{ backgroundColor: '#f0fff0' }} id="variant-32-v2-dropdown-container">
-              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-32-v2-dropdown-clickable'); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }} id="variant-32-v2-dropdown-clickable">
+              <div aria-atomic="true" aria-live="polite" role="alert" className="divider text" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-32-v2-dropdown-clickable', '32', elementToHandlerInstanceMap); }} style={{ cursor: 'pointer', padding: '10px 12px', backgroundColor: '#fff5ee' }} id="variant-32-v2-dropdown-clickable">
                 <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="#7C7C7C" icon-name="inactive practice" color="#7C7C7C" height="16" width="16" viewBox="0 0 16 16" transform="rotate(0)" style={{ backgroundColor: '#f5deb3' }}>
                   <path fill="#7C7C7C" d="M8,0L0,3.2l2.1,10.7L8,16l5.9-2.1L16,3.2L8,0z M8,13c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S10.8,13,8,13z"></path>
                   <path fill="#7C7C7C" d="M10.8,5.3L10.8,5.3c-0.4-0.4-1-0.4-1.4,0L8.1,6.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0l0,0c-0.4,0.4-0.4,1,0,1.4l1.3,1.3L5.3,9.4c-0.4,0.4-0.4,1,0,1.4l0,0c0.4,0.4,1,0.4,1.4,0l1.3-1.3l1.3,1.3c0.4,0.4,1,0.4,1.4,0l0,0c0.4-0.4,0.4-1,0-1.4L9.5,8.1l1.3-1.3C11.2,6.3,11.2,5.7,10.8,5.3z"></path>
@@ -2933,12 +3258,12 @@ export default function ScenarioX9a3({ onAction }: ScenarioProps) {
               <div className="menu transition sf-hidden" style={{ backgroundColor: '#f5f5dc' }}></div>
             </div>
           </div>
-          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleButtonClick(e, 'variant-32-v2-collapse-indicator'); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
+          <div className="collapse-indicator" onClick={(e) => { e.preventDefault(); handleClickWithTracking(e, 'variant-32-v2-collapse-indicator', '32', elementToHandlerInstanceMap); }} style={{ cursor: 'pointer', backgroundColor: '#f5fffa' }}>
             <svg className="infinity-icon" focusable="false" xmlns="http://www.w3.org/2000/svg" fill="currentColor" icon-name="chevron down" color="inherit" height="16" width="16" viewBox="0 0 9 9" transform="rotate(0)" style={{ backgroundColor: '#e0ffff' }}>
               <path fill="currentColor" d="M4.47,5.67,7.91,2,9,3.17,4.47,8,0,3.17,1,2Z"></path>
             </svg>
           </div>
-        </div>
+        </div>nm
 
         {/* Legend */}
         <div style={{ marginTop: '30px', padding: '20px', background: '#f8f9fa', borderRadius: '8px', border: '1px solid #e0e0e0' }}>
